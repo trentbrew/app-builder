@@ -40,7 +40,9 @@
 		"@codemirror/lint": "^6.8.5",
 		"@codemirror/search": "^6.5.10",
 		"@codemirror/state": "^6.5.2",
+		"@codemirror/theme-one-dark": "^6.1.2",
 		"@codemirror/view": "^6.36.5",
-		"@webcontainer/api": "^1.5.3"
+		"@webcontainer/api": "^1.5.3",
+		"jshint": "^2.13.6"
 	}
 }

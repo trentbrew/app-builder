@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { WebContainer } from '@webcontainer/api';
+	import { onMount, onDestroy, afterUpdate } from 'svelte';
+	import { webcontainerStore } from '$lib/webcontainerStore';
 	import { EditorState } from '@codemirror/state';
 	import {
 		EditorView,
@@ -23,189 +23,177 @@
 		indentOnInput,
 		language
 	} from '@codemirror/language';
-	import { closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete';
+	import {
+		autocompletion,
+		closeBrackets,
+		closeBracketsKeymap,
+		completionKeymap
+	} from '@codemirror/autocomplete';
 	import { searchKeymap, highlightSelectionMatches } from '@codemirror/search';
-	import { lintKeymap } from '@codemirror/lint';
 	import { html } from '@codemirror/lang-html';
+	import { oneDark } from '@codemirror/theme-one-dark';
 	import { initialCode } from '$lib/initialCode';
+	import { browser } from '$app/environment';
 
 	let editorContainer: HTMLDivElement;
-	let iframeContainer: HTMLIFrameElement;
-	let webcontainer: WebContainer;
 	let loading = true;
 	let error = '';
+	let previewUrl = '';
+	let logs: string[] = [];
+	let logsContainer: HTMLDivElement;
+	let userScrolledUp = false;
+	let listenerAttached = false;
 
-	onMount(async () => {
-		try {
-			console.log('Attempting to boot WebContainer...');
-			// Boot WebContainer
-			webcontainer = await WebContainer.boot({ forwardPreviewErrors: true });
-			console.log('WebContainer booted:', webcontainer);
+	// Subscribe to the store for loading, error, previewUrl, and logs
+	const unsubscribe = webcontainerStore.subscribe((state) => {
+		loading = state.loading;
+		error = state.error;
+		previewUrl = state.previewUrl;
+		logs = state.logs;
+	});
 
-			// Mount a minimal project
-			console.log('Mounting project files...');
-			await webcontainer.mount({
-				'package.json': {
-					file: {
-						contents: JSON.stringify(
-							{
-								name: 'svelte-repl',
-								type: 'module',
-								scripts: { dev: 'vite --port 3000 --host 0.0.0.0' },
-								dependencies: { svelte: '^5.0.0' },
-								devDependencies: {
-									vite: '^4.0.0',
-									'@sveltejs/vite-plugin-svelte': '^3.0.0'
-								}
-							},
-							null,
-							2
-						)
-					}
-				},
-				'vite.config.js': {
-					file: {
-						contents: `import { svelte } from '@sveltejs/vite-plugin-svelte';
-export default { plugins: [svelte()] };`
-					}
-				},
-				'index.html': {
-					file: {
-						contents:
-							`<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Svelte REPL</title>
-</head>
-<body>
-  <scr` +
-							`ipt type="module" src="/main.js"></scr` +
-							`ipt>
-</body>
-</html>`
-					}
-				},
-				'main.js': {
-					file: {
-						contents: `import { mount } from 'svelte';
-import App from './App.svelte';
+	// Helper to check if user is at the bottom
+	function isAtBottom(container: HTMLDivElement) {
+		return container.scrollHeight - container.scrollTop - container.clientHeight < 5;
+	}
 
-mount(App, { target: document.body });`
-					}
-				},
-				'App.svelte': { file: { contents: initialCode } }
-			});
+	// Attach scroll listener to logs container
+	function setupLogsScrollListener() {
+		if (!logsContainer) return;
+		logsContainer.addEventListener('scroll', () => {
+			userScrolledUp = !isAtBottom(logsContainer);
+		});
+	}
 
-			// Install dependencies
-			console.log('Installing dependencies...');
-			const install = await webcontainer.spawn('pnpm', ['install']);
-			install.output.pipeTo(
-				new WritableStream({
-					write(data) {
-						console.log('[install]', data);
-					}
-				})
-			);
-			await install.exit;
-			console.log('Dependencies installed');
+	// Listener for messages from the iframe
+	function handleIframeMessage(event: MessageEvent) {
+		// Optional: Check event.origin for security if needed
+		if (event.data && event.data.type && ['log', 'error', 'warn'].includes(event.data.type)) {
+			const prefix = `[iframe-${event.data.type}]`;
+			const message = event.data.args
+				.map((arg: any) => (typeof arg === 'object' ? JSON.stringify(arg) : arg))
+				.join(' ');
+			// Update logs directly here, or could dispatch to the store
+			logs = [...logs, `${prefix} ${message}`];
 
-			// Start dev server
-			console.log('Starting dev server...');
-			const dev = await webcontainer.spawn('pnpm', ['run', 'dev']);
-			dev.output.pipeTo(
-				new WritableStream({
-					write(data) {
-						console.log('[dev server]', data);
-					}
-				})
-			);
-
-			// When the server is ready, point the iframe
-			webcontainer.on('server-ready', (port, url) => {
-				console.log('Server ready on port', port, 'at', url);
-				iframeContainer.src = url;
-				loading = false;
-			});
-
-			// Initialize CodeMirror editor
-			console.log('Initializing editor...');
-			const state = EditorState.create({
-				doc: initialCode,
-				extensions: [
-					lineNumbers(),
-					highlightActiveLineGutter(),
-					highlightSpecialChars(),
-					history(),
-					foldGutter(),
-					drawSelection(),
-					dropCursor(),
-					EditorState.allowMultipleSelections.of(true),
-					indentOnInput(),
-					syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
-					bracketMatching(),
-					closeBrackets(),
-					highlightActiveLine(),
-					highlightSelectionMatches(),
-					keymap.of([
-						...closeBracketsKeymap,
-						...defaultKeymap,
-						...searchKeymap,
-						...historyKeymap,
-						...lintKeymap,
-						indentWithTab
-					]),
-					html(),
-					EditorView.updateListener.of(async (update) => {
-						if (update.docChanged) {
-							const code = update.state.doc.toString();
-							await webcontainer.fs.writeFile('/App.svelte', code);
-						}
-					})
-				]
-			});
-
-			new EditorView({
-				state,
-				parent: editorContainer
-			});
-			console.log('Editor initialized');
-		} catch (e) {
-			console.error('Error in WebContainer setup:', e);
-			error = e.message || 'An error occurred setting up WebContainer';
-			loading = false;
+			// After logs update, scroll to bottom if user is not scrolled up
+			setTimeout(() => {
+				if (logsContainer && !userScrolledUp) {
+					logsContainer.scrollTop = logsContainer.scrollHeight;
+				}
+			}, 0);
 		}
+	}
+
+	// Auto-scroll console panel after logs update
+	afterUpdate(() => {
+		// Attach scroll listener once
+		if (logsContainer && !listenerAttached) {
+			setupLogsScrollListener();
+			listenerAttached = true;
+		}
+		// Auto-scroll if user hasn't scrolled up
+		if (logsContainer && !userScrolledUp) {
+			logsContainer.scrollTop = logsContainer.scrollHeight;
+		}
+	});
+
+	onMount(() => {
+		if (browser) window.addEventListener('message', handleIframeMessage);
+
+		console.log('Editor container DOM element:', editorContainer);
+		const state = EditorState.create({
+			doc: initialCode,
+			extensions: [
+				oneDark,
+				autocompletion(),
+				lineNumbers(),
+				highlightActiveLineGutter(),
+				highlightSpecialChars(),
+				history(),
+				foldGutter(),
+				drawSelection(),
+				dropCursor(),
+				EditorState.allowMultipleSelections.of(true),
+				indentOnInput(),
+				syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+				bracketMatching(),
+				closeBrackets(),
+				highlightActiveLine(),
+				highlightSelectionMatches(),
+				keymap.of([
+					...closeBracketsKeymap,
+					...completionKeymap,
+					...defaultKeymap,
+					...searchKeymap,
+					...historyKeymap,
+					indentWithTab
+				]),
+				html(),
+				EditorView.updateListener.of(async (update) => {
+					if (update.docChanged) {
+						const code = update.state.doc.toString();
+						await webcontainerStore.write('/App.svelte', code);
+					}
+				})
+			]
+		});
+
+		new EditorView({ state, parent: editorContainer });
+	});
+
+	onDestroy(() => {
+		unsubscribe();
+		if (browser) window.removeEventListener('message', handleIframeMessage);
 	});
 </script>
 
-<div class="split">
-	<div bind:this={editorContainer} class="editor"></div>
-	{#if loading}
-		<div class="preview-loading">
-			<p>Loading preview...</p>
-			<p class="hint">This can take 15-30 seconds while dependencies are installed.</p>
-		</div>
-	{:else if error}
-		<div class="preview-error">
-			<h3>Error</h3>
-			<p>{error}</p>
+<div class="editor-layout">
+	<div class="split">
+		<div bind:this={editorContainer} class="editor"></div>
+		{#if loading}
+			<div class="preview-loading">
+				<p>Loading preview...</p>
+				<p class="hint">This can take 15-30 seconds while dependencies are installed.</p>
+			</div>
+		{:else if error}
+			<div class="preview-error">
+				<h3>Error</h3>
+				<p>{error}</p>
+			</div>
+		{:else}
+			<iframe src={previewUrl} title="Svelte REPL Preview" class={loading ? 'hidden' : ''}></iframe>
+		{/if}
+	</div>
+	{#if logs.length > 0}
+		<div bind:this={logsContainer} class="console-panel">
+			<pre>{logs.join('\n')}</pre>
 		</div>
 	{/if}
-	<iframe bind:this={iframeContainer} title="Svelte REPL Preview" class={loading ? 'hidden' : ''}
-	></iframe>
 </div>
 
 <style>
+	/* Make the main layout a column flex filling the viewport */
+	.editor-layout {
+		display: flex;
+		flex-direction: column;
+		height: 100vh;
+	}
+
 	.split {
 		display: flex;
-		height: 100vh;
+		flex: 1; /* Take available vertical space */
+		min-height: 0;
 		margin: 0;
 		padding: 0;
 	}
+
 	.editor {
 		flex: 1;
+		background: #282c34;
+		min-width: 0; /* Prevent shrinking */
 		border-right: 1px solid #ddd;
+		overflow: auto;
 	}
 	iframe {
 		flex: 1;
@@ -231,5 +219,20 @@ mount(App, { target: document.body });`
 	.hint {
 		font-size: 0.8em;
 		color: #777;
+	}
+	.console-panel {
+		height: 200px;
+		overflow-y: scroll;
+		background: #222;
+		color: #eee;
+		padding: 10px;
+		font-family: monospace;
+		font-size: 0.9em;
+		border-top: 1px solid #444;
+	}
+	.console-panel pre {
+		margin: 0;
+		white-space: pre-wrap;
+		word-wrap: break-word;
 	}
 </style>
