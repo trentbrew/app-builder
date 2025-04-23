@@ -149,9 +149,12 @@
 	});
 </script>
 
-<div class="editor-layout">
-	<div class="split">
-		<div bind:this={editorContainer} class="editor"></div>
+<div class="grid-layout">
+	<!-- Code Editor Panel -->
+	<div class="panel editor-panel" bind:this={editorContainer}></div>
+
+	<!-- Preview Panel -->
+	<div class="panel preview-panel">
 		{#if loading}
 			<div class="preview-loading">
 				<p>Loading preview...</p>
@@ -163,49 +166,53 @@
 				<p>{error}</p>
 			</div>
 		{:else}
-			<iframe src={previewUrl} title="Svelte REPL Preview" class={loading ? 'hidden' : ''}></iframe>
+			<iframe src={previewUrl} title="Svelte REPL Preview"></iframe>
 		{/if}
 	</div>
-	{#if logs.length > 0}
-		<div bind:this={logsContainer} class="console-panel">
-			<pre>{logs.join('\n')}</pre>
-		</div>
-	{/if}
-	{#if previewUrl}
-		{#if browser}
-			<div class="terminal-panel">
-				<Terminal />
-			</div>
-		{/if}
-	{/if}
+
+	<!-- Console Panel -->
+	<div class="panel console-panel" bind:this={logsContainer}>
+		<pre>{logs.join('\n')}</pre>
+	</div>
+
+	<!-- Terminal Panel -->
+	<div class="panel terminal-panel">
+		<Terminal />
+	</div>
 </div>
 
 <style>
-	/* Make the main layout a column flex filling the viewport */
-	.editor-layout {
-		display: flex;
-		flex-direction: column;
+	/* Main 2x2 grid layout */
+	.grid-layout {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: 1fr 1fr;
 		height: 100vh;
+		gap: 1px;
 	}
-
-	.split {
-		display: flex;
-		flex: 1; /* Take available vertical space */
-		min-height: 0;
-		margin: 0;
-		padding: 0;
+	.panel {
+		position: relative;
+		overflow: hidden;
 	}
-
-	.editor {
-		flex: 1;
+	.editor-panel {
 		background: #282c34;
-		min-width: 0; /* Prevent shrinking */
-		border-right: 1px solid #ddd;
-		overflow: auto;
 	}
-	iframe {
-		flex: 1;
+	.preview-panel iframe {
+		width: 100%;
+		height: 100%;
 		border: none;
+	}
+	.console-panel {
+		background: #222;
+		color: #eee;
+		padding: 10px;
+		font-family: monospace;
+		font-size: 0.9em;
+		overflow-y: auto;
+	}
+	.terminal-panel .terminal-container {
+		width: 100%;
+		height: 100%;
 	}
 	.hidden {
 		display: none;
@@ -227,26 +234,5 @@
 	.hint {
 		font-size: 0.8em;
 		color: #777;
-	}
-	.console-panel {
-		height: 200px;
-		overflow-y: scroll;
-		background: #222;
-		color: #eee;
-		padding: 10px;
-		font-family: monospace;
-		font-size: 0.9em;
-		border-top: 1px solid #444;
-	}
-	.console-panel pre {
-		margin: 0;
-		white-space: pre-wrap;
-		word-wrap: break-word;
-	}
-	.terminal-panel {
-		height: 200px;
-		background: #000;
-		color: #eee;
-		border-top: 1px solid #444;
 	}
 </style>

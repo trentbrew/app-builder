@@ -43,7 +43,9 @@
 		"@codemirror/theme-one-dark": "^6.1.2",
 		"@codemirror/view": "^6.36.5",
 		"@webcontainer/api": "^1.5.3",
+		"@xterm/addon-fit": "^0.10.0",
 		"@xterm/xterm": "5.6.0-beta.66",
-		"jshint": "^2.13.6"
+		"jshint": "^2.13.6",
+		"xterm-addon-fit": "^0.8.0"
 	}
 }

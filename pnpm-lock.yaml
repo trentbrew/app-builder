@@ -38,12 +38,18 @@ importers:
       '@webcontainer/api':
         specifier: ^1.5.3
         version: 1.5.3
+      '@xterm/addon-fit':
+        specifier: ^0.10.0
+        version: 0.10.0(@xterm/xterm@5.6.0-beta.66)
       '@xterm/xterm':
         specifier: 5.6.0-beta.66
         version: 5.6.0-beta.66
       jshint:
         specifier: ^2.13.6
         version: 2.13.6
+      xterm-addon-fit:
+        specifier: ^0.8.0
+        version: 0.8.0(xterm@5.3.0)
     devDependencies:
       '@sveltejs/adapter-vercel':
         specifier: ^5.6.3
@@ -742,6 +748,11 @@ packages:
 
   '@webcontainer/api@1.5.3':
     resolution: {integrity: sha512-f6Oq3ohtSC5RYABhpN8aVOVHpcKvJ1fB1jjuvODTBU5u6BcroYEhphnrywdw8RO+2Vy5ekCdKe5D4dCMdMSrzA==}
+
+  '@xterm/addon-fit@0.10.0':
+    resolution: {integrity: sha512-UFYkDm4HUahf2lnEyHvio51TNGiLK66mqP2JoATy7hRZeXaGMRDr00JiSF7m63vR5WKATF605yEggJKsw0JpMQ==}
+    peerDependencies:
+      '@xterm/xterm': ^5.0.0
 
   '@xterm/xterm@5.6.0-beta.66':
     resolution: {integrity: sha512-hmvS0e4sa6xBmeKIwxZE+RDTKpeLqJ3VSOlMUzvi5utV3xa7gwt5M60eRlSn+0qi8cRMuUCTvJhDFW1pP62+lw==}
@@ -1446,6 +1457,16 @@ packages:
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
+  xterm-addon-fit@0.8.0:
+    resolution: {integrity: sha512-yj3Np7XlvxxhYF/EJ7p3KHaMt6OdwQ+HDu573Vx1lRXsVxOcnVJs51RgjZOouIZOczTsskaS+CpXspK81/DLqw==}
+    deprecated: This package is now deprecated. Move to @xterm/addon-fit instead.
+    peerDependencies:
+      xterm: ^5.0.0
+
+  xterm@5.3.0:
+    resolution: {integrity: sha512-8QqjlekLUFTrU6x7xck1MsPzPA571K5zNqWm0M0oroYEWVOptZ0+ubQSkQ3uxIEhcIHRujJy6emDWX4A7qyFzg==}
+    deprecated: This package is now deprecated. Move to @xterm/xterm instead.
+
   yallist@5.0.0:
     resolution: {integrity: sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw==}
     engines: {node: '>=18'}
@@ -1995,6 +2016,10 @@ snapshots:
       - supports-color
 
   '@webcontainer/api@1.5.3': {}
+
+  '@xterm/addon-fit@0.10.0(@xterm/xterm@5.6.0-beta.66)':
+    dependencies:
+      '@xterm/xterm': 5.6.0-beta.66
 
   '@xterm/xterm@5.6.0-beta.66': {}
 
@@ -2611,6 +2636,12 @@ snapshots:
       strip-ansi: 7.1.0
 
   wrappy@1.0.2: {}
+
+  xterm-addon-fit@0.8.0(xterm@5.3.0):
+    dependencies:
+      xterm: 5.3.0
+
+  xterm@5.3.0: {}
 
   yallist@5.0.0: {}
 
