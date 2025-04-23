@@ -170,14 +170,14 @@
 		{/if}
 	</div>
 
-	<!-- Console Panel -->
-	<div class="panel console-panel" bind:this={logsContainer}>
-		<pre>{logs.join('\n')}</pre>
-	</div>
-
 	<!-- Terminal Panel -->
 	<div class="panel terminal-panel">
 		<Terminal />
+	</div>
+
+	<!-- Console Panel -->
+	<div class="panel console-panel" bind:this={logsContainer}>
+		<pre>{logs.join('\n')}</pre>
 	</div>
 </div>
 
@@ -188,26 +188,37 @@
 		grid-template-columns: 1fr 1fr;
 		grid-template-rows: 1fr 1fr;
 		height: 100vh;
-		gap: 1px;
+		gap: 8px;
+		padding: 8px;
 	}
 	.panel {
 		position: relative;
 		overflow: hidden;
+		border-radius: 8px;
+		border: 1px solid rgba(255, 255, 255, 0.2);
 	}
 	.editor-panel {
 		background: #282c34;
 	}
+
+	.preview-panel {
+		background: #f9f9f9;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
 	.preview-panel iframe {
 		width: 100%;
 		height: 100%;
 		border: none;
 	}
 	.console-panel {
-		background: #222;
+		background: #3d434d;
 		color: #eee;
 		padding: 10px;
 		font-family: monospace;
-		font-size: 0.9em;
+		font-size: 13px;
 		overflow-y: auto;
 	}
 	.terminal-panel .terminal-container {

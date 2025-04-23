@@ -1,6 +1,7 @@
 export const initialCode = `<script>
   let count = 0;
   function handleClick() {
+    console.log('clicked');
     count += 1;
   }
 </script>
