@@ -38,6 +38,9 @@ importers:
       '@webcontainer/api':
         specifier: ^1.5.3
         version: 1.5.3
+      '@xterm/xterm':
+        specifier: 5.6.0-beta.66
+        version: 5.6.0-beta.66
       jshint:
         specifier: ^2.13.6
         version: 2.13.6
@@ -739,6 +742,9 @@ packages:
 
   '@webcontainer/api@1.5.3':
     resolution: {integrity: sha512-f6Oq3ohtSC5RYABhpN8aVOVHpcKvJ1fB1jjuvODTBU5u6BcroYEhphnrywdw8RO+2Vy5ekCdKe5D4dCMdMSrzA==}
+
+  '@xterm/xterm@5.6.0-beta.66':
+    resolution: {integrity: sha512-hmvS0e4sa6xBmeKIwxZE+RDTKpeLqJ3VSOlMUzvi5utV3xa7gwt5M60eRlSn+0qi8cRMuUCTvJhDFW1pP62+lw==}
 
   abbrev@3.0.1:
     resolution: {integrity: sha512-AO2ac6pjRB3SJmGJo+v5/aK6Omggp6fsLrs6wN9bd35ulu4cCwaAU9+7ZhXjeqHVkaHThLuzH0nZr0YpCDhygg==}
@@ -1989,6 +1995,8 @@ snapshots:
       - supports-color
 
   '@webcontainer/api@1.5.3': {}
+
+  '@xterm/xterm@5.6.0-beta.66': {}
 
   abbrev@3.0.1: {}
 

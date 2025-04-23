@@ -15,5 +15,17 @@ const coepCoopPlugin = {
 };
 
 export default defineConfig({
-	plugins: [tailwindcss(), sveltekit(), coepCoopPlugin]
+	plugins: [tailwindcss(), sveltekit(), coepCoopPlugin],
+	optimizeDeps: {
+		// Exclude @xterm/xterm from dependency optimization,
+		// as it might interfere with the dynamic client-side import.
+		exclude: ['@xterm/xterm']
+	},
+	ssr: {
+		// Explicitly tell Vite not to process @xterm/xterm and its CSS during SSR
+		// as they are client-side only dependencies.
+		external: ['@xterm/xterm'],
+		// Keep noExternal empty or adjust if other server-side deps need processing
+		noExternal: []
+	}
 });

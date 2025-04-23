@@ -34,6 +34,7 @@
 	import { oneDark } from '@codemirror/theme-one-dark';
 	import { initialCode } from '$lib/initialCode';
 	import { browser } from '$app/environment';
+	import Terminal from '$lib/Terminal.svelte';
 
 	let editorContainer: HTMLDivElement;
 	let loading = true;
@@ -170,6 +171,13 @@
 			<pre>{logs.join('\n')}</pre>
 		</div>
 	{/if}
+	{#if previewUrl}
+		{#if browser}
+			<div class="terminal-panel">
+				<Terminal />
+			</div>
+		{/if}
+	{/if}
 </div>
 
 <style>
@@ -234,5 +242,11 @@
 		margin: 0;
 		white-space: pre-wrap;
 		word-wrap: break-word;
+	}
+	.terminal-panel {
+		height: 200px;
+		background: #000;
+		color: #eee;
+		border-top: 1px solid #444;
 	}
 </style>
