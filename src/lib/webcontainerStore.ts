@@ -104,7 +104,7 @@ function createWebContainerStore() {
 				container.on('preview-message', (msg) => {
 					update((s) => ({
 						...s,
-						logs: [...s.logs, `[preview] ${msg.message || JSON.stringify(msg)}`]
+						logs: [...s.logs, `[preview] ${JSON.stringify(msg)}`]
 					}));
 				});
 			});
@@ -133,3 +133,12 @@ function createWebContainerStore() {
 }
 
 export const webcontainerStore = createWebContainerStore();
+
+// Helper function to get fs directly
+export function getFs() {
+	let fs: any;
+	webcontainerStore.subscribe((state) => {
+		fs = state.fs;
+	})(); // Immediate invoke to get current value
+	return fs;
+}

@@ -2,7 +2,6 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
 	import { webcontainerStore } from '$lib/webcontainerStore';
-	import { highlight } from 'cli-highlight';
 
 	let terminalContainer: HTMLDivElement | null = null;
 	let xterm: any | null = null;
@@ -16,6 +15,7 @@
 	function handleClear() {
 		xterm?.clear();
 	}
+	
 	function handleRestart() {
 		if (process) {
 			try {
@@ -94,21 +94,22 @@
 					console.error('Terminal container is not available for xterm.');
 				}
 
+				// Set up the key listener ONCE after xterm is created
+				xterm.onKey(({ key }) => {
+					// Only write if the writer is ready
+					if (writer) {
+						writer.write(key);
+					}
+				});
+
 				unsubscribe = webcontainerStore.subscribe(async (state) => {
 					if (state.container && !process && xterm) {
 						const container = state.container;
 						try {
 							process = await container.spawn('jsh', []);
 							container.on('preview-message', (msg: any) => {
-								// Raw message text
-								const raw = msg.message || (msg.args ? msg.args.join(' ') : JSON.stringify(msg));
-								// Highlight JavaScript syntax with ANSI colors
-								const colored = highlight(raw, {
-									language: 'javascript',
-									ignoreIllegals: true,
-									theme: undefined
-								});
-								xterm?.writeln(`\x1b[90m[preview]\x1b[0m ${colored}`);
+								const text = msg.message || (msg.args ? msg.args.join(' ') : JSON.stringify(msg));
+								xterm?.writeln(`\x1b[90m[preview]\x1b[0m ${text}`);
 							});
 							writer = process.input.getWriter();
 
@@ -119,9 +120,6 @@
 									}
 								})
 							);
-							xterm.onKey(({ key }) => {
-								writer.write(key);
-							});
 						} catch (spawnError) {
 							console.error('Failed to spawn jsh process:', spawnError);
 							xterm?.write('\r\nFailed to start shell.\r\n');

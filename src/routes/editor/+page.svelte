@@ -35,8 +35,10 @@
 	import { initialCode } from '$lib/initialCode';
 	import { browser } from '$app/environment';
 	import Terminal from '$lib/Terminal.svelte';
+	import FileExplorer from '$lib/FileExplorer.svelte';
 
 	let editorContainer: HTMLDivElement;
+	let editorView: EditorView | null = null;
 	let loading = true;
 	let error = '';
 	let previewUrl = '';
@@ -99,6 +101,27 @@
 		}
 	});
 
+	// Function to handle file selection from FileExplorer
+	function handleFileSelect(path: string, content: string) {
+		if (editorView) {
+			const transaction = editorView.state.update({
+				changes: { from: 0, to: editorView.state.doc.length, insert: content }
+			});
+			editorView.dispatch(transaction);
+			// Optionally, update the file being edited in webcontainerStore if needed
+			// webcontainerStore.write(path, content); // Be careful about triggering loops
+			console.log(`Loaded ${path} into editor.`);
+		}
+	}
+
+	// Run on demand instead of hot‑reload on every keystroke
+	async function handleRun() {
+		if (editorView) {
+			const code = editorView.state.doc.toString();
+			await webcontainerStore.write('/App.svelte', code);
+		}
+	}
+
 	onMount(() => {
 		if (browser) window.addEventListener('message', handleIframeMessage);
 
@@ -130,17 +153,12 @@
 					...historyKeymap,
 					indentWithTab
 				]),
-				html(),
-				EditorView.updateListener.of(async (update) => {
-					if (update.docChanged) {
-						const code = update.state.doc.toString();
-						await webcontainerStore.write('/App.svelte', code);
-					}
-				})
+				html()
+				// Removed EditorView.updateListener for auto-write
 			]
 		});
 
-		new EditorView({ state, parent: editorContainer });
+		editorView = new EditorView({ state, parent: editorContainer });
 	});
 
 	onDestroy(() => {
@@ -151,7 +169,17 @@
 
 <div class="grid-layout">
 	<!-- Code Editor Panel -->
-	<div class="panel editor-panel" bind:this={editorContainer}></div>
+	<div class="panel editor-panel-container">
+		<div class="file-explorer-wrapper">
+			<FileExplorer onSelectFile={handleFileSelect} />
+		</div>
+		<div class="editor-main">
+			<div class="editor-controls">
+				<button class="run-btn" on:click={handleRun}>Run</button>
+			</div>
+			<div class="editor-wrapper" bind:this={editorContainer}></div>
+		</div>
+	</div>
 
 	<!-- Preview Panel -->
 	<div class="panel preview-panel">
@@ -197,15 +225,62 @@
 		border-radius: 8px;
 		border: 1px solid rgba(255, 255, 255, 0.2);
 	}
-	.editor-panel {
+	.editor-panel-container {
+		display: flex;
 		background: #282c34;
 	}
 
+	.file-explorer-wrapper {
+		width: 200px;
+		flex-shrink: 0;
+		background: #3d434d;
+		overflow-y: auto;
+		color: #eee;
+		padding: 5px;
+		border-right: 1px solid rgba(255, 255, 255, 0.2);
+	}
+
+	.editor-main {
+		position: relative;
+		flex-grow: 1;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+	}
+
+	.editor-controls {
+		position: absolute;
+		top: 8px;
+		right: 8px;
+		z-index: 2;
+	}
+
+	.editor-wrapper {
+		flex-grow: 1;
+		overflow: hidden;
+		height: 100%;
+	}
+
 	.preview-panel {
+		position: relative;
 		background: #f9f9f9;
 		display: flex;
 		justify-content: center;
 		align-items: center;
+	}
+
+	/* Removed .preview-controls and moved .run-btn to .editor-controls */
+
+	.run-btn {
+		background: #4caf50;
+		color: #fff;
+		border: none;
+		padding: 4px 8px;
+		cursor: pointer;
+		border-radius: 4px;
+	}
+	.run-btn:hover {
+		background: #45a049;
 	}
 
 	.preview-panel iframe {
@@ -224,9 +299,6 @@
 	.terminal-panel .terminal-container {
 		width: 100%;
 		height: 100%;
-	}
-	.hidden {
-		display: none;
 	}
 	.preview-loading,
 	.preview-error {
