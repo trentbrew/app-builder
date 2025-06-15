@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { SvelteFlow, MiniMap, SelectionMode } from '@xyflow/svelte';
+	import { SvelteFlow, MiniMap, SelectionMode, Background } from '@xyflow/svelte';
 	import '@xyflow/svelte/dist/style.css';
 	import { EditorView } from '@codemirror/view';
 	import { browser } from '$app/environment';
@@ -266,6 +266,7 @@
 		{onmove}
 		{onmoveend}
 	>
+		<Background color="var(--color-background)" />
 		<MiniMap
 			nodeColor="var(--color-primary)"
 			nodeStrokeColor="var(--color-border)"
