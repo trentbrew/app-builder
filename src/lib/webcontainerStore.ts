@@ -131,6 +131,11 @@ function createWebContainerStore() {
 			if (snapshot?.fs) {
 				await snapshot.fs.writeFile(path, content);
 			}
+		},
+		getContainer: () => {
+			let snapshot: PreviewState;
+			subscribe((s) => (snapshot = s))();
+			return snapshot?.container;
 		}
 	};
 }

@@ -8,6 +8,7 @@
 		highlightSpecialChars,
 		drawSelection,
 		highlightActiveLine,
+		dropCursor,
 		lineNumbers,
 		highlightActiveLineGutter
 	} from '@codemirror/view';
@@ -16,6 +17,7 @@
 		syntaxHighlighting,
 		defaultHighlightStyle,
 		bracketMatching,
+		foldGutter,
 		indentOnInput
 	} from '@codemirror/language';
 	import {
@@ -24,50 +26,37 @@
 		closeBracketsKeymap,
 		completionKeymap
 	} from '@codemirror/autocomplete';
+	import { searchKeymap, highlightSelectionMatches } from '@codemirror/search';
 	import { html } from '@codemirror/lang-html';
 	import { oneDark } from '@codemirror/theme-one-dark';
+	import FileExplorer from '$lib/FileExplorer.svelte';
 
-	export let data: { label?: string } = {};
+	// Props from parent
+	export let data: {
+		label?: string;
+		onFileSelect?: (path: string, content: string) => void;
+		onRun?: () => void;
+		initialCode?: string;
+		setEditorView?: (view: EditorView) => void;
+	} = {};
 
 	let editorContainer: HTMLDivElement;
-	let editorView: EditorView | null = null;
+	let localEditorView: EditorView | null = null;
 
-	let code =
-		`<` +
-		`script>
-	let count = 0;
-	const handleClick = () => count += 1;
-</` +
-		`script>
+	onMount(async () => {
+		if (!browser) return;
 
-<h1>Svelte REPL</h1>
-<button on:click={handleClick}>
-	Clicked {count} times
-</button>
+		// Wait for DOM to be fully ready
+		await new Promise((resolve) => setTimeout(resolve, 100));
 
-<style>
-	h1 {
-		color: #7e22ce;
-		font-family: sans-serif;
-	}
-	button {
-		background: #7e22ce;
-		color: white;
-		border: none;
-		padding: 8px 16px;
-		border-radius: 4px;
-		cursor: pointer;
-	}
-	button:hover {
-		background: #6b21a8;
-	}
-</style>`;
+		if (!editorContainer) {
+			console.error('Editor container not found');
+			return;
+		}
 
-	onMount(() => {
-		if (!browser || !editorContainer) return;
-
+		console.log('Editor container DOM element:', editorContainer);
 		const state = EditorState.create({
-			doc: code,
+			doc: data.initialCode || '',
 			extensions: [
 				oneDark,
 				autocompletion(),
@@ -75,38 +64,39 @@
 				highlightActiveLineGutter(),
 				highlightSpecialChars(),
 				history(),
+				foldGutter(),
 				drawSelection(),
+				dropCursor(),
+				EditorState.allowMultipleSelections.of(true),
 				indentOnInput(),
 				syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
 				bracketMatching(),
 				closeBrackets(),
 				highlightActiveLine(),
+				highlightSelectionMatches(),
 				keymap.of([
 					...closeBracketsKeymap,
 					...completionKeymap,
 					...defaultKeymap,
+					...searchKeymap,
 					...historyKeymap,
 					indentWithTab
 				]),
-				html(),
-				// Update listener to sync code changes
-				EditorView.updateListener.of((update) => {
-					if (update.docChanged) {
-						code = update.state.doc.toString();
-					}
-				})
+				html()
 			]
 		});
 
-		editorView = new EditorView({
-			state,
-			parent: editorContainer
-		});
+		localEditorView = new EditorView({ state, parent: editorContainer });
+
+		// Update parent's editorView reference
+		if (data.setEditorView !== undefined) {
+			data.setEditorView(localEditorView);
+		}
 	});
 
 	onDestroy(() => {
-		if (editorView) {
-			editorView.destroy();
+		if (localEditorView) {
+			localEditorView.destroy();
 		}
 	});
 </script>
@@ -117,7 +107,29 @@
 	>
 		{data.label ?? 'Editor'}
 	</div>
-	<div bind:this={editorContainer} class="nodrag nowheel flex-1 overflow-hidden"></div>
+
+	<div class="flex h-full overflow-hidden">
+		<!-- File Explorer -->
+		<div class="border-border bg-muted/50 w-48 flex-shrink-0 overflow-y-auto border-r">
+			<FileExplorer onSelectFile={data.onFileSelect} />
+		</div>
+
+		<!-- Editor Main Area -->
+		<div class="flex flex-1 flex-col overflow-hidden">
+			<!-- Editor Controls -->
+			<div class="border-border bg-muted/30 flex justify-end border-b p-2">
+				<button
+					class="bg-primary text-primary-foreground hover:bg-primary/90 rounded px-3 py-1 text-xs transition-colors"
+					on:click={data.onRun}
+				>
+					Run
+				</button>
+			</div>
+
+			<!-- Editor Container -->
+			<div bind:this={editorContainer} class="nodrag nowheel flex-1 overflow-hidden"></div>
+		</div>
+	</div>
 </div>
 
 <style>

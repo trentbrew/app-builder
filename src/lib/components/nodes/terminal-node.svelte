@@ -49,8 +49,13 @@
 			if (!containerInDom) return;
 
 			try {
+				// Check if terminal is properly opened and has dimensions
 				if (typeof fitAddon.fit === 'function' && xterm.element && xterm.element.isConnected) {
-					fitAddon.fit();
+					// Additional check to ensure terminal has been properly initialized
+					const terminalElement = xterm.element.querySelector('.xterm-screen');
+					if (terminalElement) {
+						fitAddon.fit();
+					}
 				}
 			} catch (e) {
 				console.warn('fitAddon.fit() failed:', e);
@@ -74,7 +79,9 @@
 					background: '#282c34',
 					foreground: '#d1d5db'
 				},
-				cursorStyle: 'bar'
+				cursorStyle: 'bar',
+				scrollback: 1000,
+				allowTransparency: false
 			});
 
 			fitAddon = new FitAddon();
@@ -82,11 +89,37 @@
 
 			if (container) {
 				xterm.open(container);
-				Promise.resolve().then(() => safeFit());
+				// Wait for terminal to be fully rendered before fitting
+				setTimeout(() => safeFit(), 200);
+
+				// Auto-scroll to bottom when new content is added
+				xterm.onData(() => {
+					// Scroll to bottom after a brief delay to ensure content is rendered
+					setTimeout(() => {
+						xterm.scrollToBottom();
+					}, 10);
+				});
+
+				// Also auto-scroll when content is written programmatically
+				const originalWrite = xterm.write.bind(xterm);
+				const originalWriteln = xterm.writeln.bind(xterm);
+
+				xterm.write = (data) => {
+					const result = originalWrite(data);
+					setTimeout(() => xterm.scrollToBottom(), 10);
+					return result;
+				};
+
+				xterm.writeln = (data) => {
+					const result = originalWriteln(data);
+					setTimeout(() => xterm.scrollToBottom(), 10);
+					return result;
+				};
 
 				// Observe container size changes
 				resizeObserver = new ResizeObserver(() => {
-					safeFit();
+					// Debounce resize calls
+					setTimeout(() => safeFit(), 100);
 				});
 				resizeObserver.observe(container);
 
@@ -174,7 +207,7 @@
 			<button class="terminal-btn" title="Restart shell" on:click={handleRestart}>Reload</button>
 		</div>
 	</div>
-	<div bind:this={container} class="terminal-container nodrag nowheel"></div>
+	<div bind:this={container} class="terminal-container nodrag nowheel cursor-text"></div>
 </div>
 
 <style>
@@ -220,7 +253,8 @@
 		height: 100%;
 		background: #282c34;
 		flex: 1 1 0;
-		overflow: hidden;
+		overflow: auto;
+		position: relative;
 	}
 	:global(.xterm .xterm-screen) {
 		padding: 4px;
