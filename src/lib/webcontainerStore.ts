@@ -25,11 +25,14 @@ function createWebContainerStore() {
 		if (!browser) return;
 
 		try {
+			// Initialize WebContainer
 			update((s) => ({ ...s, logs: ['Booting WebContainer...'] }));
 			const container = await WebContainer.boot({
 				forwardPreviewErrors: true,
 				workdirName: 'svelte-repl'
 			});
+
+			// Update WebContainer store
 			update((s) => ({ ...s, container, logs: [...s.logs, 'WebContainer booted.'] }));
 
 			// Mount project
