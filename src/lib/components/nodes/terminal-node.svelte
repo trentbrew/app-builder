@@ -1,213 +1,134 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
-	import { webcontainerStore } from '$lib/webcontainerStore';
-	// NOTE: xterm and its addons access browser globals. Only load them on client.
-	// They are imported dynamically inside onMount to avoid SSR errors (self is not defined).
+	import { codeCanvasState } from '../../../routes/code-canvas/state.svelte';
 
-	export let data: { label?: string } = {};
-	let container: HTMLDivElement | null = null;
-	let xterm: any | null = null;
+	// Dynamic imports for browser-only libraries
+	let Terminal: any;
+	let FitAddon: any;
+
+	// Props from parent using Svelte 5 runes
+	const {
+		data = {}
+	}: {
+		data?: {
+			label?: string;
+		};
+	} = $props();
+
+	let terminalContainer: HTMLDivElement;
+	let terminal: any;
 	let fitAddon: any;
-	let resizeObserver: ResizeObserver | null = null;
-	let unsubscribe: (() => void) | null = null;
-	let process: any = null;
-	let writer: any = null;
 
-	// Control bar actions
-	function handleClear() {
-		xterm?.clear();
-	}
-
-	function handleRestart() {
-		xterm?.clear();
-		// Kill existing process and let the store subscription respawn it
-		if (process) {
-			try {
-				process.kill();
-				process = null;
-			} catch (e) {
-				console.warn('Error killing process:', e);
-			}
-		}
-		if (writer) {
-			try {
-				writer.releaseLock();
-				writer = null;
-			} catch (e) {
-				console.warn('Error releasing writer:', e);
-			}
-		}
-		xterm?.writeln('\r\n[Terminal restarted]\r\n');
-	}
-
-	// Defensive fit call
-	function safeFit() {
-		if (xterm && fitAddon && container) {
-			const containerInDom =
-				container.isConnected && container.offsetWidth > 0 && container.offsetHeight > 0;
-			if (!containerInDom) return;
-
-			try {
-				// Check if terminal is properly opened and has dimensions
-				if (typeof fitAddon.fit === 'function' && xterm.element && xterm.element.isConnected) {
-					// Additional check to ensure terminal has been properly initialized
-					const terminalElement = xterm.element.querySelector('.xterm-screen');
-					if (terminalElement) {
-						fitAddon.fit();
-					}
-				}
-			} catch (e) {
-				console.warn('fitAddon.fit() failed:', e);
-			}
-		}
-	}
-
-	onMount(async () => {
+	onMount(() => {
 		if (!browser) return;
 
-		try {
-			// Dynamically import to avoid SSR issues
-			const { Terminal } = await import('@xterm/xterm');
-			const { FitAddon } = await import('@xterm/addon-fit');
+		// Initialize terminal asynchronously
+		(async () => {
+			// Dynamic imports for browser-only libraries
+			const [xtermPkg, fitAddonPkg] = await Promise.all([
+				import('@xterm/xterm'),
+				import('@xterm/addon-fit')
+			]);
+
+			Terminal = xtermPkg.Terminal;
+			FitAddon = fitAddonPkg.FitAddon;
+
+			// Also import CSS dynamically
 			await import('@xterm/xterm/css/xterm.css');
 
-			xterm = new Terminal({
-				fontFamily: 'Menlo, monospace',
-				fontSize: 12,
+			// Initialize terminal
+			terminal = new Terminal({
 				theme: {
-					background: '#282c34',
-					foreground: '#d1d5db'
+					background: '#0d1117',
+					foreground: '#c9d1d9',
+					cursor: '#c9d1d9',
+					selection: '#264f78'
 				},
-				cursorStyle: 'bar',
-				scrollback: 1000,
-				allowTransparency: false
+				fontSize: 12,
+				fontFamily: 'Menlo, Monaco, "Courier New", monospace',
+				cursorBlink: true
 			});
 
 			fitAddon = new FitAddon();
-			xterm.loadAddon(fitAddon);
+			terminal.loadAddon(fitAddon);
 
-			if (container) {
-				xterm.open(container);
-				// Wait for terminal to be fully rendered before fitting
-				setTimeout(() => safeFit(), 200);
+			terminal.open(terminalContainer);
+			fitAddon.fit();
 
-				// Auto-scroll to bottom when new content is added
-				xterm.onData(() => {
-					// Scroll to bottom after a brief delay to ensure content is rendered
-					setTimeout(() => {
-						xterm.scrollToBottom();
-					}, 10);
-				});
+			// Welcome message
+			terminal.writeln('Welcome to WebContainer Terminal');
+			terminal.writeln('WebContainer status: ' + (codeCanvasState.bootStatus || 'Initializing...'));
+			terminal.write('$ ');
 
-				// Also auto-scroll when content is written programmatically
-				const originalWrite = xterm.write.bind(xterm);
-				const originalWriteln = xterm.writeln.bind(xterm);
+			// Handle terminal input
+			terminal.onData((data) => {
+				if (data === '\r') {
+					terminal.writeln('');
+					terminal.write('$ ');
+				} else if (data === '\u007f') {
+					// Backspace
+					terminal.write('\b \b');
+				} else {
+					terminal.write(data);
+				}
+			});
 
-				xterm.write = (data) => {
-					const result = originalWrite(data);
-					setTimeout(() => xterm.scrollToBottom(), 10);
-					return result;
-				};
+			// Resize handler
+			const resizeObserver = new ResizeObserver(() => {
+				fitAddon.fit();
+			});
+			resizeObserver.observe(terminalContainer);
+		})();
 
-				xterm.writeln = (data) => {
-					const result = originalWriteln(data);
-					setTimeout(() => xterm.scrollToBottom(), 10);
-					return result;
-				};
-
-				// Observe container size changes
-				resizeObserver = new ResizeObserver(() => {
-					// Debounce resize calls
-					setTimeout(() => safeFit(), 100);
-				});
-				resizeObserver.observe(container);
-
-				// Set up key listener to send input to shell process
-				xterm.onKey(({ key }) => {
-					// Only write if the writer is ready
-					if (writer) {
-						writer.write(key);
-					}
-				});
-
-				// Subscribe to WebContainer store to get shell process
-				unsubscribe = webcontainerStore.subscribe(async (state) => {
-					if (state.container && !process && xterm) {
-						const webContainer = state.container;
-						try {
-							// Spawn jsh shell process
-							process = await webContainer.spawn('jsh', []);
-
-							// Listen for preview messages
-							webContainer.on('preview-message', (msg: any) => {
-								const text = msg.message || (msg.args ? msg.args.join(' ') : JSON.stringify(msg));
-								xterm?.writeln(`\x1b[90m[preview]\x1b[0m ${text}`);
-							});
-
-							// Get writer for input
-							writer = process.input.getWriter();
-
-							// Pipe shell output to terminal
-							process.output.pipeTo(
-								new WritableStream({
-									write(data) {
-										xterm?.write(data);
-									}
-								})
-							);
-						} catch (spawnError) {
-							console.error('Failed to spawn jsh process:', spawnError);
-							xterm?.write('\r\nFailed to start shell.\r\n');
-						}
-					}
-				});
+		return () => {
+			if (terminal) {
+				terminal.dispose();
 			}
-		} catch (error) {
-			console.error('Failed to initialize terminal:', error);
-		}
+		};
 	});
 
-	onDestroy(() => {
-		if (resizeObserver && container) {
-			try {
-				resizeObserver.unobserve(container);
-			} catch {}
-			resizeObserver.disconnect();
-		}
-		if (unsubscribe) unsubscribe();
-		if (writer) {
-			try {
-				writer.releaseLock();
-			} catch {}
-		}
-		if (process) {
-			try {
-				process.kill();
-			} catch (killError) {
-				console.warn('Error killing process:', killError);
+	// Update terminal with WebContainer status changes
+	$effect(() => {
+		if (browser && terminal && codeCanvasState.bootStatus) {
+			// Only show status updates, don't spam the terminal
+			if (codeCanvasState.bootStatus === 'Ready' || codeCanvasState.bootStatus.includes('Error')) {
+				terminal.writeln(`\r\nWebContainer status: ${codeCanvasState.bootStatus}`);
+				terminal.write('$ ');
 			}
-		}
-		if (xterm) {
-			xterm.dispose();
 		}
 	});
 </script>
 
 <div class="border-border bg-card flex h-full w-full flex-col overflow-hidden rounded border">
 	<div
-		class="drag-handle border-border bg-muted text-muted-foreground border-b px-2 py-1 text-xs font-semibold"
+		class="drag-handle border-border bg-muted text-muted-foreground flex items-center justify-between border-b px-2 py-1 text-xs font-semibold"
 	>
-		{data.label ?? 'Terminal'}
-	</div>
-	<div class="terminal-control-bar">
-		<span class="terminal-title">Shell</span>
-		<div class="terminal-controls">
-			<button class="terminal-btn" title="Clear terminal" on:click={handleClear}>Clear</button>
-			<button class="terminal-btn" title="Restart shell" on:click={handleRestart}>Reload</button>
+		<div class="flex items-center gap-2">
+			<span>{data.label ?? 'Terminal'}</span>
+			{#if codeCanvasState.webContainer}
+				<span class="inline-flex items-center gap-1 text-green-400">
+					<span class="h-2 w-2 rounded-full bg-current"></span>
+					<span class="text-xs opacity-75">Connected</span>
+				</span>
+			{:else}
+				<span class="inline-flex items-center gap-1 text-gray-400">
+					<span class="h-2 w-2 rounded-full bg-current"></span>
+					<span class="text-xs opacity-75">Disconnected</span>
+				</span>
+			{/if}
+		</div>
+		<div class="flex items-center gap-1">
+			<button
+				class="hover:bg-muted-foreground/20 rounded px-1 py-0.5 text-xs transition-colors"
+				title="Clear terminal"
+				onclick={() => terminal?.clear()}
+			>
+				Clear
+			</button>
 		</div>
 	</div>
-	<div bind:this={container} class="terminal-container nodrag nowheel cursor-text"></div>
+	<div bind:this={terminalContainer} class="nodrag nowheel flex-1 overflow-hidden p-1"></div>
 </div>
 
 <style>

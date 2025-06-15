@@ -1,24 +1,25 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
-	import { browser } from '$app/environment';
-	import { EditorState } from '@codemirror/state';
+	import { onMount } from 'svelte';
 	import {
 		EditorView,
-		keymap,
+		lineNumbers,
+		highlightActiveLineGutter,
 		highlightSpecialChars,
 		drawSelection,
-		highlightActiveLine,
 		dropCursor,
-		lineNumbers,
-		highlightActiveLineGutter
+		rectangularSelection,
+		crosshairCursor,
+		keymap,
+		highlightActiveLine
 	} from '@codemirror/view';
-	import { history, historyKeymap, defaultKeymap, indentWithTab } from '@codemirror/commands';
+	import { EditorState } from '@codemirror/state';
+	import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands';
 	import {
-		syntaxHighlighting,
-		defaultHighlightStyle,
-		bracketMatching,
 		foldGutter,
-		indentOnInput
+		indentOnInput,
+		bracketMatching,
+		syntaxHighlighting,
+		defaultHighlightStyle
 	} from '@codemirror/language';
 	import {
 		autocompletion,
@@ -29,34 +30,25 @@
 	import { searchKeymap, highlightSelectionMatches } from '@codemirror/search';
 	import { html } from '@codemirror/lang-html';
 	import { oneDark } from '@codemirror/theme-one-dark';
-	import FileExplorer from '$lib/FileExplorer.svelte';
+	import { codeCanvasState, codeCanvasActions } from '../../../routes/code-canvas/state.svelte';
 
-	// Props from parent
-	export let data: {
-		label?: string;
-		onFileSelect?: (path: string, content: string) => void;
-		onRun?: () => void;
-		initialCode?: string;
-		setEditorView?: (view: EditorView) => void;
-	} = {};
+	// Props from parent using Svelte 5 runes
+	const {
+		data = {}
+	}: {
+		data?: {
+			label?: string;
+			setEditorView?: (view: EditorView) => void;
+		};
+	} = $props();
 
 	let editorContainer: HTMLDivElement;
-	let localEditorView: EditorView | null = null;
+	let editorView: EditorView;
 
-	onMount(async () => {
-		if (!browser) return;
-
-		// Wait for DOM to be fully ready
-		await new Promise((resolve) => setTimeout(resolve, 100));
-
-		if (!editorContainer) {
-			console.error('Editor container not found');
-			return;
-		}
-
-		console.log('Editor container DOM element:', editorContainer);
+	onMount(() => {
+		// Initialize CodeMirror
 		const state = EditorState.create({
-			doc: data.initialCode || '',
+			doc: codeCanvasState.editorContent || '',
 			extensions: [
 				oneDark,
 				autocompletion(),
@@ -82,54 +74,62 @@
 					...historyKeymap,
 					indentWithTab
 				]),
-				html()
+				html(),
+				EditorView.updateListener.of((update) => {
+					if (update.docChanged) {
+						const content = update.state.doc.toString();
+						codeCanvasActions.updateEditorContent(content);
+					}
+				})
 			]
 		});
 
-		localEditorView = new EditorView({ state, parent: editorContainer });
+		editorView = new EditorView({
+			state,
+			parent: editorContainer
+		});
 
-		// Update parent's editorView reference
-		if (data.setEditorView !== undefined) {
-			data.setEditorView(localEditorView);
+		// Pass editor view to parent if callback provided
+		if (data.setEditorView) {
+			data.setEditorView(editorView);
 		}
+
+		return () => {
+			editorView.destroy();
+		};
 	});
 
-	onDestroy(() => {
-		if (localEditorView) {
-			localEditorView.destroy();
+	// Update editor content when shared state changes (but avoid infinite loops)
+	$effect(() => {
+		if (editorView && codeCanvasState.editorContent !== editorView.state.doc.toString()) {
+			const transaction = editorView.state.update({
+				changes: {
+					from: 0,
+					to: editorView.state.doc.length,
+					insert: codeCanvasState.editorContent
+				}
+			});
+			editorView.dispatch(transaction);
 		}
 	});
 </script>
 
 <div class="border-border bg-card flex h-full w-full flex-col overflow-hidden rounded border">
 	<div
-		class="drag-handle border-border bg-muted text-muted-foreground border-b px-2 py-1 text-xs font-semibold"
+		class="drag-handle border-border bg-muted text-muted-foreground flex items-center justify-between border-b px-2 py-1 text-xs font-semibold"
 	>
-		{data.label ?? 'Editor'}
-	</div>
-
-	<div class="flex h-full overflow-hidden">
-		<!-- File Explorer -->
-		<div class="border-border bg-muted/50 w-48 flex-shrink-0 overflow-y-auto border-r">
-			<FileExplorer onSelectFile={data.onFileSelect} />
-		</div>
-
-		<!-- Editor Main Area -->
-		<div class="flex flex-1 flex-col overflow-hidden">
-			<!-- Editor Controls -->
-			<div class="border-border bg-muted/30 flex justify-end border-b p-2">
-				<button
-					class="bg-primary text-primary-foreground hover:bg-primary/90 rounded px-3 py-1 text-xs transition-colors"
-					on:click={data.onRun}
-				>
-					Run
-				</button>
-			</div>
-
-			<!-- Editor Container -->
-			<div bind:this={editorContainer} class="nodrag nowheel flex-1 overflow-hidden"></div>
+		<span>{data.label ?? 'Editor'}</span>
+		<div class="flex items-center gap-1">
+			<button
+				class="hover:bg-muted-foreground/20 rounded px-1 py-0.5 text-xs transition-colors"
+				title="Run code"
+				onclick={codeCanvasActions.runCode}
+			>
+				▶️ Run
+			</button>
 		</div>
 	</div>
+	<div bind:this={editorContainer} class="nodrag nowheel flex-1 overflow-hidden"></div>
 </div>
 
 <style>

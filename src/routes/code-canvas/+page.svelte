@@ -1,72 +1,26 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { SvelteFlow, MiniMap } from '@xyflow/svelte';
+	import { SvelteFlow, MiniMap, SelectionMode } from '@xyflow/svelte';
 	import '@xyflow/svelte/dist/style.css';
-	import { webcontainerStore } from '$lib/webcontainerStore';
-	import { EditorState } from '@codemirror/state';
-	import {
-		EditorView,
-		keymap,
-		highlightSpecialChars,
-		drawSelection,
-		highlightActiveLine,
-		dropCursor,
-		rectangularSelection,
-		crosshairCursor,
-		lineNumbers,
-		highlightActiveLineGutter
-	} from '@codemirror/view';
-	import { history, historyKeymap, defaultKeymap, indentWithTab } from '@codemirror/commands';
-	import {
-		syntaxHighlighting,
-		defaultHighlightStyle,
-		bracketMatching,
-		foldGutter,
-		indentOnInput,
-		language
-	} from '@codemirror/language';
-	import {
-		autocompletion,
-		closeBrackets,
-		closeBracketsKeymap,
-		completionKeymap
-	} from '@codemirror/autocomplete';
-	import { searchKeymap, highlightSelectionMatches } from '@codemirror/search';
-	import { html } from '@codemirror/lang-html';
-	import { oneDark } from '@codemirror/theme-one-dark';
-	import { initialCode } from '$lib/initialCode';
+	import { EditorView } from '@codemirror/view';
 	import { browser } from '$app/environment';
+	import { codeCanvasState, codeCanvasActions } from './state.svelte';
 
 	import TerminalNode from '$lib/components/nodes/terminal-node.svelte';
 	import EditorNode from '$lib/components/nodes/editor-node.svelte';
 	import PreviewNode from '$lib/components/nodes/preview-node.svelte';
 	import LogsNode from '$lib/components/nodes/logs-node.svelte';
 
-	// Shared state for all nodes
+	// Editor reference
 	let editorView: EditorView | null = null;
-	let loading = true;
-	let error = '';
-	let previewUrl = '';
-	let logs: string[] = [];
-	let userScrolledUp = false;
-	let listenerAttached = false;
-
-	// Subscribe to the store for loading, error, previewUrl, and logs
-	const unsubscribe = webcontainerStore.subscribe((state) => {
-		loading = state.loading;
-		error = state.error;
-		previewUrl = state.previewUrl;
-		logs = state.logs;
-	});
 
 	// Listener for messages from the iframe
 	function handleIframeMessage(event: MessageEvent) {
 		if (event.data && event.data.type && ['log', 'error', 'warn'].includes(event.data.type)) {
-			const prefix = `[iframe-${event.data.type}]`;
 			const message = event.data.args
 				.map((arg: any) => (typeof arg === 'object' ? JSON.stringify(arg) : arg))
 				.join(' ');
-			logs = [...logs, `${prefix} ${message}`];
+			codeCanvasActions.addConsoleMessage(event.data.type, message);
 		}
 	}
 
@@ -81,17 +35,9 @@
 		}
 	}
 
-	// Run on demand instead of hot‑reload on every keystroke
-	async function handleRun() {
-		if (editorView) {
-			const code = editorView.state.doc.toString();
-			await webcontainerStore.write('/App.svelte', code);
-		}
-	}
-
-	// Clear logs function
-	function handleClearLogs() {
-		logs = [];
+	// Handle editor content changes
+	function handleEditorChange(content: string) {
+		codeCanvasActions.updateEditorContent(content);
 	}
 
 	// Function to receive editorView from child
@@ -107,6 +53,20 @@
 		logs: LogsNode
 	};
 
+	const panOnDrag = [1, 2];
+
+	function onmovestart(e: any) {
+		console.log('move start', e);
+	}
+
+	function onmove(e: any) {
+		console.log('move', e);
+	}
+
+	function onmoveend(e: any) {
+		console.log('move end', e);
+	}
+
 	let nodes = $state.raw([
 		{
 			id: 'editor',
@@ -114,11 +74,13 @@
 			position: { x: 50, y: 50 },
 			width: 600,
 			height: 400,
+			selected: false,
 			data: {
 				label: 'Editor',
+				content: codeCanvasState.editorContent,
+				onChange: handleEditorChange,
 				onFileSelect: handleFileSelect,
-				onRun: handleRun,
-				initialCode,
+				onRun: codeCanvasActions.runCode,
 				setEditorView
 			}
 		},
@@ -128,11 +90,16 @@
 			position: { x: 700, y: 50 },
 			width: 400,
 			height: 400,
+			selected: false,
 			data: {
 				label: 'Preview',
-				loading,
-				error,
-				previewUrl
+				url: codeCanvasState.previewUrl,
+				onRun: codeCanvasActions.runCode,
+				bootStatus: codeCanvasState.bootStatus,
+				buildStatus: codeCanvasState.buildStatus,
+				lastActivity: codeCanvasState.lastActivity,
+				installProgress: codeCanvasState.installProgress,
+				webContainerError: codeCanvasState.webContainerError
 			}
 		},
 		{
@@ -141,6 +108,7 @@
 			position: { x: 50, y: 500 },
 			width: 500,
 			height: 300,
+			selected: false,
 			data: {
 				label: 'Terminal'
 			}
@@ -151,53 +119,152 @@
 			position: { x: 600, y: 500 },
 			width: 500,
 			height: 300,
+			selected: false,
 			data: {
 				label: 'Logs',
-				logs,
-				onClearLogs: handleClearLogs
+				logs: codeCanvasState.logs,
+				onClearLogs: codeCanvasActions.clearLogs,
+				bootStatus: codeCanvasState.bootStatus,
+				lastActivity: codeCanvasState.lastActivity
 			}
 		}
 	]);
 
 	let edges = $state.raw([]);
 
-	// Update node data reactively when state changes
+	// Update node data reactively when shared state changes
 	$effect(() => {
-		// Update preview node data
-		const previewNode = nodes.find((n) => n.id === 'preview');
-		if (previewNode) {
-			previewNode.data.loading = loading;
-			previewNode.data.error = error;
-			previewNode.data.previewUrl = previewUrl;
+		// Update editor node
+		const editorNode = nodes.find((n) => n.id === 'editor');
+		if (editorNode) {
+			Object.assign(editorNode.data, {
+				content: codeCanvasState.editorContent
+			});
 		}
 
-		// Update logs node data
+		// Update preview node
+		const previewNode = nodes.find((n) => n.id === 'preview');
+		if (previewNode) {
+			Object.assign(previewNode.data, {
+				url: codeCanvasState.previewUrl,
+				bootStatus: codeCanvasState.bootStatus,
+				buildStatus: codeCanvasState.buildStatus,
+				lastActivity: codeCanvasState.lastActivity,
+				installProgress: codeCanvasState.installProgress,
+				webContainerError: codeCanvasState.webContainerError
+			});
+		}
+
+		// Update logs node
 		const logsNode = nodes.find((n) => n.id === 'logs');
 		if (logsNode) {
-			logsNode.data.logs = logs;
+			Object.assign(logsNode.data, {
+				logs: codeCanvasState.logs,
+				bootStatus: codeCanvasState.bootStatus,
+				lastActivity: codeCanvasState.lastActivity
+			});
 		}
 	});
 
+	// Multi-select and keyboard handling
+	function handleKeyDown(event: KeyboardEvent) {
+		if (event.key === 'Meta' || event.key === 'Cmd') {
+			codeCanvasState.isMetaPressed = true;
+		}
+
+		// Delete selected nodes
+		if (event.key === 'Delete' || event.key === 'Backspace') {
+			if (codeCanvasState.selectedNodes.size > 0) {
+				// Don't actually delete nodes in this demo, just clear selection
+				codeCanvasState.selectedNodes.clear();
+				// Update nodes to clear selection
+				nodes = nodes.map((node) => ({ ...node, selected: false }));
+			}
+		}
+
+		// Select all with Cmd+A
+		if ((event.metaKey || event.ctrlKey) && event.key === 'a') {
+			event.preventDefault();
+			codeCanvasState.selectedNodes = new Set(nodes.map((n) => n.id));
+			nodes = nodes.map((node) => ({ ...node, selected: true }));
+		}
+	}
+
+	function handleKeyUp(event: KeyboardEvent) {
+		if (event.key === 'Meta' || event.key === 'Cmd') {
+			codeCanvasState.isMetaPressed = false;
+		}
+	}
+
+	function handleNodeClick(event: CustomEvent) {
+		const { node } = event.detail;
+
+		if (codeCanvasState.isMetaPressed) {
+			// Multi-select mode
+			if (codeCanvasState.selectedNodes.has(node.id)) {
+				codeCanvasState.selectedNodes.delete(node.id);
+				node.selected = false;
+			} else {
+				codeCanvasState.selectedNodes.add(node.id);
+				node.selected = true;
+			}
+		} else {
+			// Single select mode
+			codeCanvasState.selectedNodes.clear();
+			codeCanvasState.selectedNodes.add(node.id);
+			// Clear all selections first
+			nodes = nodes.map((n) => ({ ...n, selected: false }));
+			// Select the clicked node
+			const nodeIndex = nodes.findIndex((n) => n.id === node.id);
+			if (nodeIndex !== -1) {
+				nodes[nodeIndex].selected = true;
+			}
+		}
+
+		// Trigger reactivity
+		nodes = [...nodes];
+	}
+
+	function handleSelectionChange(event: CustomEvent) {
+		const { nodes: selectedNodesList } = event.detail;
+		codeCanvasState.selectedNodes = new Set(selectedNodesList.map((n: any) => n.id));
+	}
+
+	function onPaneContextMenu(e: any) {
+		e.preventDefault();
+		console.log('context menu');
+	}
+
 	onMount(() => {
-		if (browser) window.addEventListener('message', handleIframeMessage);
+		if (browser) {
+			window.addEventListener('message', handleIframeMessage);
+			window.addEventListener('keydown', handleKeyDown);
+			window.addEventListener('keyup', handleKeyUp);
+		}
 	});
 
 	onDestroy(() => {
-		unsubscribe();
-		if (browser) window.removeEventListener('message', handleIframeMessage);
+		if (browser) {
+			window.removeEventListener('message', handleIframeMessage);
+			window.removeEventListener('keydown', handleKeyDown);
+			window.removeEventListener('keyup', handleKeyUp);
+		}
 	});
 </script>
 
 <div class="bg-background h-screen w-full">
 	<SvelteFlow
-		{nodes}
-		{edges}
+		bind:nodes
+		bind:edges
 		{nodeTypes}
 		fitView
-		class="bg-background"
-		nodesDraggable={true}
-		nodesConnectable={false}
-		elementsSelectable={true}
+		selectionMode={SelectionMode.Partial}
+		selectionOnDrag
+		panOnScroll
+		{panOnDrag}
+		{onmovestart}
+		{onmove}
+		{onmoveend}
 	>
 		<MiniMap
 			nodeColor="var(--color-primary)"
@@ -213,36 +280,19 @@
 		background-color: var(--color-background);
 	}
 
-	:global(.svelte-flow__pane) {
-		background-color: var(--color-background);
-	}
-
 	:global(.svelte-flow__minimap) {
-		background-color: var(--color-card);
-		border: 1px solid var(--color-border);
-		border-radius: calc(var(--radius) - 2px);
+		background-color: var(--color-muted);
 	}
 
 	:global(.svelte-flow__controls) {
-		background-color: var(--color-card);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius);
-	}
+		button {
+			background-color: var(--color-background);
+			border: 1px solid var(--color-border);
+			color: var(--color-foreground);
+		}
 
-	:global(.svelte-flow__controls button) {
-		background-color: var(--color-background);
-		border: 1px solid var(--color-border);
-		color: var(--color-foreground);
-	}
-
-	:global(.svelte-flow__controls button:hover) {
-		background-color: var(--color-accent);
-	}
-
-	:global(.svelte-flow__attribution) {
-		background-color: var(--color-card);
-		color: var(--color-muted-foreground);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius);
+		button:hover {
+			background-color: var(--color-muted);
+		}
 	}
 </style>
