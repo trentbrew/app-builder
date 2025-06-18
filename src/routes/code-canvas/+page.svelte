@@ -81,7 +81,14 @@
 				onChange: handleEditorChange,
 				onFileSelect: handleFileSelect,
 				onRun: codeCanvasActions.runCode,
-				setEditorView
+				setEditorView,
+				onResize: (width: number, height: number) => {
+					const nodeIndex = nodes.findIndex((n) => n.id === 'editor');
+					if (nodeIndex !== -1) {
+						nodes[nodeIndex].width = width;
+						nodes[nodeIndex].height = height;
+					}
+				}
 			}
 		},
 		{
@@ -99,7 +106,14 @@
 				buildStatus: codeCanvasState.buildStatus,
 				lastActivity: codeCanvasState.lastActivity,
 				installProgress: codeCanvasState.installProgress,
-				webContainerError: codeCanvasState.webContainerError
+				webContainerError: codeCanvasState.webContainerError,
+				onResize: (width: number, height: number) => {
+					const nodeIndex = nodes.findIndex((n) => n.id === 'preview');
+					if (nodeIndex !== -1) {
+						nodes[nodeIndex].width = width;
+						nodes[nodeIndex].height = height;
+					}
+				}
 			}
 		},
 		{
@@ -110,7 +124,14 @@
 			height: 300,
 			selected: false,
 			data: {
-				label: 'Terminal'
+				label: 'Terminal',
+				onResize: (width: number, height: number) => {
+					const nodeIndex = nodes.findIndex((n) => n.id === 'terminal');
+					if (nodeIndex !== -1) {
+						nodes[nodeIndex].width = width;
+						nodes[nodeIndex].height = height;
+					}
+				}
 			}
 		},
 		{
@@ -125,7 +146,14 @@
 				logs: codeCanvasState.logs,
 				onClearLogs: codeCanvasActions.clearLogs,
 				bootStatus: codeCanvasState.bootStatus,
-				lastActivity: codeCanvasState.lastActivity
+				lastActivity: codeCanvasState.lastActivity,
+				onResize: (width: number, height: number) => {
+					const nodeIndex = nodes.findIndex((n) => n.id === 'logs');
+					if (nodeIndex !== -1) {
+						nodes[nodeIndex].width = width;
+						nodes[nodeIndex].height = height;
+					}
+				}
 			}
 		}
 	]);
@@ -266,7 +294,7 @@
 		{onmove}
 		{onmoveend}
 	>
-		<Background color="var(--color-background)" />
+		<Background class="!bg-muted" />
 		<MiniMap
 			nodeColor="var(--color-primary)"
 			nodeStrokeColor="var(--color-border)"

@@ -93,11 +93,11 @@ body.debug * {
 }
 
 .svelte-flow__node {
-	background-color: var(--color-card);
-	border: 1px solid var(--color-border);
-	border-radius: var(--radius);
-	/* x y blur color */
-	box-shadow: 0 24px 32px -16px rgba(0, 0, 0, 0.5);
+	background: transparent;
+	border: none;
+	border-radius: 0;
+	box-shadow: none;
+	padding: 0;
 }
 
 /* Svelte Flow controls styling */
@@ -125,8 +125,4 @@ body.debug * {
 	border-radius: var(--radius);
 }
 
-/* Terminal specific styling */
-.terminal-container {
-	background-color: #0d1117 !important;
-	color: #c9d1d9 !important;
-}
+/* Terminal specific styling - handled in component */

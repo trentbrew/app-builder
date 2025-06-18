@@ -165,7 +165,7 @@ export const codeCanvasActions = {
 		if (webContainer) {
 			try {
 				await webContainer.fs.writeFile(path, content);
-				this.updateActivity();
+				codeCanvasActions.updateActivity();
 				codeCanvasActions.addLog(`Updated ${path}`);
 			} catch (err) {
 				console.error('Error writing file:', err);
@@ -177,25 +177,34 @@ export const codeCanvasActions = {
 	// Run the current code
 	async runCode() {
 		if (webContainer && editorContent) {
+			console.log('🔄 Running code...');
 			buildStatus = 'Building...';
-			this.updateActivity();
+			codeCanvasActions.updateActivity();
 
 			try {
-				await this.writeFile('/App.svelte', editorContent);
+				console.log('📝 Writing file to WebContainer...');
+				await codeCanvasActions.writeFile('/App.svelte', editorContent);
+				// Add a small delay to ensure file is written and processed
+				await new Promise((resolve) => setTimeout(resolve, 200));
+				console.log('✅ Code run completed successfully');
 				buildStatus = 'Ready';
+				codeCanvasActions.updateActivity();
 			} catch (err) {
+				console.error('❌ Error running code:', err);
 				buildStatus = 'Error';
 				webContainerError = err instanceof Error ? err.message : String(err);
+				codeCanvasActions.updateActivity();
 			}
+		} else {
+			console.warn('⚠️ Cannot run code: WebContainer or editorContent not available');
 		}
 	},
 
 	// Refresh preview
 	refreshPreview() {
 		console.log('🔄 Refreshing preview...');
-		buildStatus = 'Refreshing...';
-		this.updateActivity();
-		this.runCode();
+		codeCanvasActions.updateActivity();
+		codeCanvasActions.runCode();
 	},
 
 	// Reboot WebContainer
@@ -213,7 +222,7 @@ export const codeCanvasActions = {
 		webContainerLogs = [];
 		consoleMessages = [];
 
-		this.updateActivity();
+		codeCanvasActions.updateActivity();
 
 		// Force a page reload to restart WebContainer
 		if (typeof window !== 'undefined') {
@@ -227,7 +236,7 @@ export const codeCanvasActions = {
 
 		try {
 			bootStatus = 'Booting WebContainer...';
-			this.addWebContainerLog('Booting WebContainer...');
+			codeCanvasActions.addWebContainerLog('Booting WebContainer...');
 
 			const container = await WebContainer.boot({
 				forwardPreviewErrors: true,
@@ -236,11 +245,11 @@ export const codeCanvasActions = {
 
 			webContainer = container;
 			bootStatus = 'Mounting files...';
-			this.addWebContainerLog('WebContainer booted.');
-			this.updateActivity();
+			codeCanvasActions.addWebContainerLog('WebContainer booted.');
+			codeCanvasActions.updateActivity();
 
 			// Mount project files
-			this.addWebContainerLog('Mounting project files...');
+			codeCanvasActions.addWebContainerLog('Mounting project files...');
 			await container.mount({
 				'package.json': {
 					file: {
@@ -280,13 +289,13 @@ export const codeCanvasActions = {
 
 			// Install dependencies
 			bootStatus = 'Installing dependencies...';
-			this.addWebContainerLog('Installing dependencies (pnpm install)...');
+			codeCanvasActions.addWebContainerLog('Installing dependencies (pnpm install)...');
 
 			const install = await container.spawn('pnpm', ['install']);
 			install.output.pipeTo(
 				new WritableStream({
 					write: (data) => {
-						this.addWebContainerLog(`[install] ${data}`);
+						codeCanvasActions.addWebContainerLog(`[install] ${data}`);
 
 						// Parse install progress if possible
 						const installMatch = data.match(/(\d+)\/(\d+)/);
@@ -303,27 +312,27 @@ export const codeCanvasActions = {
 
 			installProgress = null;
 			bootStatus = 'Starting dev server...';
-			this.addWebContainerLog('Dependencies installed.');
+			codeCanvasActions.addWebContainerLog('Dependencies installed.');
 
 			// Start dev server
-			this.addWebContainerLog('Starting dev server (pnpm run dev)...');
+			codeCanvasActions.addWebContainerLog('Starting dev server (pnpm run dev)...');
 			const dev = await container.spawn('pnpm', ['run', 'dev']);
 			dev.output.pipeTo(
 				new WritableStream({
 					write: (data) => {
-						this.addWebContainerLog(`[dev] ${data}`);
+						codeCanvasActions.addWebContainerLog(`[dev] ${data}`);
 					}
 				})
 			);
 
 			// Listen for server ready
 			container.on('server-ready', (port, url) => {
-				this.addWebContainerLog(`Server ready at ${url}`);
+				codeCanvasActions.addWebContainerLog(`Server ready at ${url}`);
 				previewUrl = url;
 				loading = false;
 				bootStatus = 'Ready';
 				buildStatus = 'Ready';
-				this.updateActivity();
+				codeCanvasActions.updateActivity();
 			});
 		} catch (err) {
 			console.error('Error initializing WebContainer:', err);
@@ -332,7 +341,7 @@ export const codeCanvasActions = {
 			error = errorMsg;
 			bootStatus = 'Error';
 			webContainerError = errorMsg;
-			this.addWebContainerLog(`Error: ${errorMsg}`);
+			codeCanvasActions.addWebContainerLog(`Error: ${errorMsg}`);
 		}
 	}
 };

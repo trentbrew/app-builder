@@ -63,7 +63,6 @@
 		"@xterm/xterm": "5.6.0-beta.66",
 		"@xyflow/svelte": "^1.1.0",
 		"dexie": "^4.0.11",
-		"jshint": "^2.13.6",
-		"xterm-addon-fit": "^0.8.0"
+		"jshint": "^2.13.6"
 	}
 }

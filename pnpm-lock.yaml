@@ -53,9 +53,6 @@ importers:
       jshint:
         specifier: ^2.13.6
         version: 2.13.6
-      xterm-addon-fit:
-        specifier: ^0.8.0
-        version: 0.8.0(xterm@5.3.0)
     devDependencies:
       '@internationalized/date':
         specifier: ^3.8.0
@@ -2095,16 +2092,6 @@ packages:
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
-  xterm-addon-fit@0.8.0:
-    resolution: {integrity: sha512-yj3Np7XlvxxhYF/EJ7p3KHaMt6OdwQ+HDu573Vx1lRXsVxOcnVJs51RgjZOouIZOczTsskaS+CpXspK81/DLqw==}
-    deprecated: This package is now deprecated. Move to @xterm/addon-fit instead.
-    peerDependencies:
-      xterm: ^5.0.0
-
-  xterm@5.3.0:
-    resolution: {integrity: sha512-8QqjlekLUFTrU6x7xck1MsPzPA571K5zNqWm0M0oroYEWVOptZ0+ubQSkQ3uxIEhcIHRujJy6emDWX4A7qyFzg==}
-    deprecated: This package is now deprecated. Move to @xterm/xterm instead.
-
   yallist@5.0.0:
     resolution: {integrity: sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw==}
     engines: {node: '>=18'}
@@ -3891,12 +3878,6 @@ snapshots:
       strip-ansi: 7.1.0
 
   wrappy@1.0.2: {}
-
-  xterm-addon-fit@0.8.0(xterm@5.3.0):
-    dependencies:
-      xterm: 5.3.0
-
-  xterm@5.3.0: {}
 
   yallist@5.0.0: {}
 

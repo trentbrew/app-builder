@@ -9,3 +9,5 @@ here’s the rundown:
 so yeah. codemirror 6 + single-file svelte repl + pnpm. no bells, no whistles, no startup folder pretending to be a unicorn.
 
 go ahead and wire it up.
+
+---

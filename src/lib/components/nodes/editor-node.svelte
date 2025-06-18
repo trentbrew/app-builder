@@ -31,6 +31,7 @@
 	import { html } from '@codemirror/lang-html';
 	import { oneDark } from '@codemirror/theme-one-dark';
 	import { codeCanvasState, codeCanvasActions } from '../../../routes/code-canvas/state.svelte';
+	import BaseNode from './BaseNode.svelte';
 
 	// Props from parent using Svelte 5 runes
 	const {
@@ -39,11 +40,14 @@
 		data?: {
 			label?: string;
 			setEditorView?: (view: EditorView) => void;
+			onResize?: (width: number, height: number) => void;
 		};
 	} = $props();
 
 	let editorContainer: HTMLDivElement;
 	let editorView: EditorView;
+	let isMinimized = $state(false);
+	let isMaximized = $state(false);
 
 	onMount(() => {
 		// Initialize CodeMirror
@@ -114,23 +118,42 @@
 	});
 </script>
 
-<div class="border-border bg-card flex h-full w-full flex-col overflow-hidden rounded border">
-	<div
-		class="drag-handle border-border bg-muted text-muted-foreground flex items-center justify-between border-b px-2 py-1 text-xs font-semibold"
-	>
-		<span>{data.label ?? 'Editor'}</span>
-		<div class="flex items-center gap-1">
-			<button
-				class="hover:bg-muted-foreground/20 rounded px-1 py-0.5 text-xs transition-colors"
-				title="Run code"
-				onclick={codeCanvasActions.runCode}
-			>
-				▶️ Run
-			</button>
+<BaseNode
+	title={data.label ?? 'Editor'}
+	bind:isMinimized
+	bind:isMaximized
+	on:close={() => console.log('Editor close requested')}
+	on:minimize={(e) => console.log('Editor minimize:', e.detail)}
+	on:maximize={(e) => console.log('Editor maximize:', e.detail)}
+	on:resize={(e) => {
+		// Handle resize - refresh editor layout
+		if (editorView) {
+			setTimeout(() => {
+				editorView.requestMeasure();
+			}, 100);
+		}
+		// Notify parent about resize
+		if (data.onResize) {
+			data.onResize(e.detail.width, e.detail.height);
+		}
+	}}
+>
+	{#snippet children()}
+		<div class="flex h-full flex-col">
+			<div class="bg-muted border-border flex items-center justify-between border-b px-3 py-1">
+				<span class="text-muted-foreground text-xs">HTML Editor</span>
+				<button
+					class="hover:bg-muted-foreground/20 text-muted-foreground hover:text-foreground rounded px-2 py-1 text-xs transition-colors"
+					title="Run code"
+					onclick={codeCanvasActions.runCode}
+				>
+					▶️ Run
+				</button>
+			</div>
+			<div bind:this={editorContainer} class="nodrag nowheel flex-1 overflow-hidden"></div>
 		</div>
-	</div>
-	<div bind:this={editorContainer} class="nodrag nowheel flex-1 overflow-hidden"></div>
-</div>
+	{/snippet}
+</BaseNode>
 
 <style>
 	/* CodeMirror styling overrides */
