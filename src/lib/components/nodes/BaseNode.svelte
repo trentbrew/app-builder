@@ -1,29 +1,33 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
+	import { Handle, Position } from '@xyflow/svelte';
+	import type { Snippet } from 'svelte';
 
 	// Props
 	let {
-		title = 'Node',
-		isMinimized = $bindable(false),
-		isMaximized = $bindable(false),
-		canClose = true,
+		title = 'Window',
+		canResize = true,
 		canMinimize = true,
 		canMaximize = true,
-		canResize = true,
+		canClose = true,
 		showStatusBar = false,
 		statusInfo = null,
-		children
+		isMinimized = $bindable(false),
+		isMaximized = $bindable(false),
+		children,
+		onMaximize = null
 	}: {
 		title?: string;
-		isMinimized?: boolean;
-		isMaximized?: boolean;
-		canClose?: boolean;
+		canResize?: boolean;
 		canMinimize?: boolean;
 		canMaximize?: boolean;
-		canResize?: boolean;
+		canClose?: boolean;
 		showStatusBar?: boolean;
-		statusInfo?: any;
-		children?: any;
+		statusInfo?: Array<{ type: string; text: string }> | null;
+		isMinimized?: boolean;
+		isMaximized?: boolean;
+		children?: Snippet;
+		onMaximize?: ((isMaximized: boolean) => void) | null;
 	} = $props();
 
 	const dispatch = createEventDispatcher();
@@ -52,6 +56,9 @@
 		const newState = !isMaximized;
 		isMaximized = newState;
 		dispatch('maximize', { isMaximized: newState });
+		if (onMaximize) {
+			onMaximize(newState);
+		}
 	}
 
 	// Resize functionality
@@ -167,6 +174,12 @@
 	class:maximized={isMaximized}
 	class:resizing={isResizing}
 >
+	<!-- Connection handles for edges -->
+	<Handle type="target" position={Position.Top} />
+	<Handle type="source" position={Position.Right} />
+	<Handle type="target" position={Position.Bottom} />
+	<Handle type="source" position={Position.Left} />
+
 	<!-- Title bar -->
 	<div class="title-bar drag-handle" ondblclick={handleTitleDoubleClick} role="button" tabindex="0">
 		<div class="title-content">
@@ -517,11 +530,20 @@
 		background: rgba(59, 130, 246, 0.1);
 		z-index: 10;
 		border: 1px solid rgba(59, 130, 246, 0.2);
+		transition: opacity 0.2s ease;
 	}
 
 	.resize-handle:hover {
 		background: rgba(59, 130, 246, 0.3);
 		border: 1px solid rgba(59, 130, 246, 0.5);
+	}
+
+	/* Hide resize handles when maximized or minimized */
+	.base-node.maximized .resize-handle,
+	.base-node.minimized .resize-handle {
+		display: none !important;
+		opacity: 0;
+		pointer-events: none;
 	}
 
 	/* Corner handles */
@@ -593,5 +615,32 @@
 	/* Hide resize handles when resizing to prevent interference */
 	.base-node.resizing .resize-handle {
 		display: none;
+	}
+
+	/* SvelteFlow Handle styling */
+	:global(.svelte-flow__handle) {
+		width: 8px !important;
+		height: 8px !important;
+		background: var(--color-primary) !important;
+		border: 2px solid var(--color-background) !important;
+		opacity: 0 !important;
+		transition: opacity 0.2s ease !important;
+	}
+
+	.base-node:hover :global(.svelte-flow__handle) {
+		opacity: 1 !important;
+	}
+
+	:global(.svelte-flow__handle:hover) {
+		background: var(--color-primary) !important;
+		transform: scale(1.2) !important;
+	}
+
+	:global(.svelte-flow__handle.connectingfrom) {
+		opacity: 1 !important;
+	}
+
+	:global(.svelte-flow__handle.valid) {
+		background: #10b981 !important;
 	}
 </style>

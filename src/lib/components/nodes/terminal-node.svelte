@@ -15,11 +15,13 @@
 		data?: {
 			label?: string;
 			onResize?: (width: number, height: number) => void;
+			onMaximize?: (isMaximized: boolean) => void;
 		};
 	} = $props();
 
 	let terminalContainer: HTMLDivElement;
 	let terminal: any;
+	let shellProcess: any = null;
 	let fitAddon: any;
 	let initializationError = $state<string | null>(null);
 	let isInitialized = $state(false);
@@ -145,18 +147,93 @@
 					}
 				}, 200);
 
-				// Handle terminal input
-				terminal.onData((data) => {
-					if (data === '\r') {
-						terminal.writeln('');
-						terminal.write('\x1b[36m$ \x1b[0m');
-					} else if (data === '\u007f') {
-						// Backspace
-						terminal.write('\b \b');
-					} else {
-						terminal.write(data);
+				// Connect to WebContainer shell
+				let currentCommand = '';
+
+				// Wait for WebContainer to be ready, then start shell
+				const waitForWebContainer = async () => {
+					let attempts = 0;
+					const maxAttempts = 50; // 10 seconds max wait
+
+					while (!codeCanvasState.webContainer && attempts < maxAttempts) {
+						await new Promise((resolve) => setTimeout(resolve, 200));
+						attempts++;
 					}
-				});
+
+					return codeCanvasState.webContainer;
+				};
+
+				const webContainer = await waitForWebContainer();
+
+				// Start a shell process in WebContainer
+				if (webContainer) {
+					try {
+						console.log('🐚 Terminal: Starting shell process...');
+						shellProcess = await webContainer.spawn('sh', [], {
+							terminal: {
+								cols: terminal.cols,
+								rows: terminal.rows
+							}
+						});
+
+						// Pipe shell output to terminal
+						shellProcess.output.pipeTo(
+							new WritableStream({
+								write(data) {
+									terminal.write(data);
+								}
+							})
+						);
+
+						// Handle terminal input - send to shell
+						terminal.onData((data) => {
+							if (shellProcess && shellProcess.input) {
+								const writer = shellProcess.input.getWriter();
+								writer.write(data);
+								writer.releaseLock();
+							}
+						});
+
+						console.log('✅ Terminal: Shell connected successfully');
+					} catch (shellError) {
+						console.warn('⚠️ Terminal: Shell connection failed, using fallback:', shellError);
+						// Fallback to simple echo terminal
+						setupFallbackTerminal();
+					}
+				} else {
+					console.warn('⚠️ Terminal: WebContainer not available, using fallback');
+					setupFallbackTerminal();
+				}
+
+				// Fallback terminal input handler
+				function setupFallbackTerminal() {
+					terminal.onData((data) => {
+						if (data === '\r') {
+							// Enter key - simulate command execution
+							terminal.writeln('');
+							if (currentCommand.trim()) {
+								terminal.writeln(`Command not available: ${currentCommand}`);
+								currentCommand = '';
+							}
+							terminal.write('\x1b[36m$ \x1b[0m');
+						} else if (data === '\u007f') {
+							// Backspace
+							if (currentCommand.length > 0) {
+								currentCommand = currentCommand.slice(0, -1);
+								terminal.write('\b \b');
+							}
+						} else if (data === '\u0003') {
+							// Ctrl+C
+							terminal.writeln('^C');
+							currentCommand = '';
+							terminal.write('\x1b[36m$ \x1b[0m');
+						} else {
+							// Regular character
+							currentCommand += data;
+							terminal.write(data);
+						}
+					});
+				}
 
 				// Resize handler with error handling
 				const resizeObserver = new ResizeObserver(() => {
@@ -197,6 +274,13 @@
 
 		return () => {
 			console.log('🧹 Terminal: Cleaning up...');
+			if (shellProcess) {
+				try {
+					shellProcess.kill();
+				} catch (error) {
+					console.warn('Terminal: Error killing shell process:', error);
+				}
+			}
 			if (terminal) {
 				terminal.dispose();
 			}
@@ -273,6 +357,7 @@ $ <span style="animation: blink 1s infinite;">_</span>
 	bind:isMinimized
 	bind:isMaximized
 	{statusInfo}
+	onMaximize={data.onMaximize}
 	on:close={() => console.log('Terminal close requested')}
 	on:minimize={(e) => console.log('Terminal minimize:', e.detail)}
 	on:maximize={(e) => console.log('Terminal maximize:', e.detail)}
