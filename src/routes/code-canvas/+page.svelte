@@ -17,12 +17,14 @@
 	import PreviewNode from '$lib/components/nodes/preview-node.svelte';
 	import LogsNode from '$lib/components/nodes/logs-node.svelte';
 	import FileExplorerNode from '$lib/components/nodes/file-explorer-node.svelte';
+	import MotionCanvasNode from '$lib/components/nodes/motion-canvas-node.svelte';
+	import SceneEditorNode from '$lib/components/nodes/scene-editor-node.svelte';
 
 	// Editor reference
 	let editorView: EditorView | null = null;
 
 	// SvelteFlow instance and viewport state
-	let svelteFlowComponent: any = null;
+	let svelteFlowComponent: any = $state(null);
 	let originalViewport: { x: number; y: number; zoom: number } | null = null;
 	let maximizedNodeId: string | null = null;
 
@@ -63,7 +65,9 @@
 		preview: PreviewNode,
 		terminal: TerminalNode,
 		logs: LogsNode,
-		fileExplorer: FileExplorerNode
+		fileExplorer: FileExplorerNode,
+		motionCanvas: MotionCanvasNode,
+		sceneEditor: SceneEditorNode
 	} as any;
 
 	const panOnDrag = [1, 2];
@@ -80,7 +84,7 @@
 		console.log('move end', e);
 	}
 
-	let nodes = $state.raw([
+	let nodes: any = $state.raw([
 		{
 			id: 'editor',
 			type: 'editor',
@@ -191,30 +195,65 @@
 				},
 				onMaximize: (isMaximized: boolean) => handleNodeMaximize('fileExplorer', isMaximized)
 			}
+		},
+		{
+			id: 'motionCanvas',
+			type: 'motionCanvas',
+			position: { x: 1150, y: 700 },
+			width: 500,
+			height: 400,
+			selected: false,
+			data: {
+				label: 'Motion Canvas',
+				sceneCode: '',
+				onResize: (width: number, height: number) => {
+					const nodeIndex = nodes.findIndex((n) => n.id === 'motionCanvas');
+					if (nodeIndex !== -1) {
+						nodes[nodeIndex].width = width;
+						nodes[nodeIndex].height = height;
+					}
+				},
+				onMaximize: (isMaximized: boolean) => handleNodeMaximize('motionCanvas', isMaximized)
+			}
+		},
+		{
+			id: 'sceneEditor',
+			type: 'sceneEditor',
+			position: { x: 600, y: 700 },
+			width: 500,
+			height: 400,
+			selected: false,
+			data: {
+				label: 'Scene Editor',
+				onResize: (width: number, height: number) => {
+					const nodeIndex = nodes.findIndex((n) => n.id === 'sceneEditor');
+					if (nodeIndex !== -1) {
+						nodes[nodeIndex].width = width;
+						nodes[nodeIndex].height = height;
+					}
+				},
+				onMaximize: (isMaximized: boolean) => handleNodeMaximize('sceneEditor', isMaximized),
+				onSceneCodeChange: (code: string) => {
+					// Update the Motion Canvas node with the new scene code
+					const motionCanvasNode = nodes.find((n) => n.id === 'motionCanvas');
+					if (motionCanvasNode) {
+						motionCanvasNode.data.sceneCode = code;
+					}
+				}
+			}
 		}
 	]);
 
 	let edges = $state.raw([
 		{
-			id: 'e-terminal-editor',
-			source: 'terminal',
-			target: 'editor',
+			id: 'scene-editor-to-motion-canvas',
+			source: 'sceneEditor',
+			target: 'motionCanvas',
+			sourceHandle: 'scene-code-output',
+			targetHandle: 'scene-code-input',
+			type: 'smoothstep',
 			animated: true,
-			type: 'bezier'
-		},
-		{
-			id: 'e-editor-preview',
-			source: 'editor',
-			target: 'preview',
-			animated: true,
-			type: 'bezier'
-		},
-		{
-			id: 'e-preview-logs',
-			source: 'preview',
-			target: 'logs',
-			animated: true,
-			type: 'bezier'
+			style: 'stroke: #3b82f6; stroke-width: 2px;'
 		}
 	]);
 
@@ -307,8 +346,11 @@
 			}
 		}
 
-		// Trigger reactivity
-		nodes = [...nodes];
+		// Activate content for clicked node, deactivate others
+		nodes = nodes.map((n) => ({
+			...n,
+			data: { ...n.data, isActiveContent: n.id === node.id }
+		}));
 	}
 
 	function handleSelectionChange(event: CustomEvent) {
@@ -319,6 +361,13 @@
 	function onPaneContextMenu(e: any) {
 		e.preventDefault();
 		console.log('context menu');
+	}
+
+	// Prevent browser zoom (Cmd/Ctrl + scroll) when over the flow container
+	function preventBrowserZoom(e: WheelEvent) {
+		if ((e.ctrlKey || e.metaKey) && (e as any).deltaY) {
+			e.preventDefault();
+		}
 	}
 
 	// Function to handle node maximize/restore with zoom
@@ -401,7 +450,7 @@
 	});
 </script>
 
-<div class="bg-background h-screen w-full">
+<div class="bg-background h-screen w-full" onwheel={preventBrowserZoom}>
 	<SvelteFlow
 		bind:this={svelteFlowComponent}
 		bind:nodes
@@ -411,6 +460,7 @@
 		selectionMode={SelectionMode.Partial}
 		selectionOnDrag
 		panOnScroll
+		nodesConnectable={true}
 		{panOnDrag}
 		{onmovestart}
 		{onmove}
@@ -436,38 +486,35 @@
 	}
 
 	:global(.svelte-flow__controls) {
-		button {
-			background-color: var(--color-background);
-			border: 1px solid var(--color-border);
-			color: var(--color-foreground);
-		}
-
-		button:hover {
-			background-color: var(--color-muted);
-		}
+		/* controls styling intentionally minimal; no nested button selectors needed */
 	}
 
-	/* Edge styling */
-	:global(.svelte-flow__edge-path) {
-		stroke: var(--color-primary);
-		stroke-width: 2;
-		opacity: 0.8;
+	/* Ensure only title bars are draggable */
+	:global(.svelte-flow__node) {
+		/* Make the entire node non-draggable by default */
+		pointer-events: auto;
+		position: relative;
+		z-index: 1;
 	}
 
-	:global(.svelte-flow__edge.animated .svelte-flow__edge-path) {
-		stroke-dasharray: 5;
-		animation: dashdraw 0.5s linear infinite;
+	:global(.svelte-flow__node .content-area) {
+		/* Content area should not trigger dragging */
+		pointer-events: auto;
+		position: relative;
+		z-index: 2;
 	}
 
-	:global(.svelte-flow__edge:hover .svelte-flow__edge-path) {
-		stroke: var(--color-primary);
-		opacity: 1;
-		stroke-width: 3;
+	:global(.svelte-flow__node .title-bar[data-handle]) {
+		/* Only title bar with data-handle should be draggable */
+		cursor: move;
 	}
 
-	@keyframes dashdraw {
-		to {
-			stroke-dashoffset: -10;
-		}
+	/* Ensure interactive elements are above everything */
+	:global(.svelte-flow__node button),
+	:global(.svelte-flow__node input),
+	:global(.svelte-flow__node textarea),
+	:global(.svelte-flow__node select) {
+		position: relative;
+		z-index: 10;
 	}
 </style>

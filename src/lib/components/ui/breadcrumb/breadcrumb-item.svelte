@@ -1,10 +1,19 @@
 <script>
 	import { cn } from "$lib/utils.js";
-	export let el = undefined;
-	let className = undefined;
-	export { className as class };
+
+	let {
+		ref = $bindable(null),
+		class: className,
+		children,
+		...restProps
+	} = $props();
 </script>
 
-<li bind:this={el} class={cn("inline-flex items-center gap-1.5", className)}>
-	<slot />
+<li
+	bind:this={ref}
+	data-slot="breadcrumb-item"
+	class={cn("inline-flex items-center gap-1.5", className)}
+	{...restProps}
+>
+	{@render children?.()}
 </li>

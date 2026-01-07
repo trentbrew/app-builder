@@ -42,6 +42,7 @@
 			setEditorView?: (view: EditorView) => void;
 			onResize?: (width: number, height: number) => void;
 			onMaximize?: (isMaximized: boolean) => void;
+			isActiveContent?: boolean;
 		};
 	} = $props();
 
@@ -123,6 +124,7 @@
 	title={data.label ?? 'Editor'}
 	bind:isMinimized
 	bind:isMaximized
+	isActiveContent={!!data.isActiveContent}
 	onMaximize={data.onMaximize}
 	on:close={() => console.log('Editor close requested')}
 	on:minimize={(e) => console.log('Editor minimize:', e.detail)}

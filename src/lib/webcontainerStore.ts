@@ -74,6 +74,10 @@ function createWebContainerStore() {
 				'App.svelte': { file: { contents: initialCode } }
 			});
 
+			// File system is now available after mount
+			console.log('📁 Setting file system in store:', !!container.fs);
+			update((s) => ({ ...s, fs: container.fs, logs: [...s.logs, 'File system mounted.'] }));
+
 			// Install deps
 			update((s) => ({ ...s, logs: [...s.logs, 'Installing dependencies (pnpm install)...'] }));
 			const install = await container.spawn('pnpm', ['install']);
@@ -101,7 +105,7 @@ function createWebContainerStore() {
 			// Server ready
 			container.on('server-ready', (port, url) => {
 				update((s) => ({ ...s, logs: [...s.logs, `Server ready at ${url}`] }));
-				update((s) => ({ ...s, previewUrl: url, loading: false, fs: container.fs }));
+				update((s) => ({ ...s, previewUrl: url, loading: false }));
 
 				// Listen for console messages from the preview iframe
 				container.on('preview-message', (msg) => {

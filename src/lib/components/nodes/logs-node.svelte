@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { Handle, Position } from '@xyflow/svelte';
 	import { codeCanvasState, codeCanvasActions } from '../../../routes/code-canvas/state.svelte';
 
 	// Props from parent using Svelte 5 runes
@@ -9,6 +8,7 @@
 	}: {
 		data?: {
 			label?: string;
+			isActiveContent?: boolean;
 		};
 	} = $props();
 
@@ -61,12 +61,6 @@
 </script>
 
 <div class="border-border bg-card flex h-full w-full flex-col overflow-hidden rounded border">
-	<!-- Connection handles for edges -->
-	<Handle type="target" position={Position.Top} />
-	<Handle type="source" position={Position.Right} />
-	<Handle type="target" position={Position.Bottom} />
-	<Handle type="source" position={Position.Left} />
-
 	<div
 		class="drag-handle border-border bg-muted text-muted-foreground flex items-center justify-between border-b px-2 py-1 text-xs font-semibold"
 	>
@@ -118,6 +112,7 @@
 		bind:this={container}
 		onscroll={handleScroll}
 		class="nodrag nowheel bg-background flex-1 overflow-y-auto p-2 font-mono text-xs"
+		class:inactive={!data.isActiveContent}
 	>
 		{#if codeCanvasState.logs.length === 0 && codeCanvasState.webContainerLogs.length === 0}
 			<div class="text-muted-foreground italic">No logs yet...</div>
@@ -168,32 +163,7 @@
 </div>
 
 <style>
-	/* SvelteFlow Handle styling */
-	:global(.svelte-flow__handle) {
-		width: 8px !important;
-		height: 8px !important;
-		background: var(--color-primary) !important;
-		border: 2px solid var(--color-background) !important;
-		opacity: 0 !important;
-		transition: opacity 0.2s ease !important;
-	}
-
-	:global(.svelte-flow__handle:hover) {
-		background: var(--color-primary) !important;
-		transform: scale(1.2) !important;
-		opacity: 1 !important;
-	}
-
-	:global(.svelte-flow__handle.connectingfrom) {
-		opacity: 1 !important;
-	}
-
-	:global(.svelte-flow__handle.valid) {
-		background: #10b981 !important;
-	}
-
-	/* Show handles on hover */
-	div:hover :global(.svelte-flow__handle) {
-		opacity: 1 !important;
+	.inactive {
+		pointer-events: none;
 	}
 </style>

@@ -1,9 +1,18 @@
 <script>
-	export let el = undefined;
-	let className = undefined;
-	export { className as class };
+	let {
+		ref = $bindable(null),
+		class: className,
+		children,
+		...restProps
+	} = $props();
 </script>
 
-<nav class={className} bind:this={el} aria-label="breadcrumb" {...$$restProps}>
-	<slot />
+<nav
+	bind:this={ref}
+	data-slot="breadcrumb"
+	class={className}
+	aria-label="breadcrumb"
+	{...restProps}
+>
+	{@render children?.()}
 </nav>

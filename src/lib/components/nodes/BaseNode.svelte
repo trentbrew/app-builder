@@ -1,12 +1,12 @@
+<!-- Start of Selection -->
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { Handle, Position } from '@xyflow/svelte';
 	import type { Snippet } from 'svelte';
 
 	// Props
 	let {
 		title = 'Window',
-		canResize = true,
+		canResize = false,
 		canMinimize = true,
 		canMaximize = true,
 		canClose = true,
@@ -15,7 +15,8 @@
 		isMinimized = $bindable(false),
 		isMaximized = $bindable(false),
 		children,
-		onMaximize = null
+		onMaximize = null,
+		isActiveContent = false
 	}: {
 		title?: string;
 		canResize?: boolean;
@@ -28,17 +29,11 @@
 		isMaximized?: boolean;
 		children?: Snippet;
 		onMaximize?: ((isMaximized: boolean) => void) | null;
+		isActiveContent?: boolean;
 	} = $props();
 
 	const dispatch = createEventDispatcher();
 
-	// Internal state
-	let isResizing = $state(false);
-	let resizeDirection = $state('');
-	let startX = $state(0);
-	let startY = $state(0);
-	let startWidth = $state(0);
-	let startHeight = $state(0);
 	let nodeElement: HTMLDivElement;
 
 	// Window actions
@@ -61,108 +56,8 @@
 		}
 	}
 
-	// Resize functionality
-	function startResize(direction: string, event: MouseEvent) {
-		if (!canResize) return;
-
-		event.preventDefault();
-		event.stopPropagation();
-
-		isResizing = true;
-		resizeDirection = direction;
-		startX = event.clientX;
-		startY = event.clientY;
-
-		const rect = nodeElement.getBoundingClientRect();
-		startWidth = rect.width;
-		startHeight = rect.height;
-
-		document.addEventListener('mousemove', handleResize);
-		document.addEventListener('mouseup', stopResize);
-		document.body.style.cursor = getCursor(direction);
-		document.body.style.userSelect = 'none';
-	}
-
-	function handleResize(event: MouseEvent) {
-		if (!isResizing) return;
-
-		const deltaX = event.clientX - startX;
-		const deltaY = event.clientY - startY;
-
-		let newWidth = startWidth;
-		let newHeight = startHeight;
-
-		// Calculate new dimensions based on resize direction
-		if (resizeDirection.includes('e')) {
-			newWidth = Math.max(200, startWidth + deltaX);
-		}
-		if (resizeDirection.includes('w')) {
-			newWidth = Math.max(200, startWidth - deltaX);
-		}
-		if (resizeDirection.includes('s')) {
-			newHeight = Math.max(150, startHeight + deltaY);
-		}
-		if (resizeDirection.includes('n')) {
-			newHeight = Math.max(150, startHeight - deltaY);
-		}
-
-		// Apply the new dimensions to the BaseNode wrapper
-		if (nodeElement) {
-			nodeElement.style.width = `${newWidth}px`;
-			nodeElement.style.height = `${newHeight}px`;
-
-			// Force the parent Svelte Flow node to update its dimensions
-			const parentNode = nodeElement.closest('.svelte-flow__node');
-			if (parentNode) {
-				(parentNode as HTMLElement).style.width = `${newWidth}px`;
-				(parentNode as HTMLElement).style.height = `${newHeight}px`;
-			}
-		}
-
-		dispatch('resize', { width: newWidth, height: newHeight });
-	}
-
-	function stopResize() {
-		isResizing = false;
-		resizeDirection = '';
-		document.removeEventListener('mousemove', handleResize);
-		document.removeEventListener('mouseup', stopResize);
-		document.body.style.cursor = '';
-		document.body.style.userSelect = '';
-	}
-
-	function getCursor(direction: string): string {
-		switch (direction) {
-			case 'n':
-			case 's':
-				return 'ns-resize';
-			case 'e':
-			case 'w':
-				return 'ew-resize';
-			case 'ne':
-			case 'sw':
-				return 'nesw-resize';
-			case 'nw':
-			case 'se':
-				return 'nwse-resize';
-			default:
-				return 'default';
-		}
-	}
-
-	// Cleanup on destroy
-	function cleanup() {
-		if (isResizing) {
-			stopResize();
-		}
-	}
-
-	// Handle double-click on title bar to maximize/restore
-	function handleTitleDoubleClick() {
-		if (canMaximize) {
-			handleMaximize();
-		}
-	}
+	// Cleanup on destroy (placeholder to keep symmetry)
+	function cleanup() {}
 </script>
 
 <svelte:window on:beforeunload={cleanup} />
@@ -172,16 +67,10 @@
 	class="base-node"
 	class:minimized={isMinimized}
 	class:maximized={isMaximized}
-	class:resizing={isResizing}
+	role="group"
 >
-	<!-- Connection handles for edges -->
-	<Handle type="target" position={Position.Top} />
-	<Handle type="source" position={Position.Right} />
-	<Handle type="target" position={Position.Bottom} />
-	<Handle type="source" position={Position.Left} />
-
 	<!-- Title bar -->
-	<div class="title-bar drag-handle" ondblclick={handleTitleDoubleClick} role="button" tabindex="0">
+	<div class="title-bar" role="button" tabindex="0" data-handle>
 		<div class="title-content">
 			<span class="title-text">{title}</span>
 			{#if statusInfo}
@@ -215,50 +104,6 @@
 				</button>
 			{/if}
 
-			{#if canMaximize}
-				<button
-					class="control-btn maximize-btn"
-					onclick={handleMaximize}
-					title={isMaximized ? 'Restore' : 'Maximize'}
-					aria-label={isMaximized ? 'Restore window' : 'Maximize window'}
-				>
-					{#if isMaximized}
-						<svg width="12" height="12" viewBox="0 0 12 12">
-							<rect
-								x="2"
-								y="2"
-								width="6"
-								height="6"
-								stroke="currentColor"
-								stroke-width="1.5"
-								fill="none"
-							/>
-							<rect
-								x="4"
-								y="4"
-								width="6"
-								height="6"
-								stroke="currentColor"
-								stroke-width="1.5"
-								fill="none"
-							/>
-						</svg>
-					{:else}
-						<svg width="12" height="12" viewBox="0 0 12 12">
-							<rect
-								x="2"
-								y="2"
-								width="8"
-								height="8"
-								stroke="currentColor"
-								stroke-width="1.5"
-								fill="none"
-							/>
-						</svg>
-					{/if}
-				</button>
-			{/if}
-
 			{#if canClose}
 				<button
 					class="control-btn close-btn"
@@ -280,7 +125,15 @@
 	</div>
 
 	<!-- Content area -->
-	<div class="content-area" class:hidden={isMinimized}>
+	<div
+		class="content-area"
+		class:hidden={isMinimized}
+		class:inactive={!isActiveContent}
+		role="region"
+		aria-label="Node content"
+		onmousedown={(e) => e.stopPropagation()}
+		onwheel={(e) => e.stopPropagation()}
+	>
 		{@render children?.()}
 	</div>
 
@@ -289,61 +142,6 @@
 		<div class="status-bar">
 			<span class="status-text">Ready</span>
 		</div>
-	{/if}
-
-	<!-- Resize handles -->
-	{#if canResize && !isMinimized && !isMaximized}
-		<!-- Corners -->
-		<div
-			class="resize-handle nw"
-			onmousedown={(e) => startResize('nw', e)}
-			role="button"
-			tabindex="-1"
-		></div>
-		<div
-			class="resize-handle ne"
-			onmousedown={(e) => startResize('ne', e)}
-			role="button"
-			tabindex="-1"
-		></div>
-		<div
-			class="resize-handle sw"
-			onmousedown={(e) => startResize('sw', e)}
-			role="button"
-			tabindex="-1"
-		></div>
-		<div
-			class="resize-handle se"
-			onmousedown={(e) => startResize('se', e)}
-			role="button"
-			tabindex="-1"
-		></div>
-
-		<!-- Edges -->
-		<div
-			class="resize-handle n"
-			onmousedown={(e) => startResize('n', e)}
-			role="button"
-			tabindex="-1"
-		></div>
-		<div
-			class="resize-handle s"
-			onmousedown={(e) => startResize('s', e)}
-			role="button"
-			tabindex="-1"
-		></div>
-		<div
-			class="resize-handle e"
-			onmousedown={(e) => startResize('e', e)}
-			role="button"
-			tabindex="-1"
-		></div>
-		<div
-			class="resize-handle w"
-			onmousedown={(e) => startResize('w', e)}
-			role="button"
-			tabindex="-1"
-		></div>
 	{/if}
 </div>
 
@@ -356,7 +154,7 @@
 		box-shadow: 0 6px 24px -16px rgba(0, 0, 0, 0.5);
 		display: flex;
 		flex-direction: column;
-		overflow: hidden;
+		overflow: visible;
 		min-width: 200px;
 		min-height: 150px;
 		width: 100%;
@@ -383,15 +181,6 @@
 		min-height: auto;
 	}
 
-	.base-node.resizing {
-		user-select: none;
-		pointer-events: none;
-	}
-
-	.base-node.resizing * {
-		pointer-events: none;
-	}
-
 	.title-bar {
 		background: var(--color-muted);
 		border-bottom: 1px solid var(--color-border);
@@ -399,7 +188,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		cursor: move;
+		cursor: pointer;
 		user-select: none;
 		min-height: 36px;
 	}
@@ -489,11 +278,6 @@
 		color: white;
 	}
 
-	.maximize-btn:hover {
-		background: #10b981;
-		color: white;
-	}
-
 	.minimize-btn:hover {
 		background: #f59e0b;
 		color: white;
@@ -501,15 +285,24 @@
 
 	.content-area {
 		flex: 1;
-		overflow: hidden;
+		overflow: auto;
+		padding: 8px; /* ample padding so resize handles are easy to click */
 		display: flex;
 		flex-direction: column;
 		width: 100%;
 		height: 100%;
+		pointer-events: auto;
+		position: relative;
+		z-index: 1;
+		user-select: text;
+	}
+
+	.content-area.inactive {
+		/* pointer-events: none; */
 	}
 
 	.content-area.hidden {
-		display: none;
+		/* display: none; */
 	}
 
 	.status-bar {
@@ -522,125 +315,5 @@
 		align-items: center;
 		justify-content: space-between;
 		min-height: 24px;
-	}
-
-	/* Resize handles */
-	.resize-handle {
-		position: absolute;
-		background: rgba(59, 130, 246, 0.1);
-		z-index: 10;
-		border: 1px solid rgba(59, 130, 246, 0.2);
-		transition: opacity 0.2s ease;
-	}
-
-	.resize-handle:hover {
-		background: rgba(59, 130, 246, 0.3);
-		border: 1px solid rgba(59, 130, 246, 0.5);
-	}
-
-	/* Hide resize handles when maximized or minimized */
-	.base-node.maximized .resize-handle,
-	.base-node.minimized .resize-handle {
-		display: none !important;
-		opacity: 0;
-		pointer-events: none;
-	}
-
-	/* Corner handles */
-	.resize-handle.nw {
-		top: -4px;
-		left: -4px;
-		width: 8px;
-		height: 8px;
-		cursor: nw-resize;
-	}
-
-	.resize-handle.ne {
-		top: -4px;
-		right: -4px;
-		width: 8px;
-		height: 8px;
-		cursor: ne-resize;
-	}
-
-	.resize-handle.sw {
-		bottom: -4px;
-		left: -4px;
-		width: 8px;
-		height: 8px;
-		cursor: sw-resize;
-	}
-
-	.resize-handle.se {
-		bottom: -4px;
-		right: -4px;
-		width: 8px;
-		height: 8px;
-		cursor: se-resize;
-	}
-
-	/* Edge handles */
-	.resize-handle.n {
-		top: -4px;
-		left: 8px;
-		right: 8px;
-		height: 8px;
-		cursor: n-resize;
-	}
-
-	.resize-handle.s {
-		bottom: -4px;
-		left: 8px;
-		right: 8px;
-		height: 8px;
-		cursor: s-resize;
-	}
-
-	.resize-handle.e {
-		top: 8px;
-		bottom: 8px;
-		right: -4px;
-		width: 8px;
-		cursor: e-resize;
-	}
-
-	.resize-handle.w {
-		top: 8px;
-		bottom: 8px;
-		left: -4px;
-		width: 8px;
-		cursor: w-resize;
-	}
-
-	/* Hide resize handles when resizing to prevent interference */
-	.base-node.resizing .resize-handle {
-		display: none;
-	}
-
-	/* SvelteFlow Handle styling */
-	:global(.svelte-flow__handle) {
-		width: 8px !important;
-		height: 8px !important;
-		background: var(--color-primary) !important;
-		border: 2px solid var(--color-background) !important;
-		opacity: 0 !important;
-		transition: opacity 0.2s ease !important;
-	}
-
-	.base-node:hover :global(.svelte-flow__handle) {
-		opacity: 1 !important;
-	}
-
-	:global(.svelte-flow__handle:hover) {
-		background: var(--color-primary) !important;
-		transform: scale(1.2) !important;
-	}
-
-	:global(.svelte-flow__handle.connectingfrom) {
-		opacity: 1 !important;
-	}
-
-	:global(.svelte-flow__handle.valid) {
-		background: #10b981 !important;
 	}
 </style>

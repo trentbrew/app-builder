@@ -356,6 +356,7 @@ $ <span style="animation: blink 1s infinite;">_</span>
 	title={data.label ?? 'Terminal'}
 	bind:isMinimized
 	bind:isMaximized
+	isActiveContent={(data as any)?.isActiveContent ?? false}
 	{statusInfo}
 	onMaximize={data.onMaximize}
 	on:close={() => console.log('Terminal close requested')}

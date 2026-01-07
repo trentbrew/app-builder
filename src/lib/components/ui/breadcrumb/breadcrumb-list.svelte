@@ -1,17 +1,22 @@
 <script>
 	import { cn } from "$lib/utils.js";
-	export let el = undefined;
-	let className = undefined;
-	export { className as class };
+
+	let {
+		ref = $bindable(null),
+		class: className,
+		children,
+		...restProps
+	} = $props();
 </script>
 
 <ol
-	bind:this={el}
+	bind:this={ref}
+	data-slot="breadcrumb-list"
 	class={cn(
 		"text-muted-foreground flex flex-wrap items-center gap-1.5 break-words text-sm sm:gap-2.5",
 		className
 	)}
-	{...$$restProps}
+	{...restProps}
 >
-	<slot />
+	{@render children?.()}
 </ol>

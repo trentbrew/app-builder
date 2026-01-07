@@ -1,14 +1,11 @@
 <script lang="ts">
-	import { Handle, Position } from '@xyflow/svelte';
 	import type { NodeProps } from '@xyflow/svelte';
 
 	export let data: NodeProps['data'];
 </script>
 
 <div class="editable-node">
-	<Handle type="target" position={Position.Top} />
 	<input bind:value={data.label} class="nodrag" />
-	<Handle type="source" position={Position.Bottom} />
 </div>
 
 <style>

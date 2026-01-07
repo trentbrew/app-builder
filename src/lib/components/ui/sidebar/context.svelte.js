@@ -3,7 +3,7 @@ import { getContext, setContext } from "svelte";
 import { SIDEBAR_KEYBOARD_SHORTCUT } from "./constants.js";
 
 class SidebarState {
-	props;
+	 props;
 	open = $derived.by(() => this.props.open());
 	openMobile = $state(false);
 	setOpen;
@@ -35,7 +35,9 @@ class SidebarState {
 	};
 
 	toggle = () => {
-		return this.#isMobile.current ? (this.openMobile = !this.openMobile) : this.setOpen(!this.open);
+		return this.#isMobile.current
+			? (this.openMobile = !this.openMobile)
+			: this.setOpen(!this.open);
 	};
 }
 

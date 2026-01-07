@@ -1,12 +1,18 @@
 <script>
 	import { cn } from "$lib/utils.js";
-	let className = undefined;
-	export { className as class };
+	let {
+		ref = $bindable(null),
+		class: className,
+		children,
+		...restProps
+	} = $props();
 </script>
 
 <div
-	class={cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className)}
-	{...$$restProps}
+	bind:this={ref}
+	data-slot="sheet-footer"
+	class={cn("mt-auto flex flex-col gap-2 p-4", className)}
+	{...restProps}
 >
-	<slot />
+	{@render children?.()}
 </div>

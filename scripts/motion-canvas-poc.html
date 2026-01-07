@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<title>motion-canvas PoC</title>
+		<style>
+			body {
+				margin: 0;
+				background: #111;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="mc-canvas" width="800" height="450"></canvas>
+
+		<script type="module">
+			const canvas = document.getElementById('mc-canvas');
+			const ctx = canvas.getContext('2d');
+
+			// Helper to finish and expose data
+			async function finish() {
+				// allow a tick for any rendering to flush
+				await new Promise((r) => setTimeout(r, 100));
+				try {
+					window.__mc_image = canvas.toDataURL('image/png');
+				} catch (e) {
+					window.__mc_error = String(e);
+				}
+				window.__mc_ready = true;
+			}
+
+			// Try to import motion-canvas from CDN and create a more realistic scene
+			(async () => {
+				const CDN = 'https://cdn.jsdelivr.net/npm/@motion-canvas/core@latest/dist/index.mjs';
+				try {
+					const mc = await import(CDN);
+					console.log('Motion Canvas imported successfully:', Object.keys(mc));
+
+					// Try to create a simple animated scene
+					if (mc && (mc.makeScene || mc.Scene || mc.createScene)) {
+						try {
+							// Create a simple animated scene with a moving circle
+							const scene = mc.makeScene
+								? mc.makeScene({
+										width: canvas.width,
+										height: canvas.height,
+										canvas
+									})
+								: null;
+
+							if (scene && typeof scene.render === 'function') {
+								// Render at different time points to show animation
+								scene.render(0);
+								await new Promise((r) => setTimeout(r, 50));
+								scene.render(0.5);
+								await new Promise((r) => setTimeout(r, 50));
+								scene.render(1.0);
+								await finish();
+								return;
+							}
+						} catch (err) {
+							console.warn('motion-canvas scene creation failed, falling back:', err);
+						}
+					}
+				} catch (err) {
+					console.warn('motion-canvas import failed, falling back to canvas draw', err);
+				}
+
+				// Enhanced fallback drawing with animation simulation
+				ctx.fillStyle = '#0f172a';
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+				// Create gradient background
+				const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+				gradient.addColorStop(0, '#1e293b');
+				gradient.addColorStop(1, '#0f172a');
+				ctx.fillStyle = gradient;
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+				// Draw animated circle (simulating motion)
+				const time =
+					window.__frame_time !== undefined ? window.__frame_time * 10 : Date.now() * 0.001;
+				const centerX = canvas.width / 2 + Math.sin(time) * 50;
+				const centerY = canvas.height / 2 + Math.cos(time * 0.7) * 30;
+
+				ctx.beginPath();
+				ctx.arc(centerX, centerY, 40, 0, Math.PI * 2);
+				ctx.fillStyle = '#3b82f6';
+				ctx.fill();
+
+				// Add glow effect
+				ctx.shadowColor = '#3b82f6';
+				ctx.shadowBlur = 20;
+				ctx.beginPath();
+				ctx.arc(centerX, centerY, 30, 0, Math.PI * 2);
+				ctx.fillStyle = '#60a5fa';
+				ctx.fill();
+				ctx.shadowBlur = 0;
+
+				// Add text
+				ctx.font = 'bold 32px ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto';
+				ctx.fillStyle = '#f8fafc';
+				ctx.textAlign = 'center';
+				ctx.fillText('Motion Canvas PoC', canvas.width / 2, 100);
+
+				ctx.font = '18px ui-sans-serif, system-ui';
+				ctx.fillStyle = '#94a3b8';
+				ctx.fillText('Server-side rendering via Puppeteer', canvas.width / 2, 130);
+
+				// Add some particles
+				for (let i = 0; i < 20; i++) {
+					const x = (i * 40) % canvas.width;
+					const y = Math.sin(time + i * 0.5) * 20 + canvas.height - 50;
+					ctx.beginPath();
+					ctx.arc(x, y, 2, 0, Math.PI * 2);
+					ctx.fillStyle = `rgba(59, 130, 246, ${0.3 + Math.sin(time + i) * 0.2})`;
+					ctx.fill();
+				}
+
+				await finish();
+			})();
+		</script>
+	</body>
+</html>

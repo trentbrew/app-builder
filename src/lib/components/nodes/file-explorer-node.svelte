@@ -518,6 +518,7 @@
 	canClose={true}
 	bind:isMinimized
 	bind:isMaximized
+	isActiveContent={true}
 	{onMaximize}
 	on:resize={handleResize}
 	on:maximize={handleMaximize}
