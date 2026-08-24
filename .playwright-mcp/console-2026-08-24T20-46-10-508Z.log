@@ -1,0 +1,12 @@
+[     513ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/main.js?t=1787604167992:0
+[   16107ms] [LOG] [DEBUG-remove] nodeType= split tabId= file:/App.svelte tabs= undefined @ http://localhost:9898/src/lib/editorLayout.ts?t=1787604335750:273
+[   16107ms] [LOG] [DEBUG-remove] nodeType= split tabId= file:/App.svelte tabs= undefined @ http://localhost:9898/src/lib/editorLayout.ts?t=1787604335750:273
+[   16107ms] [LOG] [DEBUG-remove] nodeType= tabGroup tabId= file:/App.svelte tabs= ["panel:files"] @ http://localhost:9898/src/lib/editorLayout.ts?t=1787604335750:273
+[   16107ms] [LOG] [DEBUG-remove] nodeType= tabGroup tabId= file:/App.svelte tabs= ["file:/App.svelte"] @ http://localhost:9898/src/lib/editorLayout.ts?t=1787604335750:273
+[   16107ms] [LOG] [DEBUG-empty] file:/App.svelte isFile= true keep= true keepType= boolean @ http://localhost:9898/src/lib/editorLayout.ts?t=1787604335750:280
+[   16107ms] [LOG] [DEBUG-remove] nodeType= tabGroup tabId= file:/App.svelte tabs= ["panel:preview"] @ http://localhost:9898/src/lib/editorLayout.ts?t=1787604335750:273
+[   16107ms] [LOG] [DEBUG-remove] nodeType= split tabId= file:/App.svelte tabs= undefined @ http://localhost:9898/src/lib/editorLayout.ts?t=1787604335750:273
+[   16107ms] [LOG] [DEBUG-remove] nodeType= tabGroup tabId= file:/App.svelte tabs= ["panel:chat"] @ http://localhost:9898/src/lib/editorLayout.ts?t=1787604335750:273
+[   16108ms] [LOG] [DEBUG-remove] nodeType= tabGroup tabId= file:/App.svelte tabs= ["panel:logs"] @ http://localhost:9898/src/lib/editorLayout.ts?t=1787604335750:273
+[   16108ms] [LOG] [DEBUG-remove] nodeType= tabGroup tabId= file:/App.svelte tabs= ["panel:console"] @ http://localhost:9898/src/lib/editorLayout.ts?t=1787604335750:273
+[   16108ms] [LOG] [DEBUG-remove] nodeType= tabGroup tabId= file:/App.svelte tabs= ["terminal:b2725465-8ab3-4052-ab5e-534e856877ff"] @ http://localhost:9898/src/lib/editorLayout.ts?t=1787604335750:273

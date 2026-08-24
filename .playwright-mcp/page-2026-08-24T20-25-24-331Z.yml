@@ -1,0 +1,179 @@
+- generic [ref=f252e1]:
+  - generic [ref=f252e2]:
+    - generic [ref=f252e3]:
+      - banner [ref=f252e4]:
+        - navigation "breadcrumb" [ref=f252e6]:
+          - list [ref=f252e7]:
+            - listitem [ref=f252e8]:
+              - link "sample.pdf" [disabled] [ref=f252e420]
+        - button "Open command palette" [ref=f252e11]:
+          - generic [ref=f252e13]: Search commands...
+          - generic [ref=f252e14]:
+            - generic: ⌘
+            - generic: K
+        - generic [ref=f252e15]:
+          - button "Settings" [ref=f252e16]
+          - button "Reboot" [ref=f252e17]
+      - main [ref=f252e18]:
+        - generic [ref=f252e19]:
+          - navigation "Workspace projections" [ref=f252e20]:
+            - generic [ref=f252e21]:
+              - link "Editor" [ref=f252e22] [cursor=pointer]:
+                - /url: /editor
+              - button "Plugins" [ref=f252e25]
+          - generic [ref=f252e33]:
+            - generic [ref=f252e422]:
+              - generic [ref=f252e424]:
+                - tablist [ref=f252e426]:
+                  - tab "Files" [ref=f252e427]
+                - generic [ref=f252e440]:
+                  - generic [ref=f252e441]:
+                    - generic [ref=f252e442]: Bun sandbox
+                    - generic [ref=f252e444]:
+                      - button "New file" [ref=f252e445] [cursor=pointer]
+                      - button "New folder" [ref=f252e447] [cursor=pointer]
+                      - button "Expand all folders" [ref=f252e449] [cursor=pointer]
+                      - button "Collapse all folders" [ref=f252e451] [cursor=pointer]
+                      - button "Refresh file tree" [ref=f252e453] [cursor=pointer]
+                      - button "Split pane" [disabled] [ref=f252e455]
+                  - tree "Project files" [active] [ref=f252e461]:
+                    - group [ref=f252e462]:
+                      - treeitem "node_modules" [expanded] [ref=f252e465] [cursor=pointer]
+                      - treeitem "App.svelte" [ref=f252e469] [cursor=pointer]
+                      - treeitem "bun.lock" [ref=f252e472] [cursor=pointer]
+                      - treeitem "index.html" [ref=f252e475] [cursor=pointer]
+                      - treeitem "main.js" [ref=f252e478] [cursor=pointer]
+                      - treeitem "package.json" [ref=f252e481] [cursor=pointer]
+                      - treeitem "sample.pdf" [selected] [ref=f252e484] [cursor=pointer]
+                      - treeitem "svelte.config.js" [ref=f252e487] [cursor=pointer]
+                      - treeitem "vite.config.js" [ref=f252e490] [cursor=pointer]
+              - slider "Resize pane 1" [ref=f252e492]
+              - generic [ref=f252e494]:
+                - tablist [ref=f252e496]:
+                  - tab "welcome.md Close welcome.md" [ref=f252e497]:
+                    - generic [ref=f252e498]: welcome.md
+                    - button "Close welcome.md" [ref=f252e505] [cursor=pointer]
+                  - tab "sample.pdf Close sample.pdf" [ref=f252e507]:
+                    - generic [ref=f252e508]: sample.pdf
+                    - button "Close sample.pdf" [ref=f252e515] [cursor=pointer]
+                - generic [ref=f252e522]:
+                  - generic [ref=f252e523]:
+                    - generic [ref=f252e524]:
+                      - generic [ref=f252e525]: PDF
+                      - generic [ref=f252e526]: 0 B
+                    - button "Split pane" [ref=f252e528] [cursor=pointer]
+                  - iframe [ref=f252e534]:
+                    
+              - slider "Resize pane 2" [ref=f252e535]
+              - generic [ref=f252e537]:
+                - tablist [ref=f252e539]:
+                  - tab "Preview" [ref=f252e540]
+                - generic [ref=f252e554]:
+                  - generic [ref=f252e555]:
+                    - generic [ref=f252e556]: Bun
+                    - generic /preview/58d1abba/ [ref=f252e557]: localhost:3107
+                  - generic [ref=f252e558]:
+                    - button "Refresh preview" [ref=f252e559] [cursor=pointer]
+                    - button "Copy preview URL" [ref=f252e561] [cursor=pointer]
+                    - button "Open preview in new tab" [ref=f252e563] [cursor=pointer]
+                    - button "Split pane" [disabled] [ref=f252e565]
+                    - group "Console pane" [ref=f252e568]:
+                      - button "Hide console" [pressed] [ref=f252e569] [cursor=pointer]
+              - slider "Resize pane 3" [ref=f252e575]
+              - generic [ref=f252e577]:
+                - generic [ref=f252e579]:
+                  - tablist [ref=f252e581]:
+                    - tab "Chat" [ref=f252e582]
+                  - generic [ref=f252e594]:
+                    - button [ref=f252e595]
+                    - generic [ref=f252e596]:
+                      - generic [ref=f252e597]:
+                        - generic [ref=f252e598]: 0 messages
+                        - generic [ref=f252e601]:
+                          - button "Reset conversation" [ref=f252e602] [cursor=pointer]
+                          - button "Split pane" [disabled] [ref=f252e604]
+                      - generic [ref=f252e608]:
+                        - generic [ref=f252e611]:
+                          - generic [ref=f252e613]: How can I help?
+                          - generic [ref=f252e614]: Ask about your project or attach files for context. Replies stream from local Ollama (deepseek-r1:8b) and render with the same markdown formatter as your notes.
+                        - generic [ref=f252e615]:
+                          - group [ref=f252e616]:
+                            - textbox "Message" [ref=f252e617]:
+                              - /placeholder: Message the assistant…
+                            - group [ref=f252e618]:
+                              - button "Add attachments" [ref=f252e619]
+                              - button "Send" [disabled]
+                          - button "Choose model" [ref=f252e621] [cursor=pointer]:
+                            - generic [ref=f252e622]: deepseek-r1:8b
+                - slider "Resize pane 1" [ref=f252e624]
+                - generic [ref=f252e626]:
+                  - tablist [ref=f252e628]:
+                    - tab "Server logs" [ref=f252e629]
+                  - generic [ref=f252e642]:
+                    - generic [ref=f252e643]:
+                      - generic [ref=f252e644]:
+                        - generic [ref=f252e645]: 44 entries
+                        - generic [ref=f252e646]: 44 visible lines
+                      - generic [ref=f252e647]:
+                        - button "Copy logs" [ref=f252e648] [cursor=pointer]
+                        - button "Split pane" [disabled] [ref=f252e650]
+                    - generic [ref=f252e652]: "Starting Bun sandbox… Restored Bun sandbox session 58d1abba. Sandbox 58d1abba created. Mounting project files… Installing dependencies… Dependencies installed. Starting dev server… [install] bun install v1.4.0 (34cbb9a40) [install] + @sveltejs/vite-plugin-svelte@5.1.1 [install] + vite@6.3.2 [install] + svelte@5.56.3 [install] 40 packages installed [63.00ms] [install] Resolving dependencies [install] Resolved, downloaded and extracted [0] [install] Saved lockfile [dev] $ vite --host 127.0.0.1 Terminal e2f5c2be opened (/bin/zsh). [dev] 1:17:00 PM [vite] (client) Forced re-optimization of dependencies [dev] VITE v6.3.2 ready in 1010 ms [dev] ➜ Local: http://127.0.0.1:3107/ Server ready at http://127.0.0.1:3107/ Wrote /sample.pdf Terminal 90a6b7c4 opened (/bin/zsh). Wrote /sample.pdf Wrote /sample.pdf Terminal c7268c5e opened (/bin/zsh). Terminal ffc226bd opened (/bin/zsh). Terminal 8be8293a opened (/bin/zsh). Terminal d51a2b71 opened (/bin/zsh). Terminal 96ee7034 opened (/bin/zsh). Terminal c2ba2c29 opened (/bin/zsh). Terminal ea525059 opened (/bin/zsh). Terminal 31ac8301 opened (/bin/zsh). Terminal febdb359 opened (/bin/zsh). Terminal 23443279 opened (/bin/zsh). Terminal 3dcd2684 opened (/bin/zsh). Terminal 04030554 opened (/bin/zsh). Terminal ad062b31 opened (/bin/zsh). Terminal 24517ee5 opened (/bin/zsh). Terminal a389aa58 opened (/bin/zsh). Terminal 58f35c14 opened (/bin/zsh). Terminal 06258e53 opened (/bin/zsh). Terminal 24723a69 opened (/bin/zsh). Terminal 4c3982c3 opened (/bin/zsh)."
+                - slider "Resize pane 2" [ref=f252e655]
+                - generic [ref=f252e657]:
+                  - tablist [ref=f252e659]:
+                    - tab "Console" [ref=f252e660]
+                  - generic [ref=f252e673]:
+                    - generic [ref=f252e674]:
+                      - generic [ref=f252e675]: 2 entries
+                      - generic [ref=f252e677]:
+                        - button "Clear console" [ref=f252e678] [cursor=pointer]
+                        - button "Copy console output" [ref=f252e680] [cursor=pointer]
+                        - button "Split pane" [disabled] [ref=f252e682]
+                    - generic [ref=f252e686]:
+                      - generic [ref=f252e687]:
+                        - generic [ref=f252e688]: 13:24:59
+                        - generic [ref=f252e689]: debug
+                        - generic [ref=f252e690]: "[vite] connecting..."
+                      - generic [ref=f252e691]:
+                        - generic [ref=f252e692]: 13:24:59
+                        - generic [ref=f252e693]: debug
+                        - generic [ref=f252e694]: "[vite] connected."
+            - slider "Resize pane 1" [ref=f252e695]
+            - generic [ref=f252e697]:
+              - generic [ref=f252e698]:
+                - tablist [ref=f252e699]:
+                  - tab "Terminal 1 Close Terminal 1" [ref=f252e700]:
+                    - generic [ref=f252e701]: Terminal 1
+                    - button "Close Terminal 1" [ref=f252e709] [cursor=pointer]
+                  - tab "Terminal 2 Close Terminal 2" [ref=f252e711]:
+                    - generic [ref=f252e712]: Terminal 2
+                    - button "Close Terminal 2" [ref=f252e720] [cursor=pointer]
+                - button "New terminal" [ref=f252e725] [cursor=pointer]
+              - generic [ref=f252e730]:
+                - generic [ref=f252e731]:
+                  - generic [ref=f252e732]:
+                    - generic [ref=f252e733]: Shell
+                    - generic "cbf7d3ae-c29a-4cec-a92b-6ee5e45b189a" [ref=f252e734]: cbf7d3ae
+                  - button "Split pane" [ref=f252e736] [cursor=pointer]
+                - generic [ref=f252e745]:
+                  - textbox "Terminal input" [ref=f252e746]
+                  - generic [ref=f252e747]:
+                    - generic [ref=f252e748]:
+                      - generic [ref=f252e749]: ~/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.sandboxes/58d1abba
+                      - generic [ref=f252e751]: 13:25:23
+                    - generic [ref=f252e752]: ❯
+      - contentinfo "Status bar" [ref=f252e400]:
+        - generic [ref=f252e401]:
+          - generic [ref=f252e402]: svelte-repl
+          - generic [ref=f252e404]: Ready
+        - generic [ref=f252e406]:
+          - generic "/sample.pdf" [ref=f252e778]: sample.pdf
+          - generic [ref=f252e409]: PDF
+          - generic [ref=f252e411]: UTF-8
+          - generic [ref=f252e413]: LF
+      - generic [ref=f252e415]:
+        - heading "Command Palette" [level=2] [ref=f252e416]
+        - generic [ref=f252e417]: Search for a command to run...
+    - region "Notifications alt+T"
+  - iframe [ref=f252e419]:
+    

@@ -1,0 +1,175 @@
+- generic [ref=f119e1]:
+  - generic [ref=f119e2]:
+    - generic [ref=f119e3]:
+      - banner [ref=f119e4]:
+        - navigation "breadcrumb" [ref=f119e6]:
+          - list [ref=f119e7]:
+            - listitem [ref=f119e8]:
+              - link "sample.pdf" [disabled] [ref=f119e420]
+        - button "Open command palette" [ref=f119e11]:
+          - generic [ref=f119e13]: Search commands...
+          - generic [ref=f119e14]:
+            - generic: ⌘
+            - generic: K
+        - generic [ref=f119e15]:
+          - button "Settings" [ref=f119e16]
+          - button "Reboot" [ref=f119e17]
+      - main [ref=f119e18]:
+        - generic [ref=f119e19]:
+          - navigation "Workspace projections" [ref=f119e20]:
+            - generic [ref=f119e21]:
+              - link "Editor" [ref=f119e22] [cursor=pointer]:
+                - /url: /editor
+              - button "Plugins" [ref=f119e25]
+          - generic [ref=f119e33]:
+            - generic [ref=f119e422]:
+              - generic [ref=f119e424]:
+                - tablist [ref=f119e426]:
+                  - tab "Files" [ref=f119e427]
+                - generic [ref=f119e440]:
+                  - generic [ref=f119e441]:
+                    - generic [ref=f119e442]: Bun sandbox
+                    - generic [ref=f119e444]:
+                      - button "New file" [ref=f119e445] [cursor=pointer]
+                      - button "New folder" [ref=f119e447] [cursor=pointer]
+                      - button "Expand all folders" [ref=f119e449] [cursor=pointer]
+                      - button "Collapse all folders" [ref=f119e451] [cursor=pointer]
+                      - button "Refresh file tree" [ref=f119e453] [cursor=pointer]
+                      - button "Split pane" [disabled] [ref=f119e455]
+                  - tree "Project files" [active] [ref=f119e461]:
+                    - group [ref=f119e462]:
+                      - treeitem "node_modules" [expanded] [ref=f119e465] [cursor=pointer]
+                      - treeitem "App.svelte" [ref=f119e469] [cursor=pointer]
+                      - treeitem "bun.lock" [ref=f119e472] [cursor=pointer]
+                      - treeitem "index.html" [ref=f119e475] [cursor=pointer]
+                      - treeitem "main.js" [ref=f119e478] [cursor=pointer]
+                      - treeitem "package.json" [ref=f119e481] [cursor=pointer]
+                      - treeitem "sample.pdf" [selected] [ref=f119e484] [cursor=pointer]
+                      - treeitem "svelte.config.js" [ref=f119e487] [cursor=pointer]
+                      - treeitem "vite.config.js" [ref=f119e490] [cursor=pointer]
+              - slider "Resize pane 1" [ref=f119e492]
+              - generic [ref=f119e494]:
+                - tablist [ref=f119e496]:
+                  - tab "welcome.md Close welcome.md" [ref=f119e497]:
+                    - generic [ref=f119e498]: welcome.md
+                    - button "Close welcome.md" [ref=f119e505] [cursor=pointer]
+                  - tab "sample.pdf Close sample.pdf" [ref=f119e507]:
+                    - generic [ref=f119e508]: sample.pdf
+                    - button "Close sample.pdf" [ref=f119e515] [cursor=pointer]
+                - generic [ref=f119e522]:
+                  - generic [ref=f119e523]:
+                    - generic [ref=f119e524]:
+                      - generic [ref=f119e525]: PDF
+                      - generic [ref=f119e526]: 0 B
+                    - button "Split pane" [ref=f119e528] [cursor=pointer]
+                  - iframe [ref=f119e534]:
+                    
+              - slider "Resize pane 2" [ref=f119e535]
+              - generic [ref=f119e537]:
+                - tablist [ref=f119e539]:
+                  - tab "Preview" [ref=f119e540]
+                - generic [ref=f119e554]:
+                  - generic [ref=f119e555]:
+                    - generic [ref=f119e556]: Bun
+                    - generic /preview/58d1abba/ [ref=f119e557]: localhost:3107
+                  - generic [ref=f119e558]:
+                    - button "Refresh preview" [ref=f119e559] [cursor=pointer]
+                    - button "Copy preview URL" [ref=f119e561] [cursor=pointer]
+                    - button "Open preview in new tab" [ref=f119e563] [cursor=pointer]
+                    - button "Split pane" [disabled] [ref=f119e565]
+                    - group "Console pane" [ref=f119e568]:
+                      - button "Hide console" [pressed] [ref=f119e569] [cursor=pointer]
+              - slider "Resize pane 3" [ref=f119e575]
+              - generic [ref=f119e577]:
+                - generic [ref=f119e579]:
+                  - tablist [ref=f119e581]:
+                    - tab "Chat" [ref=f119e582]
+                  - generic [ref=f119e594]:
+                    - button [ref=f119e595]
+                    - generic [ref=f119e596]:
+                      - generic [ref=f119e597]:
+                        - generic [ref=f119e598]: 0 messages
+                        - generic [ref=f119e601]:
+                          - button "Reset conversation" [ref=f119e602] [cursor=pointer]
+                          - button "Split pane" [disabled] [ref=f119e604]
+                      - generic [ref=f119e608]:
+                        - generic [ref=f119e611]:
+                          - generic [ref=f119e613]: How can I help?
+                          - generic [ref=f119e614]: Ask about your project or attach files for context. Replies stream from local Ollama (deepseek-r1:8b) and render with the same markdown formatter as your notes.
+                        - generic [ref=f119e615]:
+                          - group [ref=f119e616]:
+                            - textbox "Message" [ref=f119e617]:
+                              - /placeholder: Message the assistant…
+                            - group [ref=f119e618]:
+                              - button "Add attachments" [ref=f119e619]
+                              - button "Send" [disabled]
+                          - button "Choose model" [ref=f119e621] [cursor=pointer]:
+                            - generic [ref=f119e622]: deepseek-r1:8b
+                - slider "Resize pane 1" [ref=f119e624]
+                - generic [ref=f119e626]:
+                  - tablist [ref=f119e628]:
+                    - tab "Server logs" [ref=f119e629]
+                  - generic [ref=f119e642]:
+                    - generic [ref=f119e643]:
+                      - generic [ref=f119e644]:
+                        - generic [ref=f119e645]: 21 entries
+                        - generic [ref=f119e646]: 21 visible lines
+                      - generic [ref=f119e647]:
+                        - button "Copy logs" [ref=f119e648] [cursor=pointer]
+                        - button "Split pane" [disabled] [ref=f119e650]
+                    - generic [ref=f119e652]: "Starting Bun sandbox… Booting Bun sandbox… Sandbox 58d1abba created. Mounting project files… Installing dependencies… Dependencies installed. Starting dev server… [install] bun install v1.4.0 (34cbb9a40) [install] + @sveltejs/vite-plugin-svelte@5.1.1 [install] + vite@6.3.2 [install] + svelte@5.56.3 [install] 40 packages installed [63.00ms] [install] Resolving dependencies [install] Resolved, downloaded and extracted [0] [install] Saved lockfile [dev] $ vite --host 127.0.0.1 Terminal e2f5c2be opened (/bin/zsh). [dev] 1:17:00 PM [vite] (client) Forced re-optimization of dependencies [dev] VITE v6.3.2 ready in 1010 ms [dev] ➜ Local: http://127.0.0.1:3107/ Server ready at http://127.0.0.1:3107/"
+                - slider "Resize pane 2" [ref=f119e655]
+                - generic [ref=f119e657]:
+                  - tablist [ref=f119e659]:
+                    - tab "Console" [ref=f119e660]
+                  - generic [ref=f119e673]:
+                    - generic [ref=f119e674]:
+                      - generic [ref=f119e675]: 2 entries
+                      - generic [ref=f119e677]:
+                        - button "Clear console" [ref=f119e678] [cursor=pointer]
+                        - button "Copy console output" [ref=f119e680] [cursor=pointer]
+                        - button "Split pane" [disabled] [ref=f119e682]
+                    - generic [ref=f119e686]:
+                      - generic [ref=f119e687]:
+                        - generic [ref=f119e688]: 13:17:01
+                        - generic [ref=f119e689]: debug
+                        - generic [ref=f119e690]: "[vite] connecting..."
+                      - generic [ref=f119e691]:
+                        - generic [ref=f119e692]: 13:17:01
+                        - generic [ref=f119e693]: debug
+                        - generic [ref=f119e694]: "[vite] connected."
+            - slider "Resize pane 1" [ref=f119e695]
+            - generic [ref=f119e697]:
+              - generic [ref=f119e698]:
+                - tablist [ref=f119e699]:
+                  - tab "Terminal 1 Close Terminal 1" [ref=f119e700]:
+                    - generic [ref=f119e701]: Terminal 1
+                    - button "Close Terminal 1" [ref=f119e709] [cursor=pointer]
+                  - tab "Terminal 2 Close Terminal 2" [ref=f119e711]:
+                    - generic [ref=f119e712]: Terminal 2
+                    - button "Close Terminal 2" [ref=f119e720] [cursor=pointer]
+                - button "New terminal" [ref=f119e725] [cursor=pointer]
+              - generic [ref=f119e730]:
+                - generic [ref=f119e731]:
+                  - generic [ref=f119e732]:
+                    - generic [ref=f119e733]: Shell
+                    - generic "cbf7d3ae-c29a-4cec-a92b-6ee5e45b189a" [ref=f119e734]: cbf7d3ae
+                  - button "Split pane" [ref=f119e736] [cursor=pointer]
+                - generic [ref=f119e745]:
+                  - generic:
+                    - textbox "Terminal input"
+      - contentinfo "Status bar" [ref=f119e397]:
+        - generic [ref=f119e398]:
+          - generic [ref=f119e399]: svelte-repl
+          - generic [ref=f119e401]: Ready
+        - generic [ref=f119e403]:
+          - generic "/sample.pdf" [ref=f119e772]: sample.pdf
+          - generic [ref=f119e406]: PDF
+          - generic [ref=f119e408]: UTF-8
+          - generic [ref=f119e410]: LF
+      - generic [ref=f119e412]:
+        - heading "Command Palette" [level=2] [ref=f119e413]
+        - generic [ref=f119e414]: Search for a command to run...
+    - region "Notifications alt+T"
+  - iframe [ref=f119e416]:
+    

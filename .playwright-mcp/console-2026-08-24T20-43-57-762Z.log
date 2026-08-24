@@ -1,0 +1,4 @@
+[     498ms] [ERROR] Terminal container is not available for xterm. @ http://localhost:9898/src/lib/Terminal.svelte?t=1787602229098:232
+[     602ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/main.js?t=1787604167992:0
+[   47487ms] [ERROR] Terminal container is not available for xterm. @ http://localhost:9898/src/lib/Terminal.svelte?t=1787602229098:232
+[   49295ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/main.js?t=1787604167992:0

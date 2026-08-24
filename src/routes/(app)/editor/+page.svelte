@@ -7,7 +7,7 @@
   import EditorDock from '$lib/components/editor-dock.svelte'
   import { clearAppHeader, setAppHeader } from '$lib/appHeader.svelte'
   import { collectFilePaths, getFocusedFilePath, resolveEditorLayout } from '$lib/editorLayout'
-  import { isRunnablePath } from '$lib/fileTypes'
+  import { isBinaryPreviewPath, isRunnablePath } from '$lib/fileTypes'
   import { setEditorStatus } from '$lib/statusBar.svelte'
   import { toast } from 'svelte-sonner'
   import PlayIcon from '@lucide/svelte/icons/play'
@@ -68,22 +68,23 @@
 
   const breadcrumbParts = $derived(
     activeFile
-      .split('/')
-      .filter(Boolean)
-      .map((part, index, parts) => ({
-        label: part,
-        isLast: index === parts.length - 1,
-      })),
+      ? activeFile
+          .split('/')
+          .filter(Boolean)
+          .map((part, index, parts) => ({
+            label: part,
+            isLast: index === parts.length - 1,
+          }))
+      : [],
   )
 
   function handleContentChange(path: string, content: string) {
+    if (isBinaryPreviewPath(path)) return
     fileContents = { ...fileContents, [path]: content }
     scheduleEditorSave(path, content, (filePath, fileContent) => sandboxStore.write(filePath, fileContent))
   }
 
   function handleCloseFile(path: string) {
-    if (openFiles.length === 1) return
-
     const index = openFiles.indexOf(path)
     if (index === -1) return
 
@@ -94,8 +95,17 @@
 
     if (activeFile === path) {
       const nextIndex = Math.min(index, nextOpenFiles.length - 1)
-      activeFile = nextOpenFiles[nextIndex]!
+      activeFile = nextOpenFiles[nextIndex] ?? ''
     }
+  }
+
+  function handleRenameFile(oldPath: string, newPath: string) {
+    const nextOpenFiles = openFiles.map((filePath) => (filePath === oldPath ? newPath : filePath))
+    const existing = fileContents[oldPath]
+    const { [oldPath]: _, ...remainingContents } = fileContents
+    openFiles = nextOpenFiles
+    fileContents = existing !== undefined ? { ...remainingContents, [newPath]: existing } : remainingContents
+    if (activeFile === oldPath) activeFile = newPath
   }
 
   function handleFileSelect(path: string, content: string) {
@@ -108,6 +118,7 @@
   }
 
   async function handleRun() {
+    if (!activeFile || isBinaryPreviewPath(activeFile)) return
     await sandboxStore.boot()
     const code = fileContents[activeFile] ?? ''
     const path = activeFile.startsWith('/') ? activeFile : `/${activeFile}`
@@ -116,11 +127,10 @@
 
   async function saveActiveFile() {
     const path = activeFile
+    if (!path || isBinaryPreviewPath(path)) return
     const content = fileContents[path] ?? ''
     try {
-      await flushEditorSave(path, content, (filePath, fileContent) =>
-        sandboxStore.write(filePath, fileContent),
-      )
+      await flushEditorSave(path, content, (filePath, fileContent) => sandboxStore.write(filePath, fileContent))
       toast.success(`Saved ${path.split('/').filter(Boolean).at(-1) ?? path}`)
     } catch {
       toast.error('Could not save file')
@@ -189,6 +199,7 @@
     let changed = false
 
     for (const path of paths) {
+      if (isBinaryPreviewPath(path)) continue
       try {
         const content = await fs.readFile(normalizeFilePath(path), 'utf-8')
         if (next[path] !== content) {
@@ -207,7 +218,7 @@
     const fs = sandboxStore.getFs()
     if (!fs) return
 
-    const missing = paths.filter((path) => !(fileContents[path] ?? '').length)
+    const missing = paths.filter((path) => !isBinaryPreviewPath(path) && !(fileContents[path] ?? '').length)
     if (!missing.length) return
 
     const next = { ...fileContents }
@@ -249,5 +260,6 @@
     onContentChange={handleContentChange}
     onCloseFile={handleCloseFile}
     onSelectFile={handleFileSelect}
+    onRenameFile={handleRenameFile}
   />
 </div>

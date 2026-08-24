@@ -1,0 +1,2309 @@
+[     858ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/main.js?t=1787604167992:0
+[   25115ms] [ERROR] Terminal container is not available for xterm. @ http://localhost:9898/src/lib/Terminal.svelte?t=1787602229098:232
+[   25470ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/main.js?t=1787604167992:0
+[   32388ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/main.js?t=1787604167992:0
+[   49935ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/main.js?t=1787604167992:0
+[ 1371984ms] TypeError: tabGroup.tabs is not iterable
+
+	in <unknown>
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at cloneTabGroupConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:304:26)
+    at cloneNodeConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:293:72)
+    at cloneConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:309:30)
+    at Editor_dock (http://localhost:9898/src/lib/components/editor-dock.svelte?t=1787605777977:504:25)
+    at http://localhost:9898/node_modules/.vite/deps/chunk-YHDX67GL.js?v=fe56617c:343:56
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:4191:18)
+    at update_effect (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:4332:21)
+    at create_effect (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:3680:7)
+    at branch (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:3856:10)
+    at http://localhost:9898/node_modules/.vite/deps/chunk-YHDX67GL.js?v=fe56617c:337:17
+[ 1373470ms] TypeError: tabGroup.tabs is not iterable
+
+	in <unknown>
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at cloneTabGroupConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:304:26)
+    at cloneNodeConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:293:72)
+    at cloneConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:309:30)
+    at Editor_dock (http://localhost:9898/src/lib/components/editor-dock.svelte?t=1787605777977:504:25)
+    at http://localhost:9898/node_modules/.vite/deps/chunk-YHDX67GL.js?v=fe56617c:343:56
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:4191:18)
+    at update_effect (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:4332:21)
+    at create_effect (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:3680:7)
+    at branch (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:3856:10)
+    at http://localhost:9898/node_modules/.vite/deps/chunk-YHDX67GL.js?v=fe56617c:337:17
+[ 1374941ms] TypeError: tabGroup.tabs is not iterable
+
+	in <unknown>
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at cloneTabGroupConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:304:26)
+    at cloneNodeConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:293:72)
+    at cloneConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:309:30)
+    at Editor_dock (http://localhost:9898/src/lib/components/editor-dock.svelte?t=1787605777977:504:25)
+    at http://localhost:9898/node_modules/.vite/deps/chunk-YHDX67GL.js?v=fe56617c:343:56
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:4191:18)
+    at update_effect (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:4332:21)
+    at create_effect (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:3680:7)
+    at branch (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:3856:10)
+    at http://localhost:9898/node_modules/.vite/deps/chunk-YHDX67GL.js?v=fe56617c:337:17
+[ 1375948ms] TypeError: tabGroup.tabs is not iterable
+
+	in <unknown>
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at cloneTabGroupConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:304:26)
+    at cloneNodeConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:293:72)
+    at cloneConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:309:30)
+    at Editor_dock (http://localhost:9898/src/lib/components/editor-dock.svelte?t=1787605777977:504:25)
+    at http://localhost:9898/node_modules/.vite/deps/chunk-YHDX67GL.js?v=fe56617c:343:56
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:4191:18)
+    at update_effect (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:4332:21)
+    at create_effect (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:3680:7)
+    at branch (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:3856:10)
+    at http://localhost:9898/node_modules/.vite/deps/chunk-YHDX67GL.js?v=fe56617c:337:17
+[ 1377098ms] TypeError: tabGroup.tabs is not iterable
+
+	in <unknown>
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at cloneTabGroupConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:304:26)
+    at cloneNodeConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:293:72)
+    at cloneConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:309:30)
+    at Editor_dock (http://localhost:9898/src/lib/components/editor-dock.svelte?t=1787605777977:504:25)
+    at http://localhost:9898/node_modules/.vite/deps/chunk-YHDX67GL.js?v=fe56617c:343:56
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:4191:18)
+    at update_effect (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:4332:21)
+    at create_effect (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:3680:7)
+    at branch (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:3856:10)
+    at http://localhost:9898/node_modules/.vite/deps/chunk-YHDX67GL.js?v=fe56617c:337:17
+[ 1378060ms] TypeError: tabGroup.tabs is not iterable
+
+	in <unknown>
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at cloneTabGroupConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:304:26)
+    at cloneNodeConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:293:72)
+    at cloneConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:309:30)
+    at Editor_dock (http://localhost:9898/src/lib/components/editor-dock.svelte?t=1787605777977:504:25)
+    at http://localhost:9898/node_modules/.vite/deps/chunk-YHDX67GL.js?v=fe56617c:343:56
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:4191:18)
+    at update_effect (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:4332:21)
+    at create_effect (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:3680:7)
+    at branch (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:3856:10)
+    at http://localhost:9898/node_modules/.vite/deps/chunk-YHDX67GL.js?v=fe56617c:337:17
+[ 1378977ms] TypeError: tabGroup.tabs is not iterable
+
+	in <unknown>
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at cloneTabGroupConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:304:26)
+    at cloneNodeConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:293:72)
+    at cloneConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:309:30)
+    at Editor_dock (http://localhost:9898/src/lib/components/editor-dock.svelte?t=1787605777977:504:25)
+    at http://localhost:9898/node_modules/.vite/deps/chunk-YHDX67GL.js?v=fe56617c:343:56
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:4191:18)
+    at update_effect (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:4332:21)
+    at create_effect (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:3680:7)
+    at branch (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:3856:10)
+    at http://localhost:9898/node_modules/.vite/deps/chunk-YHDX67GL.js?v=fe56617c:337:17
+[ 1380513ms] TypeError: tabGroup.tabs is not iterable
+
+	in <unknown>
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at cloneTabGroupConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:304:26)
+    at cloneNodeConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:293:72)
+    at cloneConfig (http://localhost:9898/node_modules/.vite/deps/horizon-layout.js?v=fe56617c:309:30)
+    at Editor_dock (http://localhost:9898/src/lib/components/editor-dock.svelte?t=1787605777977:504:25)
+    at http://localhost:9898/node_modules/.vite/deps/chunk-YHDX67GL.js?v=fe56617c:343:56
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:4191:18)
+    at update_effect (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:4332:21)
+    at create_effect (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:3680:7)
+    at branch (http://localhost:9898/node_modules/.vite/deps/chunk-LNEHKLOV.js?v=fe56617c:3856:10)
+    at http://localhost:9898/node_modules/.vite/deps/chunk-YHDX67GL.js?v=fe56617c:337:17
+[ 1381407ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1381408ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1381408ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1381453ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1381453ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605785902 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1381941ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1381942ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1381948ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1382252ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1382252ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605785902 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1381941ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1381948ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1382252ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1382252ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605785902 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1381942ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1383194ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1383279ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1383279ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1383553ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1383553ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605785902 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1383590ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1384498ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1384498ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1384499ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1384548ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1384548ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605785902 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1384498ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1384498ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1384548ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1384548ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605785902 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1384499ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1385533ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1385533ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1386029ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1387291ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1387298ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1387302ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1387682ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1387682ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605785902 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1388545ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1388545ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1388546ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1388582ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1388582ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605785902 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1389866ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1389934ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1389935ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1391566ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1391568ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1391573ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1391580ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1391581ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605785902 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1393217ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1393217ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1393220ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1394419ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1394431ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1394431ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1395032ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1395032ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605785902 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1396301ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1396307ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1396309ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1396504ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1396504ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605801188 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1397456ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1397457ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1397513ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1399035ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1399035ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1399048ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1399048ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605801188 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1399081ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1400426ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1400426ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1400430ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1401857ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1401858ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1401870ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1401870ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605801188 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1401935ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1403158ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1403159ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1403159ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1404837ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1404838ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1405734ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1406457ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1407929ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1407930ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1407932ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1408766ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1408766ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1408793ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1408800ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1408800ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605812676 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1409432ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1409433ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1409433ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1410898ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1410936ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1410937ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1410951ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1410951ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605812676 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1410898ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1410936ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1410951ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1410951ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605812676 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1410937ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1412301ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1412377ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:197:14 `<button>` cannot be a child of `<button>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement
+ @ http://localhost:9898/@vite/client:999
+[ 1412378ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1412435ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1412436ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605812676 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1413076ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1413135ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1413135ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1413878ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1413976ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1413976ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1415034ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1415034ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1415044ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1415044ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605812676 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1415068ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1415034ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1415044ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1415044ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605812676 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1415068ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1415034ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1415776ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1416847ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1416849ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1416850ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1417003ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1417003ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605812676 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1417619ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1418726ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1418726ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1418727ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1418726ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1418727ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1418891ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1418891ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605812676 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1418726ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1421350ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1421351ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1423121ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1423122ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1423123ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1423123ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1423123ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605825785 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1423703ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1424040ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1424040ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1424980ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1424987ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1424992ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1425649ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1425662ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1425664ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1425854ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1425854ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605825785 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1426302ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1427367ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1427430ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1427431ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1427454ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1427454ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605825785 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1428151ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1428165ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1428165ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1428198ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1428198ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605825785 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1428151ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1428165ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1428198ms] [WARNING] The next HMR update will cause the page to reload @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[ 1428198ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://localhost:9898/.svelte-kit/generated/client/nodes/4.js?t=1787605825785 @ http://localhost:9898/@fs/Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.svelte-kit/generated/client/app.js:40
+[ 1428165ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1428947ms] [ERROR] [vite] Internal Server Error
+src/lib/components/SpatialFrame.svelte:261:14 Cannot reassign or bind to each block argument in runes mode. Use the array and index variables instead (e.g. `array[i] = value` instead of `entry = value`, or `bind:value={array[i]}` instead of `bind:value={entry}`)
+https://svelte.dev/e/each_item_invalid_assignment
+ @ http://localhost:9898/@vite/client:999
+[ 1428947ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:9898/src/lib/components/SpatialFrame.svelte:0
+[ 1442063ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1444039ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1446083ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1448029ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1449157ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1450578ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1451661ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1452798ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1455535ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1457378ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1459096ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1462023ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1463874ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1465342ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1466962ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1468285ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1470164ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1471264ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1472518ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1474264ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1475818ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1477092ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1478441ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1479732ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1480991ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1482298ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1483425ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1485377ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1487011ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1488529ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1490501ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1491949ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1493153ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1494209ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1495930ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1497312ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1498798ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1500633ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1502046ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1503524ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1504049ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1506234ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1507550ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1509589ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1511261ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1512584ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1514020ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1515645ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1517224ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1519187ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1521831ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1523514ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1525793ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1528546ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1531217ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1533039ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+[ 1538831ms] TypeError: Cannot read properties of undefined (reading 'split')
+
+	in <unknown>
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in SpatialFrame.svelte
+	in floating-layer-anchor.svelte
+	in context-menu-trigger.svelte
+	in context-menu-trigger.svelte
+	in floating-layer.svelte
+	in context-menu.svelte
+	in context-menu.svelte
+	in context-menu-host.svelte
+	in editor-dock.svelte
+	in +page.svelte
+	in +layout.svelte
+	in +layout.svelte
+	in root.svelte
+	in undefined
+
+    at basename (http://localhost:9898/src/lib/fileIcons.ts:15:15)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:18:37
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)
+    at Module.get (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4454:7)
+    at http://localhost:9898/src/lib/components/file-icon.svelte:23:20
+    at update_reaction (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:4191:18)
+    at execute_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2052:15)
+    at update_derived (http://localhost:9898/node_modules/.vite/deps/chunk-XE46GUXX.js?v=d72f07e4:2071:15)

@@ -4,7 +4,7 @@ export function formatBytes(bytes: number): string {
 	return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-export function countLines(text: string): number {
-	if (!text.length) return 0;
+export function countLines(text: string | null | undefined): number {
+	if (!text) return 0;
 	return text.split('\n').length;
 }

@@ -33,6 +33,37 @@ export function languageLabelForPath(path: string): string {
 		case 'md':
 		case 'markdown':
 			return 'Markdown';
+		case 'csv':
+			return 'CSV';
+		case 'tsv':
+		case 'tab':
+			return 'TSV';
+		case 'pdf':
+			return 'PDF';
+		case 'mp4':
+		case 'webm':
+		case 'ogv':
+		case 'mov':
+		case 'm4v':
+			return 'Video';
+		case 'mp3':
+		case 'wav':
+		case 'flac':
+		case 'aac':
+		case 'm4a':
+		case 'ogg':
+		case 'oga':
+		case 'opus':
+			return 'Audio';
+		case 'png':
+		case 'jpg':
+		case 'jpeg':
+		case 'gif':
+		case 'webp':
+		case 'avif':
+		case 'bmp':
+		case 'ico':
+			return 'Image';
 		default:
 			return 'Plain Text';
 	}

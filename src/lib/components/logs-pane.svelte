@@ -37,7 +37,7 @@
   }
 </script>
 
-<PaneChrome>
+<PaneChrome paneKind="logs">
   {#snippet toolbar()}
     <PaneToolbar>
       {#snippet meta()}

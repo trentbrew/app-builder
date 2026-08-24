@@ -4,6 +4,8 @@ export type EditorActiveTabIndicator = 'none' | 'accent' | 'tint' | 'both';
 
 export type EditorActiveTabAccentColor = 'orange' | 'primary' | 'foreground';
 
+export type EditorPaneStyle = 'flush' | 'cards';
+
 export interface EditorSettings {
 	/** Shared height for tab bars and pane toolbars. */
 	chromeHeight: EditorChromeHeight;
@@ -11,6 +13,12 @@ export interface EditorSettings {
 	activeTabIndicator: EditorActiveTabIndicator;
 	/** Accent color used for the active tab highlight. */
 	activeTabAccentColor: EditorActiveTabAccentColor;
+	/** Pane chrome: edge-to-edge splits or rounded cards with gaps. */
+	paneStyle: EditorPaneStyle;
+	/** Gap between card panes in pixels (cards mode only). */
+	paneGap: number;
+	/** Keep an empty pane (labelled 'Blank') when its last tab closes, instead of removing it. */
+	keepEmptyPanes: boolean;
 }
 
 export interface AppSettings {
@@ -21,9 +29,29 @@ export const DEFAULT_SETTINGS: AppSettings = {
 	editor: {
 		chromeHeight: 'default',
 		activeTabIndicator: 'both',
-		activeTabAccentColor: 'orange'
+		activeTabAccentColor: 'orange',
+		paneStyle: 'flush',
+		paneGap: 6,
+		keepEmptyPanes: false
 	}
 };
+
+export const EDITOR_PANE_GAP_MIN = 2;
+export const EDITOR_PANE_GAP_MAX = 20;
+export const EDITOR_PANE_GAP_DEFAULT = 6;
+
+export const EDITOR_PANE_STYLE_OPTIONS: {
+	value: EditorPaneStyle;
+	label: string;
+	description: string;
+}[] = [
+	{ value: 'flush', label: 'Flush', description: 'Edge-to-edge panes with shared borders' },
+	{
+		value: 'cards',
+		label: 'Rounded cards',
+		description: 'Separate panes with small gaps and rounded corners'
+	}
+];
 
 export const EDITOR_CHROME_HEIGHT_OPTIONS: {
 	value: EditorChromeHeight;

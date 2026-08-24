@@ -9,20 +9,8 @@
 
 <script lang="ts">
   import { Editor } from '@tiptap/core'
-  import StarterKit from '@tiptap/starter-kit'
-  import { Markdown } from '@tiptap/markdown'
-  import TaskList from '@tiptap/extension-task-list'
-  import TaskItem from '@tiptap/extension-task-item'
-  import Placeholder from '@tiptap/extension-placeholder'
-  import Image from '@tiptap/extension-image'
-  import { Callout } from '$lib/tiptap/callout'
-  import { Mermaid } from '$lib/tiptap/mermaid'
-  import { ImagePaste } from '$lib/tiptap/image-paste'
-  import { MarkdownPaste } from '$lib/tiptap/markdown-paste'
-  import { SlashCommand } from '$lib/tiptap/slash-command'
-  import { Mention } from '$lib/tiptap/mention'
-  import { MentionSuggestion } from '$lib/tiptap/mention-suggestion'
-  import type { MentionItem } from '$lib/tiptap/mention-suggestion'
+  import { createMarkdownExtensions } from '$lib/tiptap/markdown-extensions.js'
+  import type { EditorRef } from '$lib/actionContext'
   import { browser } from '$app/environment'
   import { onMount, untrack } from 'svelte'
 
@@ -39,7 +27,7 @@
     onChange: (value: string) => void
     active?: boolean
     onFocus?: () => void
-    onEditorRef?: (ref: MarkdownEditorRef | undefined) => void
+    onEditorRef?: (ref: EditorRef | undefined) => void
     onNavigateFile?: (path: string) => void
     mentionSearch?: (query: string) => MentionItem[] | Promise<MentionItem[]>
   } = $props()
@@ -66,16 +54,24 @@
     onEditorRef?.({
       undo: () => {
         instance.chain().focus().undo().run()
-        canUndo = instance.can().undo()
-        canRedo = instance.can().redo()
       },
       redo: () => {
         instance.chain().focus().redo().run()
-        canUndo = instance.can().undo()
-        canRedo = instance.can().redo()
       },
-      canUndo: () => canUndo,
-      canRedo: () => canRedo,
+      canUndo: () => instance.can().undo(),
+      canRedo: () => instance.can().redo(),
+      cut: () => {
+        instance.chain().focus().run()
+        document.execCommand('cut')
+      },
+      copy: () => {
+        instance.chain().focus().run()
+        document.execCommand('copy')
+      },
+      paste: () => {
+        instance.chain().focus().run()
+        document.execCommand('paste')
+      },
     })
   }
 
@@ -86,33 +82,11 @@
       element: root,
       content: untrack(() => value),
       contentType: 'markdown',
-      extensions: [
-        StarterKit,
-        TaskList,
-        TaskItem.configure({ nested: true }),
-        Placeholder.configure({
-          placeholder: 'Type something…',
-          emptyEditorClass: 'is-editor-empty',
-        }),
-        Image.configure({
-          inline: false,
-          allowBase64: true,
-          HTMLAttributes: { class: 'markdown-image' },
-        }),
-        Callout,
-        Mermaid,
-        Mention.configure({
-          onNavigate: ({ id }) => onNavigateRef.current?.(id),
-        }),
-        MentionSuggestion.configure({
-          char: '@',
-          search: (query) => mentionSearchRef.current(query),
-        }),
-        SlashCommand,
-        ImagePaste,
-        MarkdownPaste,
-        Markdown,
-      ],
+      extensions: createMarkdownExtensions({
+        mode: 'editor',
+        mentionSearch: (query) => mentionSearchRef.current(query),
+        onNavigateFile: (path) => onNavigateRef.current?.(path),
+      }),
       editorProps: {
         attributes: {
           class: 'markdown-editor-content min-h-full outline-none',

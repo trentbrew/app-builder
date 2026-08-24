@@ -1,0 +1,312 @@
+- generic [ref=f1019e1]:
+  - generic [ref=f1019e2]:
+    - generic [ref=f1019e3]:
+      - banner [ref=f1019e4]:
+        - navigation "breadcrumb" [ref=f1019e6]:
+          - list [ref=f1019e7]:
+            - listitem [ref=f1019e8]:
+              - link "App.svelte" [disabled] [ref=f1019e9]
+        - button "Open command palette" [ref=f1019e11]:
+          - generic [ref=f1019e13]: Search commands...
+          - generic [ref=f1019e14]:
+            - generic: ⌘
+            - generic: K
+        - generic [ref=f1019e15]:
+          - button "Settings" [ref=f1019e16]
+          - button "Reboot" [ref=f1019e17]
+          - button "Running on localhost:3100" [disabled]
+      - main [ref=f1019e18]:
+        - generic [ref=f1019e19]:
+          - navigation "Workspace projections" [ref=f1019e20]:
+            - generic [ref=f1019e21]:
+              - link "Editor" [ref=f1019e22] [cursor=pointer]:
+                - /url: /editor
+              - button "Plugins" [ref=f1019e25]
+          - generic [ref=f1019e33]:
+            - generic [ref=f1019e35]:
+              - generic [ref=f1019e37]:
+                - tablist [ref=f1019e39]:
+                  - tab "Files" [ref=f1019e40]
+                - generic [ref=f1019e53]:
+                  - generic [ref=f1019e54]:
+                    - generic [ref=f1019e55]: Bun sandbox
+                    - generic [ref=f1019e57]:
+                      - button "New file" [ref=f1019e58] [cursor=pointer]
+                      - button "New folder" [ref=f1019e60] [cursor=pointer]
+                      - button "Expand all folders" [ref=f1019e62] [cursor=pointer]
+                      - button "Collapse all folders" [ref=f1019e64] [cursor=pointer]
+                      - button "Refresh file tree" [ref=f1019e66] [cursor=pointer]
+                      - button "Split pane" [disabled] [ref=f1019e68]
+                  - tree "Project files" [ref=f1019e74]:
+                    - group [ref=f1019e75]:
+                      - treeitem "node_modules" [expanded] [ref=f1019e78] [cursor=pointer]
+                      - treeitem "App.svelte" [selected] [ref=f1019e82] [cursor=pointer]
+                      - treeitem "bun.lock" [ref=f1019e85] [cursor=pointer]
+                      - treeitem "index.html" [ref=f1019e88] [cursor=pointer]
+                      - treeitem "main.js" [ref=f1019e91] [cursor=pointer]
+                      - treeitem "package.json" [ref=f1019e94] [cursor=pointer]
+                      - treeitem "svelte.config.js" [ref=f1019e97] [cursor=pointer]
+                      - treeitem "vite.config.js" [ref=f1019e100] [cursor=pointer]
+              - slider "Resize pane 1" [ref=f1019e102]
+              - generic [ref=f1019e104]:
+                - tablist [ref=f1019e106]:
+                  - tab "App.svelte Close App.svelte" [ref=f1019e107]:
+                    - generic [ref=f1019e108]: App.svelte
+                    - button "Close App.svelte" [ref=f1019e115] [cursor=pointer]
+                - generic [ref=f1019e122]:
+                  - generic [ref=f1019e123]:
+                    - generic [ref=f1019e124]:
+                      - generic [ref=f1019e125]: Svelte
+                      - generic [ref=f1019e126]: 1010 B
+                      - generic [ref=f1019e127]: 66 lines
+                    - generic [ref=f1019e128]:
+                      - button "Copy to clipboard" [ref=f1019e129] [cursor=pointer]
+                      - button "Sync to sandbox" [ref=f1019e131] [cursor=pointer]
+                      - button "Split pane" [disabled] [ref=f1019e133]
+                  - generic [ref=f1019e140]:
+                    - generic [ref=f1019e141]:
+                      - generic [ref=f1019e142]:
+                        - generic [ref=f1019e143]: ⌄
+                        - generic [ref=f1019e144]: ⌄
+                        - generic [ref=f1019e145]: ⌄
+                        - generic [ref=f1019e146]: ⌄
+                        - generic [ref=f1019e147]: ⌄
+                        - generic [ref=f1019e148]: ⌄
+                        - generic [ref=f1019e149]: ⌄
+                        - generic [ref=f1019e150]: ⌄
+                        - generic [ref=f1019e151]: ⌄
+                        - generic [ref=f1019e152]: ⌄
+                        - generic [ref=f1019e153]: ⌄
+                      - generic [ref=f1019e154]:
+                        - generic [ref=f1019e155]: "1"
+                        - generic [ref=f1019e156]: "2"
+                        - generic [ref=f1019e157]: "3"
+                        - generic [ref=f1019e158]: "4"
+                        - generic [ref=f1019e159]: "5"
+                        - generic [ref=f1019e160]: "6"
+                        - generic [ref=f1019e161]: "7"
+                        - generic [ref=f1019e162]: "8"
+                        - generic [ref=f1019e163]: "9"
+                        - generic [ref=f1019e164]: "10"
+                        - generic [ref=f1019e165]: "11"
+                        - generic [ref=f1019e166]: "12"
+                        - generic [ref=f1019e167]: "13"
+                        - generic [ref=f1019e168]: "14"
+                        - generic [ref=f1019e169]: "15"
+                        - generic [ref=f1019e170]: "16"
+                        - generic [ref=f1019e171]: "17"
+                        - generic [ref=f1019e172]: "18"
+                        - generic [ref=f1019e173]: "19"
+                        - generic [ref=f1019e174]: "20"
+                        - generic [ref=f1019e175]: "21"
+                        - generic [ref=f1019e176]: "22"
+                        - generic [ref=f1019e177]: "23"
+                        - generic [ref=f1019e178]: "24"
+                        - generic [ref=f1019e179]: "25"
+                        - generic [ref=f1019e180]: "26"
+                        - generic [ref=f1019e181]: "27"
+                        - generic [ref=f1019e182]: "28"
+                        - generic [ref=f1019e183]: "29"
+                        - generic [ref=f1019e184]: "30"
+                        - generic [ref=f1019e185]: "31"
+                        - generic [ref=f1019e186]: "32"
+                        - generic [ref=f1019e187]: "33"
+                        - generic [ref=f1019e188]: "34"
+                        - generic [ref=f1019e189]: "35"
+                        - generic [ref=f1019e190]: "36"
+                        - generic [ref=f1019e191]: "37"
+                        - generic [ref=f1019e192]: "38"
+                        - generic [ref=f1019e193]: "39"
+                        - generic [ref=f1019e194]: "40"
+                        - generic [ref=f1019e195]: "41"
+                        - generic [ref=f1019e196]: "42"
+                        - generic [ref=f1019e197]: "43"
+                        - generic [ref=f1019e198]: "44"
+                        - generic [ref=f1019e199]: "45"
+                        - generic [ref=f1019e200]: "46"
+                        - generic [ref=f1019e201]: "47"
+                        - generic [ref=f1019e202]: "48"
+                        - generic [ref=f1019e203]: "49"
+                        - generic [ref=f1019e204]: "50"
+                        - generic [ref=f1019e205]: "51"
+                        - generic [ref=f1019e206]: "52"
+                        - generic [ref=f1019e207]: "53"
+                        - generic [ref=f1019e208]: "54"
+                        - generic [ref=f1019e209]: "55"
+                        - generic [ref=f1019e210]: "56"
+                        - generic [ref=f1019e211]: "57"
+                        - generic [ref=f1019e212]: "58"
+                        - generic [ref=f1019e213]: "59"
+                        - generic [ref=f1019e214]: "60"
+                        - generic [ref=f1019e215]: "61"
+                        - generic [ref=f1019e216]: "62"
+                        - generic [ref=f1019e217]: "63"
+                        - generic [ref=f1019e218]: "64"
+                        - generic [ref=f1019e219]: "65"
+                        - generic [ref=f1019e220]: "66"
+                    - textbox [ref=f1019e221]:
+                      - generic [ref=f1019e222]: <script>
+                      - generic [ref=f1019e223]: let count = $state(0);
+                      - generic [ref=f1019e224]: </script>
+                      - generic [ref=f1019e226]: <main>
+                      - generic [ref=f1019e227]: "<h1>{count}</h1>"
+                      - generic [ref=f1019e228]: <div class="row">
+                      - generic [ref=f1019e229]: "<button onclick={() => count--}>−</button>"
+                      - generic [ref=f1019e230]: "<button onclick={() => count++}>+</button>"
+                      - generic [ref=f1019e231]: </div>
+                      - generic [ref=f1019e232]: "<button class=\"reset\" onclick={() => (count = 0)}>reset</button>"
+                      - generic [ref=f1019e233]: </main>
+                      - generic [ref=f1019e235]: <style>
+                      - generic [ref=f1019e236]: ":global(body) {"
+                      - generic [ref=f1019e237]: "margin: 0;"
+                      - generic [ref=f1019e238]: "min-height: 100vh;"
+                      - generic [ref=f1019e239]: "display: grid;"
+                      - generic [ref=f1019e240]: "place-items: center;"
+                      - generic [ref=f1019e241]: "font-family: system-ui, sans-serif;"
+                      - generic [ref=f1019e242]: "background: #0f0f12;"
+                      - generic [ref=f1019e243]: "color: #f4f4f5;"
+                      - generic [ref=f1019e244]: "}"
+                      - generic [ref=f1019e246]: "main {"
+                      - generic [ref=f1019e247]: "display: grid;"
+                      - generic [ref=f1019e248]: "gap: 1rem;"
+                      - generic [ref=f1019e249]: "justify-items: center;"
+                      - generic [ref=f1019e250]: "}"
+                      - generic [ref=f1019e252]: "h1 {"
+                      - generic [ref=f1019e253]: "margin: 0;"
+                      - generic [ref=f1019e254]: "font-size: 4rem;"
+                      - generic [ref=f1019e255]: "font-weight: 600;"
+                      - generic [ref=f1019e256]: "line-height: 1;"
+                      - generic [ref=f1019e257]: "font-variant-numeric: tabular-nums;"
+                      - generic [ref=f1019e258]: "}"
+                      - generic [ref=f1019e260]: ".row {"
+                      - generic [ref=f1019e261]: "display: flex;"
+                      - generic [ref=f1019e262]: "gap: 0.5rem;"
+                      - generic [ref=f1019e263]: "}"
+                      - generic [ref=f1019e265]: "button {"
+                      - generic [ref=f1019e266]: "font: inherit;"
+                      - generic [ref=f1019e267]: "font-size: 1.25rem;"
+                      - generic [ref=f1019e268]: "min-width: 3rem;"
+                      - generic [ref=f1019e269]: "padding: 0.5rem 0.75rem;"
+                      - generic [ref=f1019e270]: "border: 1px solid #3f3f46;"
+                      - generic [ref=f1019e271]: "border-radius: 0.5rem;"
+                      - generic [ref=f1019e272]: "background: #18181b;"
+                      - generic [ref=f1019e273]: "color: inherit;"
+                      - generic [ref=f1019e274]: "cursor: pointer;"
+                      - generic [ref=f1019e275]: "}"
+                      - generic [ref=f1019e277]: "button:hover {"
+                      - generic [ref=f1019e278]: "background: #27272a;"
+                      - generic [ref=f1019e279]: "}"
+                      - generic [ref=f1019e281]: ".reset {"
+                      - generic [ref=f1019e282]: "font-size: 0.875rem;"
+                      - generic [ref=f1019e283]: "min-width: auto;"
+                      - generic [ref=f1019e284]: "opacity: 0.7;"
+                      - generic [ref=f1019e285]: "}"
+                      - generic [ref=f1019e286]: </style>
+              - slider "Resize pane 2" [ref=f1019e293]
+              - generic [ref=f1019e295]:
+                - tablist [ref=f1019e297]:
+                  - tab "Preview" [ref=f1019e298]
+                - generic [ref=f1019e312]:
+                  - generic [ref=f1019e313]:
+                    - generic [ref=f1019e314]: Bun
+                    - generic /preview/4cf126f2/ [ref=f1019e315]: localhost:3100
+                  - generic [ref=f1019e316]:
+                    - button "Refresh preview" [ref=f1019e317] [cursor=pointer]
+                    - button "Copy preview URL" [ref=f1019e319] [cursor=pointer]
+                    - button "Open preview in new tab" [ref=f1019e321] [cursor=pointer]
+                    - button "Split pane" [disabled] [ref=f1019e323]
+                    - group "Console pane" [ref=f1019e326]:
+                      - button "Hide console" [pressed] [ref=f1019e327] [cursor=pointer]
+              - slider "Resize pane 3" [ref=f1019e333]
+              - generic [ref=f1019e335]:
+                - generic [ref=f1019e337]:
+                  - tablist [ref=f1019e339]:
+                    - tab "Chat" [ref=f1019e340]
+                  - generic [ref=f1019e352]:
+                    - button [ref=f1019e353]
+                    - generic [ref=f1019e354]:
+                      - generic [ref=f1019e355]:
+                        - generic [ref=f1019e356]: 0 messages
+                        - generic [ref=f1019e359]:
+                          - button "Reset conversation" [ref=f1019e360] [cursor=pointer]
+                          - button "Split pane" [disabled] [ref=f1019e362]
+                      - generic [ref=f1019e366]:
+                        - generic [ref=f1019e369]:
+                          - generic [ref=f1019e371]: How can I help?
+                          - generic [ref=f1019e372]: Ask about your project or attach files for context. Replies stream from local Ollama (deepseek-r1:8b) and render with the same markdown formatter as your notes.
+                        - generic [ref=f1019e373]:
+                          - group [ref=f1019e374]:
+                            - textbox "Message" [ref=f1019e375]:
+                              - /placeholder: Message the assistant…
+                            - group [ref=f1019e376]:
+                              - button "Add attachments" [ref=f1019e377]
+                              - button "Send" [disabled]
+                          - button "Choose model" [ref=f1019e379] [cursor=pointer]:
+                            - generic [ref=f1019e380]: deepseek-r1:8b
+                - slider "Resize pane 1" [ref=f1019e382]
+                - generic [ref=f1019e384]:
+                  - tablist [ref=f1019e386]:
+                    - tab "Server logs" [ref=f1019e387]
+                  - generic [ref=f1019e400]:
+                    - generic [ref=f1019e401]:
+                      - generic [ref=f1019e402]:
+                        - generic [ref=f1019e403]: 200 entries
+                        - generic [ref=f1019e404]: 80 visible lines
+                      - generic [ref=f1019e405]:
+                        - button "Copy logs" [ref=f1019e406] [cursor=pointer]
+                        - button "Split pane" [disabled] [ref=f1019e408]
+                    - generic [ref=f1019e410]: Terminal 5b17a16b opened (/bin/zsh). Terminal 5ace50c7 opened (/bin/zsh). Terminal e7284e00 opened (/bin/zsh). Terminal 78320300 opened (/bin/zsh). Terminal 54abf9bf opened (/bin/zsh). Terminal d87c16ae opened (/bin/zsh). Terminal e71075b4 opened (/bin/zsh). Terminal 3606076c opened (/bin/zsh). Terminal 1afb0743 opened (/bin/zsh). Terminal 6b041c71 opened (/bin/zsh). Terminal f247aa87 opened (/bin/zsh). Terminal 7aeb4027 opened (/bin/zsh). Terminal 00656936 opened (/bin/zsh). Terminal 62743df1 opened (/bin/zsh). Terminal c06e848d opened (/bin/zsh). Terminal da1b5484 opened (/bin/zsh). Terminal 4b94091b opened (/bin/zsh). Terminal a78bdfd9 opened (/bin/zsh). Terminal 087699b4 opened (/bin/zsh). Terminal 404157fa opened (/bin/zsh). Terminal 85bb07ef opened (/bin/zsh). Terminal b18dce4f opened (/bin/zsh). Terminal 2af0295f opened (/bin/zsh). Terminal 9fd52edd opened (/bin/zsh). Terminal 599076b1 opened (/bin/zsh). Terminal 0a7bfb64 opened (/bin/zsh). Terminal 97eaef53 opened (/bin/zsh). Terminal 3ca28159 opened (/bin/zsh). Terminal 023d324d opened (/bin/zsh). Terminal ef95fde3 opened (/bin/zsh). Terminal 58198e62 opened (/bin/zsh). Terminal b00d60d6 opened (/bin/zsh). Terminal 4e59346d opened (/bin/zsh). Terminal f4c75f3b opened (/bin/zsh). Terminal db4ad5e6 opened (/bin/zsh). Terminal ca164be6 opened (/bin/zsh). Terminal 26d8b943 opened (/bin/zsh). Terminal 8e7360ca opened (/bin/zsh). Terminal 374b6305 opened (/bin/zsh). Terminal 9d0f20d9 opened (/bin/zsh). Terminal f1ddae5c opened (/bin/zsh). Terminal 698d0444 opened (/bin/zsh). Terminal fb9dbdc8 opened (/bin/zsh). Terminal e06fa31f opened (/bin/zsh). Terminal 446871c4 opened (/bin/zsh). Terminal d9b06fe3 opened (/bin/zsh). Terminal 4198b092 opened (/bin/zsh). Terminal ea1093bc opened (/bin/zsh). Terminal 32109197 opened (/bin/zsh). Terminal c4d30c64 opened (/bin/zsh). Terminal 6240f6b8 opened (/bin/zsh). Terminal 570400ec opened (/bin/zsh). Terminal 07bc253c opened (/bin/zsh). Terminal e1857393 opened (/bin/zsh). Terminal 4800198f opened (/bin/zsh). Terminal 542d42d4 opened (/bin/zsh). Terminal 1ce3bb64 opened (/bin/zsh). Terminal e79a4ba7 opened (/bin/zsh). Terminal f6e54b88 opened (/bin/zsh). Terminal ad570c13 opened (/bin/zsh). Terminal 6ff8d3fd opened (/bin/zsh). Terminal 3c0e899c opened (/bin/zsh). Terminal 9d331ed0 opened (/bin/zsh). Terminal edb17b46 opened (/bin/zsh). Terminal 5fd64b47 opened (/bin/zsh). Terminal 49d1f529 opened (/bin/zsh). Terminal 7ab69741 opened (/bin/zsh). Terminal 2b436773 opened (/bin/zsh). Terminal 41407d98 opened (/bin/zsh). Terminal a84b1c36 opened (/bin/zsh). Terminal 6bf538b5 opened (/bin/zsh). Terminal 3eb61c24 opened (/bin/zsh). Terminal f2fbf12e opened (/bin/zsh). Terminal 21ae67c5 opened (/bin/zsh). Terminal 87b1349d opened (/bin/zsh). Terminal 17437256 opened (/bin/zsh). Terminal 1789282c opened (/bin/zsh). Terminal 13732663 opened (/bin/zsh). Terminal fbfc234c opened (/bin/zsh). Terminal 0393f519 opened (/bin/zsh).
+                - slider "Resize pane 2" [ref=f1019e413]
+                - generic [ref=f1019e415]:
+                  - tablist [ref=f1019e417]:
+                    - tab "Console" [ref=f1019e418]
+                  - generic [ref=f1019e431]:
+                    - generic [ref=f1019e432]:
+                      - generic [ref=f1019e433]: 2 entries
+                      - generic [ref=f1019e435]:
+                        - button "Clear console" [ref=f1019e436] [cursor=pointer]
+                        - button "Copy console output" [ref=f1019e438] [cursor=pointer]
+                        - button "Split pane" [disabled] [ref=f1019e440]
+                    - generic [ref=f1019e444]:
+                      - generic [ref=f1019e445]:
+                        - generic [ref=f1019e446]: 12:11:19
+                        - generic [ref=f1019e447]: debug
+                        - generic [ref=f1019e448]: "[vite] connecting..."
+                      - generic [ref=f1019e449]:
+                        - generic [ref=f1019e450]: 12:11:22
+                        - generic [ref=f1019e451]: debug
+                        - generic [ref=f1019e452]: "[vite] connected."
+            - slider "Resize pane 1" [ref=f1019e453]
+            - generic [ref=f1019e455]:
+              - generic [ref=f1019e456]:
+                - tablist [ref=f1019e457]:
+                  - tab "Terminal 1" [ref=f1019e458]
+                - button "New terminal" [ref=f1019e469] [cursor=pointer]
+              - generic [ref=f1019e474]:
+                - generic [ref=f1019e475]:
+                  - generic [ref=f1019e476]:
+                    - generic [ref=f1019e477]: Shell
+                    - generic "59437a62-ad38-423a-8ecb-80484fb6fd69" [ref=f1019e478]: 59437a62
+                  - button "Split pane" [disabled] [ref=f1019e480]
+                - generic [ref=f1019e489]:
+                  - textbox "Terminal input" [ref=f1019e490]
+                  - generic [ref=f1019e491]:
+                    - generic [ref=f1019e492]:
+                      - generic [ref=f1019e493]: ~/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.sandboxes/4cf126f2
+                      - generic [ref=f1019e494]: main*
+                    - generic [ref=f1019e495]: ❯
+      - contentinfo "Status bar" [ref=f1019e521]:
+        - generic [ref=f1019e522]:
+          - generic [ref=f1019e523]: svelte-repl
+          - generic [ref=f1019e525]: Ready
+        - generic [ref=f1019e527]:
+          - generic "/App.svelte" [ref=f1019e529]: App.svelte
+          - generic [ref=f1019e530]: Svelte
+          - generic [ref=f1019e532]: UTF-8
+          - generic [ref=f1019e534]: LF
+      - generic [ref=f1019e536]:
+        - heading "Command Palette" [level=2] [ref=f1019e537]
+        - generic [ref=f1019e538]: Search for a command to run...
+    - region "Notifications alt+T"
+  - iframe [ref=f1019e540]:
+    

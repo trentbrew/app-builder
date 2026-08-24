@@ -75,7 +75,7 @@
   }
 </script>
 
-<PaneChrome>
+<PaneChrome paneKind="preview">
   {#snippet toolbar()}
     <PaneToolbar>
       {#snippet meta()}

@@ -47,7 +47,7 @@
   }
 </script>
 
-<PaneChrome>
+<PaneChrome paneKind="settings">
   {#snippet toolbar()}
     <PaneToolbar>
       {#snippet meta()}

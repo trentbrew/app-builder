@@ -1,0 +1,24 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - paragraph [ref=e7]: App Builder
+      - button "Open command palette" [ref=e9]:
+        - generic [ref=e13]: Search commands...
+        - generic [ref=e14]:
+          - generic: ⌘
+          - generic: K
+      - button "Settings" [ref=e16]
+    - main [ref=e17]:
+      - heading "Welcome to SvelteKit" [level=1] [ref=e18]
+      - paragraph [ref=e19]:
+        - text: Visit
+        - link "svelte.dev/docs/kit" [ref=e20] [cursor=pointer]:
+          - /url: https://svelte.dev/docs/kit
+        - text: to read the documentation
+    - contentinfo "Status bar" [ref=e21]:
+      - generic [ref=e22]: App Builder
+      - generic [ref=e25]: UTF-8
+    - generic [ref=e28]:
+      - heading "Command Palette" [level=2] [ref=e29]
+      - generic [ref=e30]: Search for a command to run...
+  - region "Notifications alt+T"

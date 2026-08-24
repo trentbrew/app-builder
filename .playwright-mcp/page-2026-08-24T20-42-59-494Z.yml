@@ -1,0 +1,153 @@
+- generic [active] [ref=f524e1]:
+  - generic [ref=f524e2]:
+    - generic [ref=f524e3]:
+      - banner [ref=f524e4]:
+        - navigation "breadcrumb" [ref=f524e354]:
+          - list [ref=f524e355]:
+            - listitem [ref=f524e356]:
+              - link "App.svelte" [disabled] [ref=f524e357]
+        - button "Open command palette" [ref=f524e9]:
+          - generic [ref=f524e11]: Search commands...
+          - generic [ref=f524e12]:
+            - generic: ⌘
+            - generic: K
+        - generic [ref=f524e13]:
+          - button "Settings" [ref=f524e14]
+          - button "Reboot" [ref=f524e15]
+          - button "Running on localhost:3107" [disabled]
+      - main [ref=f524e16]:
+        - generic [ref=f524e17]:
+          - navigation "Workspace projections" [ref=f524e18]:
+            - generic [ref=f524e19]:
+              - link "Editor" [ref=f524e20] [cursor=pointer]:
+                - /url: /editor
+              - button "Plugins" [ref=f524e23]
+          - generic [ref=f524e31]:
+            - generic [ref=f524e359]:
+              - generic [ref=f524e361]:
+                - tablist [ref=f524e363]:
+                  - tab "Files" [ref=f524e364]
+                  - tab "App.svelte Close App.svelte" [ref=f524e372]:
+                    - generic [ref=f524e373]: App.svelte
+                    - button "Close App.svelte" [ref=f524e380] [cursor=pointer]
+                - generic [ref=f524e387]:
+                  - generic [ref=f524e388]:
+                    - generic [ref=f524e389]:
+                      - generic [ref=f524e390]: Svelte
+                      - generic [ref=f524e391]: 0 B
+                      - generic [ref=f524e392]: 0 lines
+                    - generic [ref=f524e393]:
+                      - button "Copy to clipboard" [ref=f524e394] [cursor=pointer]
+                      - button "Sync to sandbox" [ref=f524e396] [cursor=pointer]
+                      - button "Split pane" [ref=f524e398] [cursor=pointer]
+                  - generic [ref=f524e405]:
+                    - generic [ref=f524e406]: "1"
+                    - textbox [ref=f524e411]
+              - slider "Resize pane 1" [ref=f524e416]
+              - generic [ref=f524e418]:
+                - tablist [ref=f524e420]:
+                  - tab "Preview" [ref=f524e421]
+                - generic [ref=f524e435]:
+                  - generic [ref=f524e436]:
+                    - generic [ref=f524e437]: Bun
+                    - generic /preview/58d1abba/ [ref=f524e438]: localhost:3107
+                  - generic [ref=f524e439]:
+                    - button "Refresh preview" [ref=f524e440] [cursor=pointer]
+                    - button "Copy preview URL" [ref=f524e442] [cursor=pointer]
+                    - button "Open preview in new tab" [ref=f524e444] [cursor=pointer]
+                    - button "Split pane" [disabled] [ref=f524e446]
+                    - group "Console pane" [ref=f524e449]:
+                      - button "Hide console" [pressed] [ref=f524e450] [cursor=pointer]
+              - slider "Resize pane 2" [ref=f524e456]
+              - generic [ref=f524e458]:
+                - generic [ref=f524e460]:
+                  - tablist [ref=f524e462]:
+                    - tab "Chat" [ref=f524e463]
+                  - generic [ref=f524e475]:
+                    - button [ref=f524e476]
+                    - generic [ref=f524e477]:
+                      - generic [ref=f524e478]:
+                        - generic [ref=f524e479]: 0 messages
+                        - generic [ref=f524e482]:
+                          - button "Reset conversation" [ref=f524e483] [cursor=pointer]
+                          - button "Split pane" [disabled] [ref=f524e485]
+                      - generic [ref=f524e489]:
+                        - generic [ref=f524e492]:
+                          - generic [ref=f524e494]: How can I help?
+                          - generic [ref=f524e495]: Ask about your project or attach files for context. Replies stream from local Ollama (deepseek-r1:8b) and render with the same markdown formatter as your notes.
+                        - generic [ref=f524e496]:
+                          - group [ref=f524e497]:
+                            - textbox "Message" [ref=f524e498]:
+                              - /placeholder: Message the assistant…
+                            - group [ref=f524e499]:
+                              - button "Add attachments" [ref=f524e500]
+                              - button "Send" [disabled]
+                          - button "Choose model" [ref=f524e502] [cursor=pointer]:
+                            - generic [ref=f524e503]: deepseek-r1:8b
+                - slider "Resize pane 1" [ref=f524e505]
+                - generic [ref=f524e507]:
+                  - tablist [ref=f524e509]:
+                    - tab "Server logs" [ref=f524e510]
+                  - generic [ref=f524e523]:
+                    - generic [ref=f524e524]:
+                      - generic [ref=f524e525]:
+                        - generic [ref=f524e526]: 67 entries
+                        - generic [ref=f524e527]: 67 visible lines
+                      - generic [ref=f524e528]:
+                        - button "Copy logs" [ref=f524e529] [cursor=pointer]
+                        - button "Split pane" [disabled] [ref=f524e531]
+                    - generic [ref=f524e533]: "Starting Bun sandbox… Restored Bun sandbox session 58d1abba. Sandbox 58d1abba created. Mounting project files… Installing dependencies… Dependencies installed. Starting dev server… [install] bun install v1.4.0 (34cbb9a40) [install] + @sveltejs/vite-plugin-svelte@5.1.1 [install] + vite@6.3.2 [install] + svelte@5.56.3 [install] 40 packages installed [63.00ms] [install] Resolving dependencies [install] Resolved, downloaded and extracted [0] [install] Saved lockfile [dev] $ vite --host 127.0.0.1 Terminal e2f5c2be opened (/bin/zsh). [dev] 1:17:00 PM [vite] (client) Forced re-optimization of dependencies [dev] VITE v6.3.2 ready in 1010 ms [dev] ➜ Local: http://127.0.0.1:3107/ Server ready at http://127.0.0.1:3107/ Wrote /sample.pdf Terminal 90a6b7c4 opened (/bin/zsh). Wrote /sample.pdf Wrote /sample.pdf Terminal c7268c5e opened (/bin/zsh). Terminal ffc226bd opened (/bin/zsh). Terminal 8be8293a opened (/bin/zsh). Terminal d51a2b71 opened (/bin/zsh). Terminal 96ee7034 opened (/bin/zsh). Terminal c2ba2c29 opened (/bin/zsh). Terminal ea525059 opened (/bin/zsh). Terminal 31ac8301 opened (/bin/zsh). Terminal febdb359 opened (/bin/zsh). Terminal 23443279 opened (/bin/zsh). Terminal 3dcd2684 opened (/bin/zsh). Terminal 04030554 opened (/bin/zsh). Terminal ad062b31 opened (/bin/zsh). Terminal 24517ee5 opened (/bin/zsh). Terminal a389aa58 opened (/bin/zsh). Terminal 58f35c14 opened (/bin/zsh). Terminal 06258e53 opened (/bin/zsh). Terminal 24723a69 opened (/bin/zsh). Terminal 4c3982c3 opened (/bin/zsh). Terminal 42f87a67 opened (/bin/zsh). Terminal a53b4465 opened (/bin/zsh). Terminal c3631dd1 opened (/bin/zsh). Terminal 39b4ea58 opened (/bin/zsh). Terminal 2a676c15 opened (/bin/zsh). Wrote /welcome.md Terminal 88dcf586 opened (/bin/zsh). Terminal d4f975a1 opened (/bin/zsh). Terminal c44f6310 opened (/bin/zsh). Terminal f150c78f opened (/bin/zsh). Terminal d2780eb1 opened (/bin/zsh). Terminal e071dc9f opened (/bin/zsh). Terminal 9e2fea63 opened (/bin/zsh). Terminal d02043dd opened (/bin/zsh). Terminal ba0f904b opened (/bin/zsh). Terminal 07b4dc68 opened (/bin/zsh). Terminal c66b5aac opened (/bin/zsh). Terminal 33aa3001 opened (/bin/zsh). Terminal 2c349589 opened (/bin/zsh). Terminal 33854036 opened (/bin/zsh). Terminal c19e5981 opened (/bin/zsh). Terminal ca83b743 opened (/bin/zsh). Terminal 194ef15c opened (/bin/zsh)."
+                - slider "Resize pane 2" [ref=f524e536]
+                - generic [ref=f524e538]:
+                  - tablist [ref=f524e540]:
+                    - tab "Console" [ref=f524e541]
+                  - generic [ref=f524e554]:
+                    - generic [ref=f524e555]:
+                      - generic [ref=f524e556]: 2 entries
+                      - generic [ref=f524e558]:
+                        - button "Clear console" [ref=f524e559] [cursor=pointer]
+                        - button "Copy console output" [ref=f524e561] [cursor=pointer]
+                        - button "Split pane" [disabled] [ref=f524e563]
+                    - generic [ref=f524e567]:
+                      - generic [ref=f524e568]:
+                        - generic [ref=f524e569]: 13:42:30
+                        - generic [ref=f524e570]: debug
+                        - generic [ref=f524e571]: "[vite] connecting..."
+                      - generic [ref=f524e572]:
+                        - generic [ref=f524e573]: 13:42:30
+                        - generic [ref=f524e574]: debug
+                        - generic [ref=f524e575]: "[vite] connected."
+            - slider "Resize pane 1" [ref=f524e576]
+            - generic [ref=f524e578]:
+              - generic [ref=f524e579]:
+                - tablist [ref=f524e580]:
+                  - tab "Terminal 1" [ref=f524e581]
+                - button "New terminal" [ref=f524e592] [cursor=pointer]
+              - generic [ref=f524e597]:
+                - generic [ref=f524e598]:
+                  - generic [ref=f524e599]:
+                    - generic [ref=f524e600]: Shell
+                    - generic "5078ea7f-f918-4854-8c03-481b5ad3377e" [ref=f524e601]: 5078ea7f
+                  - button "Split pane" [disabled] [ref=f524e603]
+                - generic [ref=f524e612]:
+                  - textbox "Terminal input" [ref=f524e613]
+                  - generic [ref=f524e614]:
+                    - generic [ref=f524e615]:
+                      - generic [ref=f524e616]: ~/TURTLE/Projects/Sandbox/svelte-wc/app-builder/.sandboxes/58d1abba
+                      - generic [ref=f524e617]: main*
+                    - generic [ref=f524e618]: ❯
+      - contentinfo "Status bar" [ref=f524e334]:
+        - generic [ref=f524e335]:
+          - generic [ref=f524e336]: svelte-repl
+          - generic [ref=f524e338]: Ready
+        - generic [ref=f524e340]:
+          - generic "/App.svelte" [ref=f524e342]: App.svelte
+          - generic [ref=f524e343]: Svelte
+          - generic [ref=f524e345]: UTF-8
+          - generic [ref=f524e347]: LF
+      - generic [ref=f524e349]:
+        - heading "Command Palette" [level=2] [ref=f524e350]
+        - generic [ref=f524e351]: Search for a command to run...
+    - region "Notifications alt+T"
+  - iframe [ref=f524e353]:
+    

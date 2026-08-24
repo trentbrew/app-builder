@@ -1,0 +1,231 @@
+- generic [ref=f541e2]:
+  - generic [ref=f541e3]:
+    - banner [ref=f541e4]:
+      - navigation "breadcrumb" [ref=f541e6]:
+        - list [ref=f541e7]:
+          - listitem [ref=f541e8]:
+            - link "App.svelte" [disabled] [ref=f541e9]
+      - button "Open command palette" [ref=f541e11]:
+        - generic [ref=f541e13]: Search commands...
+        - generic [ref=f541e14]:
+          - generic: ⌘
+          - generic: K
+      - generic [ref=f541e15]:
+        - button "Settings" [ref=f541e16]
+        - button "Reboot" [ref=f541e17]
+        - button "Run" [ref=f541e18]
+    - main [ref=f541e19]:
+      - generic [ref=f541e20]:
+        - navigation "Workspace projections" [ref=f541e21]:
+          - generic [ref=f541e22]:
+            - link "Editor" [ref=f541e23] [cursor=pointer]:
+              - /url: /editor
+            - button "Plugins" [ref=f541e26]
+        - generic [ref=f541e34]:
+          - generic [ref=f541e36]:
+            - generic [ref=f541e38]:
+              - tablist [ref=f541e40]:
+                - tab "Files" [ref=f541e41]
+              - generic [ref=f541e54]:
+                - generic [ref=f541e55]:
+                  - generic [ref=f541e56]: Booting…
+                  - generic [ref=f541e58]:
+                    - button "New file" [disabled] [ref=f541e59]
+                    - button "New folder" [disabled] [ref=f541e61]
+                    - button "Expand all folders" [disabled] [ref=f541e63]
+                    - button "Collapse all folders" [disabled] [ref=f541e65]
+                    - button "Refresh file tree" [disabled] [ref=f541e67]
+                    - button "Split pane" [disabled] [ref=f541e69]
+                - tree "Project files" [ref=f541e75]:
+                  - paragraph [ref=f541e76]: Booting project…
+            - slider "Resize pane 1" [ref=f541e77]
+            - generic [ref=f541e79]:
+              - tablist [ref=f541e81]:
+                - tab "App.svelte Close App.svelte" [ref=f541e82]:
+                  - generic [ref=f541e83]: App.svelte
+                  - button "Close App.svelte" [ref=f541e90] [cursor=pointer]
+              - generic [ref=f541e97]:
+                - generic [ref=f541e98]:
+                  - generic [ref=f541e99]:
+                    - generic [ref=f541e100]: Svelte
+                    - generic [ref=f541e101]: 1010 B
+                    - generic [ref=f541e102]: 66 lines
+                  - generic [ref=f541e103]:
+                    - button "Copy to clipboard" [ref=f541e104] [cursor=pointer]
+                    - button "Sync to sandbox" [ref=f541e106] [cursor=pointer]
+                    - button "Split pane" [disabled] [ref=f541e108]
+                - generic [ref=f541e115]:
+                  - generic [ref=f541e116]:
+                    - generic [ref=f541e117]:
+                      - generic [ref=f541e118]: ⌄
+                      - generic [ref=f541e119]: ⌄
+                      - generic [ref=f541e120]: ⌄
+                      - generic [ref=f541e121]: ⌄
+                      - generic [ref=f541e122]: ⌄
+                      - generic [ref=f541e123]: ⌄
+                      - generic [ref=f541e124]: ⌄
+                    - generic [ref=f541e125]:
+                      - generic [ref=f541e126]: "1"
+                      - generic [ref=f541e127]: "2"
+                      - generic [ref=f541e128]: "3"
+                      - generic [ref=f541e129]: "4"
+                      - generic [ref=f541e130]: "5"
+                      - generic [ref=f541e131]: "6"
+                      - generic [ref=f541e132]: "7"
+                      - generic [ref=f541e133]: "8"
+                      - generic [ref=f541e134]: "9"
+                      - generic [ref=f541e135]: "10"
+                      - generic [ref=f541e136]: "11"
+                      - generic [ref=f541e137]: "12"
+                      - generic [ref=f541e138]: "13"
+                      - generic [ref=f541e139]: "14"
+                      - generic [ref=f541e140]: "15"
+                      - generic [ref=f541e141]: "16"
+                      - generic [ref=f541e142]: "17"
+                      - generic [ref=f541e143]: "18"
+                      - generic [ref=f541e144]: "19"
+                      - generic [ref=f541e145]: "20"
+                      - generic [ref=f541e146]: "21"
+                      - generic [ref=f541e147]: "22"
+                      - generic [ref=f541e148]: "23"
+                      - generic [ref=f541e149]: "24"
+                      - generic [ref=f541e150]: "25"
+                      - generic [ref=f541e151]: "26"
+                      - generic [ref=f541e152]: "27"
+                      - generic [ref=f541e153]: "28"
+                      - generic [ref=f541e154]: "29"
+                      - generic [ref=f541e155]: "30"
+                      - generic [ref=f541e156]: "31"
+                      - generic [ref=f541e157]: "32"
+                      - generic [ref=f541e158]: "33"
+                      - generic [ref=f541e159]: "34"
+                      - generic [ref=f541e160]: "35"
+                      - generic [ref=f541e161]: "36"
+                  - textbox [ref=f541e162]:
+                    - generic [ref=f541e163]: <script>
+                    - generic [ref=f541e164]: let count = $state(0);
+                    - generic [ref=f541e165]: </script>
+                    - generic [ref=f541e167]: <main>
+                    - generic [ref=f541e168]: "<h1>{count}</h1>"
+                    - generic [ref=f541e169]: <div class="row">
+                    - generic [ref=f541e170]: "<button onclick={() => count--}>−</button>"
+                    - generic [ref=f541e171]: "<button onclick={() => count++}>+</button>"
+                    - generic [ref=f541e172]: </div>
+                    - generic [ref=f541e173]: "<button class=\"reset\" onclick={() => (count = 0)}>reset</button>"
+                    - generic [ref=f541e174]: </main>
+                    - generic [ref=f541e176]: <style>
+                    - generic [ref=f541e177]: ":global(body) {"
+                    - generic [ref=f541e178]: "margin: 0;"
+                    - generic [ref=f541e179]: "min-height: 100vh;"
+                    - generic [ref=f541e180]: "display: grid;"
+                    - generic [ref=f541e181]: "place-items: center;"
+                    - generic [ref=f541e182]: "font-family: system-ui, sans-serif;"
+                    - generic [ref=f541e183]: "background: #0f0f12;"
+                    - generic [ref=f541e184]: "color: #f4f4f5;"
+                    - generic [ref=f541e185]: "}"
+                    - generic [ref=f541e187]: "main {"
+                    - generic [ref=f541e188]: "display: grid;"
+                    - generic [ref=f541e189]: "gap: 1rem;"
+                    - generic [ref=f541e190]: "justify-items: center;"
+                    - generic [ref=f541e191]: "}"
+                    - generic [ref=f541e193]: "h1 {"
+                    - generic [ref=f541e194]: "margin: 0;"
+                    - generic [ref=f541e195]: "font-size: 4rem;"
+                    - generic [ref=f541e196]: "font-weight: 600;"
+                    - generic [ref=f541e197]: "line-height: 1;"
+                    - generic [ref=f541e198]: "font-variant-numeric: tabular-nums;"
+            - slider "Resize pane 2" [ref=f541e205]
+            - generic [ref=f541e207]:
+              - tablist [ref=f541e209]:
+                - tab "Preview" [ref=f541e210]
+              - generic [ref=f541e223]:
+                - generic [ref=f541e224]:
+                  - generic [ref=f541e225]:
+                    - generic [ref=f541e226]: Bun
+                    - generic [ref=f541e227]: starting
+                  - generic [ref=f541e228]:
+                    - button "Refresh preview" [ref=f541e229] [cursor=pointer]
+                    - button "Copy preview URL" [disabled] [ref=f541e231]
+                    - button "Open preview in new tab" [disabled] [ref=f541e233]
+                    - button "Split pane" [disabled] [ref=f541e235]
+                    - group "Console pane" [ref=f541e238]:
+                      - button "Hide console" [pressed] [ref=f541e239] [cursor=pointer]
+                - generic [ref=f541e244]:
+                  - paragraph [ref=f541e245]: Loading preview…
+                  - paragraph [ref=f541e246]: starting
+                  - paragraph [ref=f541e247]: First boot installs via Bun on the local sandbox server — usually a few seconds.
+            - slider "Resize pane 3" [ref=f541e248]
+            - generic [ref=f541e250]:
+              - generic [ref=f541e252]:
+                - tablist [ref=f541e254]:
+                  - tab "Chat" [ref=f541e255]
+                - generic [ref=f541e267]:
+                  - button [ref=f541e268]
+                  - generic [ref=f541e269]:
+                    - generic [ref=f541e270]:
+                      - generic [ref=f541e271]: 0 messages
+                      - generic [ref=f541e274]:
+                        - button "Reset conversation" [ref=f541e275] [cursor=pointer]
+                        - button "Split pane" [disabled] [ref=f541e277]
+                    - generic [ref=f541e281]:
+                      - generic [ref=f541e284]:
+                        - generic [ref=f541e286]: How can I help?
+                        - generic [ref=f541e287]: Ask about your project or attach files for context. Replies stream from local Ollama (deepseek-r1:8b) and render with the same markdown formatter as your notes.
+                      - generic [ref=f541e288]:
+                        - group [ref=f541e289]:
+                          - textbox "Message" [ref=f541e290]:
+                            - /placeholder: Message the assistant…
+                          - group [ref=f541e291]:
+                            - button "Add attachments" [ref=f541e292]
+                            - button "Send" [disabled]
+                        - button "Choose model" [ref=f541e294] [cursor=pointer]:
+                          - generic [ref=f541e295]: deepseek-r1:8b
+              - slider "Resize pane 1" [ref=f541e297]
+              - generic [ref=f541e299]:
+                - tablist [ref=f541e301]:
+                  - tab "Server logs" [ref=f541e302]
+                - generic [ref=f541e315]:
+                  - generic [ref=f541e316]:
+                    - generic [ref=f541e317]:
+                      - generic [ref=f541e318]: 1 entries
+                      - generic [ref=f541e319]: 1 visible lines
+                    - generic [ref=f541e320]:
+                      - button "Copy logs" [ref=f541e321] [cursor=pointer]
+                      - button "Split pane" [disabled] [ref=f541e323]
+                  - generic [ref=f541e325]: Starting Bun sandbox…
+              - slider "Resize pane 2" [ref=f541e328]
+              - generic [ref=f541e330]:
+                - tablist [ref=f541e332]:
+                  - tab "Console" [ref=f541e333]
+                - generic [ref=f541e346]:
+                  - generic [ref=f541e347]:
+                    - generic [ref=f541e348]: 0 entries
+                    - generic [ref=f541e350]:
+                      - button "Clear console" [disabled] [ref=f541e351]
+                      - button "Copy console output" [disabled] [ref=f541e353]
+                      - button "Split pane" [disabled] [ref=f541e355]
+                  - paragraph [ref=f541e360]: Preview console output will appear here…
+          - slider "Resize pane 1" [ref=f541e361]
+          - generic [ref=f541e363]:
+            - generic [ref=f541e364]:
+              - tablist [ref=f541e365]:
+                - tab "Terminal 1" [ref=f541e366]
+              - button "New terminal" [ref=f541e377] [cursor=pointer]
+            - generic [ref=f541e383]:
+              - generic [ref=f541e384]:
+                - generic [ref=f541e385]: Shell
+                - generic "081a9db9-3020-49e8-8dad-15ed7733bf31" [ref=f541e386]: 081a9db9
+              - button "Split pane" [disabled] [ref=f541e388]
+    - contentinfo "Status bar" [ref=f541e395]:
+      - generic [ref=f541e396]:
+        - generic [ref=f541e397]: svelte-repl
+        - generic [ref=f541e399]: "Booting: starting"
+      - generic [ref=f541e401]:
+        - generic "/App.svelte" [ref=f541e403]: App.svelte
+        - generic [ref=f541e404]: Svelte
+        - generic [ref=f541e406]: UTF-8
+        - generic [ref=f541e408]: LF
+    - generic [ref=f541e410]:
+      - heading "Command Palette" [level=2] [ref=f541e411]
+      - generic [ref=f541e412]: Search for a command to run...
+  - region "Notifications alt+T"

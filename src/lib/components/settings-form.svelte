@@ -1,14 +1,20 @@
 <script lang="ts">
   import SettingsField from '$lib/components/settings-field.svelte'
   import * as Select from '$lib/components/ui/select/index.js'
+  import { Slider } from '$lib/components/ui/slider/index.js'
+  import { Switch } from '$lib/components/ui/switch/index.js'
   import {
     EDITOR_ACTIVE_TAB_ACCENT_COLOR_OPTIONS,
     EDITOR_ACTIVE_TAB_INDICATOR_OPTIONS,
     EDITOR_CHROME_HEIGHT_OPTIONS,
+    EDITOR_PANE_GAP_MAX,
+    EDITOR_PANE_GAP_MIN,
+    EDITOR_PANE_STYLE_OPTIONS,
   } from '$lib/settings/types'
   import { settings, updateEditorSettings } from '$lib/settings/store.svelte'
 
   const accentColorDisabled = $derived(settings.editor.activeTabIndicator === 'none')
+  const cardsMode = $derived(settings.editor.paneStyle === 'cards')
 </script>
 
 <section class="settings-section">
@@ -75,6 +81,58 @@
       {/snippet}
     </SettingsField>
 
+    <SettingsField
+      label="Rounded pane cards"
+      description="Separate panes with small gaps and rounded corners instead of edge-to-edge splits."
+    >
+      {#snippet control()}
+        <Select.Root
+          type="single"
+          value={settings.editor.paneStyle}
+          onValueChange={(value) => {
+            if (value) updateEditorSettings({ paneStyle: value as typeof settings.editor.paneStyle })
+          }}
+        >
+          <Select.Trigger class="w-full min-w-[12rem]">
+            {EDITOR_PANE_STYLE_OPTIONS.find((option) => option.value === settings.editor.paneStyle)?.label ?? 'Flush'}
+          </Select.Trigger>
+          <Select.Content>
+            {#each EDITOR_PANE_STYLE_OPTIONS as option (option.value)}
+              <Select.Item value={option.value} label={option.label}>
+                <div class="flex flex-col gap-0.5">
+                  <span>{option.label}</span>
+                  <span class="text-muted-foreground text-xs">{option.description}</span>
+                </div>
+              </Select.Item>
+            {/each}
+          </Select.Content>
+        </Select.Root>
+      {/snippet}
+    </SettingsField>
+
+    <SettingsField label="Pane gap" description="Space between card panes, icon rail, header, and status bar.">
+      {#snippet control()}
+        <div class="flex w-full min-w-[12rem] flex-col gap-2">
+          <div class="text-muted-foreground flex items-center justify-between text-xs tabular-nums">
+            <span>{EDITOR_PANE_GAP_MIN}px</span>
+            <span class="text-foreground font-medium">{settings.editor.paneGap}px</span>
+            <span>{EDITOR_PANE_GAP_MAX}px</span>
+          </div>
+          <Slider
+            type="single"
+            value={settings.editor.paneGap}
+            min={EDITOR_PANE_GAP_MIN}
+            max={EDITOR_PANE_GAP_MAX}
+            step={1}
+            disabled={!cardsMode}
+            onValueChange={(value) => {
+              if (typeof value === 'number') updateEditorSettings({ paneGap: value })
+            }}
+          />
+        </div>
+      {/snippet}
+    </SettingsField>
+
     <SettingsField label="Active tab accent color" description="Color used for the top accent and background tint.">
       {#snippet control()}
         <Select.Root
@@ -99,6 +157,21 @@
             {/each}
           </Select.Content>
         </Select.Root>
+      {/snippet}
+    </SettingsField>
+
+    <SettingsField
+      label="Keep empty panes"
+      description="When the last tab in a pane is closed, keep the pane with a blank state instead of removing it."
+    >
+      {#snippet control()}
+        <div class="flex items-center justify-end">
+          <Switch
+            checked={settings.editor.keepEmptyPanes}
+            onCheckedChange={(value) => updateEditorSettings({ keepEmptyPanes: value })}
+            aria-label="Keep empty panes"
+          />
+        </div>
       {/snippet}
     </SettingsField>
   </div>

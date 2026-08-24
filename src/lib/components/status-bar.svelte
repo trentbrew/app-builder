@@ -1,21 +1,51 @@
 <script lang="ts">
-  import { statusBar } from '$lib/statusBar.svelte'
+  import { statusBar, visibleStatusItems, toggleStatusBarVisible } from '$lib/statusBar.svelte'
+  import ContextMenuHost from '$lib/components/context-menu-host.svelte'
+
+  const leftItems = $derived(visibleStatusItems(statusBar.left))
+  const rightItems = $derived(visibleStatusItems(statusBar.right))
 </script>
 
-<footer class="status-bar" aria-label="Status bar">
-  <div class="status-bar__cluster status-bar__cluster--left">
-    {#each statusBar.left as item (item.id)}
-      <span class="status-bar__item" title={item.title}>{item.label}</span>
-    {/each}
-  </div>
-  <div class="status-bar__cluster status-bar__cluster--right">
-    {#each statusBar.right as item (item.id)}
-      <span class="status-bar__item" title={item.title}>{item.label}</span>
-    {/each}
-  </div>
-</footer>
+{#if statusBar.visible}
+  <ContextMenuHost target={{ kind: 'statusBar' }} triggerClass="status-bar-trigger">
+    <footer class="status-bar" aria-label="Status bar">
+      <div class="status-bar__cluster status-bar__cluster--left">
+        {#each leftItems as item (item.id)}
+          <ContextMenuHost
+            target={{ kind: 'statusBarSegment', segmentId: item.id, side: 'left' }}
+            triggerClass="status-bar__item-trigger"
+          >
+            <span class="status-bar__item" title={item.title}>{item.label}</span>
+          </ContextMenuHost>
+        {/each}
+      </div>
+      <div class="status-bar__cluster status-bar__cluster--right">
+        {#each rightItems as item (item.id)}
+          <ContextMenuHost
+            target={{ kind: 'statusBarSegment', segmentId: item.id, side: 'right' }}
+            triggerClass="status-bar__item-trigger"
+          >
+            <span class="status-bar__item" title={item.title}>{item.label}</span>
+          </ContextMenuHost>
+        {/each}
+      </div>
+    </footer>
+  </ContextMenuHost>
+{:else}
+  <button
+    type="button"
+    class="status-bar-restore"
+    aria-label="Show status bar"
+    title="Show status bar"
+    onclick={() => toggleStatusBarVisible()}
+  ></button>
+{/if}
 
 <style>
+  :global(.status-bar-trigger) {
+    display: block;
+  }
+
   .status-bar {
     position: fixed;
     right: 0;
@@ -44,6 +74,11 @@
     flex-shrink: 0;
   }
 
+  :global(.status-bar__item-trigger) {
+    display: flex;
+    height: 100%;
+  }
+
   .status-bar__item {
     display: inline-flex;
     align-items: center;
@@ -63,5 +98,24 @@
 
   .status-bar__cluster--right .status-bar__item:last-child {
     padding-right: 0.625rem;
+  }
+
+  .status-bar-restore {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 50;
+    height: 4px;
+    border: none;
+    padding: 0;
+    background: var(--status-bar-background);
+    opacity: 0.45;
+    cursor: pointer;
+  }
+
+  .status-bar-restore:hover {
+    opacity: 0.85;
+    height: 6px;
   }
 </style>

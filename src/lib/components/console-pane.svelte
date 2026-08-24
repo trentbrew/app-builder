@@ -35,7 +35,7 @@
   }
 </script>
 
-<PaneChrome>
+<PaneChrome paneKind="console">
   {#snippet toolbar()}
     <PaneToolbar>
       {#snippet meta()}

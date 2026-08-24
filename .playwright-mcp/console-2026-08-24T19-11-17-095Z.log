@@ -1,0 +1,40 @@
+[    2808ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/main.js:0
+[   74256ms] [LOG] [vite] server connection lost. Polling for restart... @ http://localhost:9898/@vite/client:963
+[   74257ms] [LOG] [vite] server connection lost. Polling for restart... @ http://localhost:9898/preview/4cf126f2/:14
+[   74258ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:9898/api/sandbox/4cf126f2/logs:0
+[   74260ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   74269ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   75263ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   75275ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   76266ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   76277ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   77261ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/api/sandbox/4cf126f2/logs:0
+[   77268ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   77279ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   78270ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   78282ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   79272ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   79285ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   80264ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/api/sandbox/4cf126f2/logs:0
+[   80273ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   80287ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   81276ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   81288ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   82277ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   82290ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   83267ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/api/sandbox/4cf126f2/logs:0
+[   83278ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   83292ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   84280ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   84294ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   85282ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   85296ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   86268ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/api/sandbox/4cf126f2/logs:0
+[   86284ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   86298ms] [ERROR] WebSocket connection to 'ws://localhost:9898/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:9898/@vite/client:1034
+[   96300ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/main.js:0
+[   97462ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/main.js:0
+[   98542ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/main.js:0
+[   99841ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/main.js:0
+[  100897ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/main.js:0
+[  101910ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/main.js:0

@@ -1,3 +1,5 @@
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/geist/wght-italic.css';
 @import '@fontsource/jetbrains-mono/400.css';
 @import '@fontsource/jetbrains-mono/500.css';
 @import 'tailwindcss';
@@ -9,7 +11,19 @@
 	}
 
 	body {
-		@apply bg-background text-foreground font-mono;
+		@apply bg-background text-foreground font-sans antialiased;
+	}
+
+	/* Tabs and labels stay mono */
+	.pane-toolbar,
+	.file-tree-row,
+	.settings-field__label,
+	[data-slot='label'],
+	[data-slot$='-label'],
+	[data-slot$='-group-heading'],
+	[data-slot='tabs-trigger'],
+	[data-slot='message-header'] {
+		font-family: var(--font-mono);
 	}
 }
 
@@ -20,9 +34,21 @@
 	padding-bottom: var(--status-bar-height);
 }
 
+:root[data-status-bar-hidden] .app-main {
+	padding-bottom: 0;
+}
+
+:root[data-status-bar-hidden] {
+	--status-bar-height: 0px;
+}
+
 .app-shell {
 	height: 100%;
 	min-height: 0;
+}
+
+:root:not([data-editor-pane-style='cards']) .app-shell__workspace {
+	padding-left: 3rem;
 }
 
 /* Set dark mode as default */
@@ -37,13 +63,17 @@
 	--editor-tab-active-accent: oklch(0.58 0.17 48);
 	--editor-tab-active-accent-width: 2px;
 	--editor-tab-active-tint-strength: 10%;
+	--editor-pane-gap: 6px;
+	--editor-pane-gap-half: calc(var(--editor-pane-gap) / 2);
+	--editor-pane-radius: calc(var(--radius) - 2px);
+	--editor-pane-canvas: #000;
 }
 
 @theme {
 	/* Radius */
 	--radius: 0.65rem;
 	--font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-	--font-sans: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+	--font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
 
 	/* Dark theme colors (default) */
 	--color-background: oklch(0.145 0 0);
@@ -257,6 +287,8 @@ body.debug * {
 	display: inline-flex;
 	align-items: center;
 	gap: 0.375rem;
+	line-height: 100%;
+	padding-right: 0.375rem;
 }
 
 /* Single-tab panes (Files, Preview, …): stretch the tab across the bar. */
@@ -296,6 +328,169 @@ body.debug * {
 
 .editor-dock .horizon-layout-tabgroup__controls {
 	height: 100%;
+}
+
+/* Rounded card panes — toggled via Settings → Editor chrome */
+:root[data-editor-pane-style='cards'] body {
+	background: var(--editor-pane-canvas);
+}
+
+/* Canvas inset — every card carries the other half of the gap via margin/padding */
+:root[data-editor-pane-style='cards'] .app-frame {
+	gap: 0;
+	padding: var(--editor-pane-gap-half);
+	background: var(--editor-pane-canvas);
+	box-sizing: border-box;
+}
+
+:root[data-editor-pane-style='cards'] .app-header {
+	position: relative;
+	inset: auto;
+	margin: var(--editor-pane-gap-half);
+	border: 1px solid var(--color-border);
+	border-radius: var(--editor-pane-radius);
+	box-shadow: 0 1px 2px color-mix(in oklch, var(--color-foreground) 5%, transparent);
+}
+
+:root[data-editor-pane-style='cards'] .app-main {
+	padding-top: 0;
+	padding-bottom: 0;
+	background: transparent;
+}
+
+:root[data-editor-pane-style='cards'] .status-bar {
+	position: relative;
+	inset: auto;
+	margin: var(--editor-pane-gap-half);
+	border-radius: var(--editor-pane-radius);
+	overflow: hidden;
+	box-shadow: 0 1px 2px color-mix(in oklch, var(--color-foreground) 5%, transparent);
+}
+
+:root[data-editor-pane-style='cards'] .app-shell {
+	flex-direction: row;
+	gap: 0;
+	background: transparent;
+}
+
+:root[data-editor-pane-style='cards'] .icon-rail {
+	position: relative;
+	top: auto;
+	bottom: auto;
+	left: auto;
+	align-self: stretch;
+	height: auto;
+	margin: 0 var(--editor-pane-gap-half) 0 0;
+	border: 1px solid var(--color-border);
+	border-radius: var(--editor-pane-radius);
+	box-shadow: 0 1px 2px color-mix(in oklch, var(--color-foreground) 5%, transparent);
+}
+
+:root[data-editor-pane-style='cards'] .editor-dock {
+	padding: 0;
+	background: transparent;
+	box-sizing: border-box;
+}
+
+:root[data-editor-pane-style='cards'] .editor-dock .horizon-layout {
+	padding: 0;
+	background: transparent;
+	box-sizing: border-box;
+}
+
+/* Directional gaps: half-gap only on sides that touch a sibling in the same split */
+:root[data-editor-pane-style='cards'] .editor-dock .horizon-layout-split--horizontal > .horizon-layout-split__pane,
+:root[data-editor-pane-style='cards'] .editor-dock .horizon-layout-split--vertical > .horizon-layout-split__pane {
+	box-sizing: border-box;
+}
+
+:root[data-editor-pane-style='cards'] .editor-dock .horizon-layout-split--horizontal > .horizon-layout-split__pane {
+	padding-top: 0;
+	padding-bottom: 0;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+:root[data-editor-pane-style='cards']
+	.editor-dock
+	.horizon-layout-split--horizontal
+	> .horizon-layout-split__pane:not([data-hl-pane-first]) {
+	padding-left: var(--editor-pane-gap-half);
+}
+
+:root[data-editor-pane-style='cards']
+	.editor-dock
+	.horizon-layout-split--horizontal
+	> .horizon-layout-split__pane:not([data-hl-pane-last]) {
+	padding-right: var(--editor-pane-gap-half);
+}
+
+:root[data-editor-pane-style='cards'] .editor-dock .horizon-layout-split--vertical > .horizon-layout-split__pane {
+	padding-left: 0;
+	padding-right: 0;
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+:root[data-editor-pane-style='cards']
+	.editor-dock
+	.horizon-layout-split--vertical
+	> .horizon-layout-split__pane:not([data-hl-pane-first]) {
+	padding-top: var(--editor-pane-gap-half);
+}
+
+:root[data-editor-pane-style='cards']
+	.editor-dock
+	.horizon-layout-split--vertical
+	> .horizon-layout-split__pane:not([data-hl-pane-last]) {
+	padding-bottom: var(--editor-pane-gap-half);
+}
+
+/* Root dock split: inset toward header and icon rail */
+:root[data-editor-pane-style='cards']
+	.editor-dock
+	.horizon-layout
+	> .horizon-layout-split--vertical
+	> .horizon-layout-split__pane[data-hl-pane-first] {
+	padding-top: var(--editor-pane-gap-half);
+}
+
+:root[data-editor-pane-style='cards']
+	.editor-dock
+	.horizon-layout
+	> .horizon-layout-split--vertical
+	> .horizon-layout-split__pane[data-hl-pane-last] {
+	padding-bottom: 0;
+}
+
+:root[data-editor-pane-style='cards']
+	.editor-dock
+	.horizon-layout
+	> .horizon-layout-split--vertical
+	> .horizon-layout-split__pane[data-hl-pane-first]
+	> .horizon-layout-split--horizontal
+	> .horizon-layout-split__pane[data-hl-pane-first] {
+	padding-left: var(--editor-pane-gap-half);
+}
+
+:root[data-editor-pane-style='cards'] .editor-dock .horizon-layout-tabgroup {
+	border: 1px solid var(--color-border);
+	border-radius: var(--editor-pane-radius);
+	overflow: hidden;
+	background: var(--color-background);
+	box-shadow: 0 1px 2px color-mix(in oklch, var(--color-foreground) 5%, transparent);
+}
+
+:root[data-editor-pane-style='cards'] .editor-dock .horizon-layout-tabgroup__tab-bar {
+	background: color-mix(in oklch, var(--color-muted) 22%, var(--color-background));
+}
+
+:root[data-editor-pane-style='cards'] .editor-dock .horizon-layout-tabgroup__tab {
+	border-right-color: color-mix(in oklch, var(--color-border) 70%, transparent);
+}
+
+:root[data-editor-pane-style='cards'] .editor-dock .horizon-layout-tabgroup__tab:first-child {
+	border-top-left-radius: calc(var(--editor-pane-radius) - 1px);
 }
 
 /* TipTap markdown editor */

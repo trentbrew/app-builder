@@ -22,6 +22,85 @@
   let userScrolledUp = false
   let spawning = false
   let attachedContainer: unknown = null
+  let bunSocket: WebSocket | null = null
+  let bunConnecting = false
+  let bunInputQueue: string[] = []
+  let bunConnectAttempts = 0
+
+  function sendBunInput(data: string) {
+    if (bunSocket && bunSocket.readyState === WebSocket.OPEN) {
+      bunSocket.send(JSON.stringify({ type: 'input', data }))
+    } else if (bunInputQueue.length < 1000) {
+      bunInputQueue.push(data)
+    }
+  }
+
+  function sendBunResize() {
+    if (bunSocket && bunSocket.readyState === WebSocket.OPEN && xterm) {
+      bunSocket.send(JSON.stringify({ type: 'resize', cols: xterm.cols, rows: xterm.rows }))
+    }
+  }
+
+  function connectBunTerminal() {
+    if (bunSocket || bunConnecting || !xterm) return
+    const sessionId = sandboxStore.getTerminalSessionId()
+    if (!sessionId) {
+      if (bunConnectAttempts < 30) {
+        bunConnectAttempts++
+        setTimeout(() => {
+          if (!bunSocket && !bunConnecting) connectBunTerminal()
+        }, 1000)
+      }
+      return
+    }
+    bunConnectAttempts = 0
+
+    bunConnecting = true
+    const proto = location.protocol === 'https:' ? 'wss:' : 'ws:'
+    const socket = new WebSocket(`${proto}//${location.host}/api/sandbox/${sessionId}/terminal`)
+    socket.binaryType = 'arraybuffer'
+    const decoder = new TextDecoder()
+
+    socket.onopen = () => {
+      bunSocket = socket
+      bunConnecting = false
+      sendBunResize()
+      for (const chunk of bunInputQueue) sendBunInput(chunk)
+      bunInputQueue = []
+    }
+
+    socket.onmessage = (event) => {
+      if (!xterm) return
+      // Text frames are control messages; PTY output arrives as binary frames.
+      if (typeof event.data === 'string') {
+        try {
+          const msg = JSON.parse(event.data) as { type?: string; message?: string }
+          if (msg.type === 'exit') {
+            xterm.writeln('\r\n\x1b[90mShell exited.\x1b[0m')
+          } else if (msg.type === 'error') {
+            xterm.writeln(`\r\n\x1b[31m${msg.message ?? 'Terminal error'}\x1b[0m`)
+          }
+        } catch {
+          // ignore malformed control frames
+        }
+        return
+      }
+      const bytes = event.data instanceof ArrayBuffer ? new Uint8Array(event.data) : event.data
+      xterm.write(decoder.decode(bytes, { stream: true }))
+      scrollToBottom()
+    }
+
+    socket.onclose = () => {
+      bunSocket = null
+      bunConnecting = false
+      process = undefined
+      xterm?.writeln('\r\n\x1b[90mServer terminal closed.\x1b[0m')
+    }
+
+    socket.onerror = () => {
+      bunConnecting = false
+    }
+  }
 
   function isAbortedError(error: unknown) {
     return error instanceof Error && /aborted|Process aborted/i.test(error.message)
@@ -59,6 +138,7 @@
     try {
       fitAddon.fit()
       scrollToBottom(true)
+      sendBunResize()
     } catch (e) {
       if (retries > 0) {
         fitRafId = requestAnimationFrame(() => safeFit(retries - 1))
@@ -98,6 +178,7 @@
           convertEol: true,
           cursorBlink: true,
           scrollback: 10000,
+          fontFamily: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
           theme: {
             background: terminalBackground,
           },
@@ -118,7 +199,8 @@
         }
 
         xterm.onData((data: string) => {
-          if (writer) writer.write(data)
+          if (bunSocket || bunInputQueue.length > 0) sendBunInput(data)
+          else if (writer) writer.write(data)
         })
 
         xterm.onScroll(() => {
@@ -135,11 +217,7 @@
 
         unsubscribe = sandboxStore.subscribe(async (state) => {
           if (state.backend === 'bun') {
-            if (!process && xterm) {
-              xterm.writeln('\r\n\x1b[90mTerminal requires WebContainer mode in the browser.\x1b[0m')
-              xterm.writeln('\x1b[90mRun `pnpm dev` without the Bun sandbox, or use the server terminal later.\x1b[0m')
-              process = { kill() {} }
-            }
+            if (!process) process = { kill() {} }
             return
           }
 
@@ -204,6 +282,8 @@
             spawning = false
           }
         })
+
+        if (sandboxStore.getBackend() === 'bun') connectBunTerminal()
       } catch (importError) {
         console.error('Failed to import or initialize @xterm/xterm:', importError)
       }
@@ -219,6 +299,13 @@
       resizeObserver.disconnect()
     }
     if (unsubscribe) unsubscribe()
+    if (bunSocket) {
+      bunSocket.onclose = null
+      try {
+        bunSocket.close()
+      } catch {}
+      bunSocket = null
+    }
     if (writer) {
       try {
         writer.releaseLock()

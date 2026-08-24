@@ -1,0 +1,11 @@
+[    2163ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/main.js:0
+[   33261ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/main.js:0
+[   34094ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/main.js:0
+[   34829ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/main.js:0
+[   38015ms] [WARNING] %c[svelte] console_log_state
+%cYour `console.warn` contained `$state` proxies. Consider using `$inspect(...)` or `$state.snapshot(...)` instead
+https://svelte.dev/e/console_log_state font-weight: bold font-weight: normal @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[   38015ms] [LOG] %c[snapshot] color: grey [DEBUG-close] +page handleCloseFile /App.svelte openFiles= [/App.svelte] @ http://localhost:9898/node_modules/.vite/deps/chunk-YHDX67GL.js?v=fe56617c:4239
+[   38015ms] [WARNING] [DEBUG-close] +page handleCloseFile /App.svelte openFiles= Proxy(Object) @ http://localhost:9898/node_modules/.pnpm/@sveltejs+kit@2.65.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_3c8e8ea26ccb90fc2477dcb70de6ce91/node_modules/@sveltejs/kit/src/runtime/client/client.js?v=fe56617c:3387
+[   38098ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/main.js:0
+[   45653ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/main.js:0

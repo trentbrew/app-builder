@@ -19,7 +19,7 @@
   } = $props()
 </script>
 
-<PaneChrome>
+<PaneChrome paneKind="terminal" paneId={`terminal:${sessionId}`}>
   {#snippet toolbar()}
     <PaneToolbar>
       {#snippet meta()}

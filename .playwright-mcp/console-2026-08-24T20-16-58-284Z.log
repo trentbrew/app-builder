@@ -1,0 +1,4 @@
+[    2563ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/api/sandbox/58d1abba/files?path=%2Fwelcome.md:0
+[    2564ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/api/sandbox/58d1abba/files?path=%2Fwelcome.md:0
+[    3216ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/main.js:0
+[  167639ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:9898/api/sandbox/58d1abba/files?path=%2Fwelcome.md:0

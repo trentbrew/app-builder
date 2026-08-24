@@ -83,5 +83,27 @@ const splitPatched = patchFile(
 	}
 );
 
+const paneEdgePatched = patchFile(
+	'Split.svelte',
+	'data-hl-pane-first',
+	(source) => {
+		const needle = `    <div
+      class="{baseClass}-split__pane {baseClass}-split__pane--{config.direction}"
+      style={\`flex: \${(splitPoint ?? 1) - (config.splitPoints[i - 1] ?? 0)} 1 0 !important;\`}
+    >`;
+
+		const insert = `    <div
+      class="{baseClass}-split__pane {baseClass}-split__pane--{config.direction}"
+      style={\`flex: \${(splitPoint ?? 1) - (config.splitPoints[i - 1] ?? 0)} 1 0 !important;\`}
+      data-hl-pane-first={i === 0 ? '' : undefined}
+      data-hl-pane-last={i === config.views.length - 1 ? '' : undefined}
+    >`;
+
+		if (!source.includes(needle)) return source;
+		return source.replace(needle, insert);
+	}
+);
+
 if (tabBarPatched) console.log('[patch-horizon-layout] Applied tab-bar drag patch');
 if (splitPatched) console.log('[patch-horizon-layout] Applied resizer double-click patch');
+if (paneEdgePatched) console.log('[patch-horizon-layout] Applied pane edge markers');

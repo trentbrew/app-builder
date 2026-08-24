@@ -138,6 +138,11 @@ function syncIframePosition() {
 		document.body.appendChild(iframe);
 	}
 
+	const cardStyle = document.documentElement.dataset.editorPaneStyle === 'cards';
+	const radius =
+		getComputedStyle(document.documentElement).getPropertyValue('--editor-pane-radius').trim() ||
+		'0';
+
 	Object.assign(iframe.style, {
 		left: `${rect.left}px`,
 		top: `${rect.top}px`,
@@ -145,6 +150,9 @@ function syncIframePosition() {
 		height: `${rect.height}px`,
 		visibility: 'visible',
 		zIndex: '5',
+		borderBottomLeftRadius: cardStyle ? radius : '0',
+		borderBottomRightRadius: cardStyle ? radius : '0',
+		overflow: cardStyle ? 'hidden' : 'visible',
 		...iframeInteractionStyle()
 	});
 }

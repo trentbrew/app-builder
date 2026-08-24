@@ -37,6 +37,6 @@ export function languageExtensionForPath(path: string): Extension {
 		case 'markdown':
 			return markdown();
 		default:
-			return javascript();
+			return [];
 	}
 }

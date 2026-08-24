@@ -38,13 +38,14 @@
     border-bottom: 1px solid var(--color-border);
     background: color-mix(in oklch, var(--color-background) 92%, var(--color-muted));
     box-sizing: border-box;
+    font-family: var(--font-mono);
   }
 
   .pane-toolbar__meta,
   .pane-toolbar__actions {
     display: flex;
     align-items: center;
-    gap: 0.375rem;
+    gap: 0;
     min-width: 0;
   }
 
@@ -82,6 +83,7 @@
     width: 1px;
     height: 0.875rem;
     background: var(--color-border);
+    margin: 0.875rem;
   }
 
   :global(.pane-toolbar__group) {

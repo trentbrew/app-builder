@@ -12,10 +12,17 @@ function mergeSettings(raw: unknown): AppSettings {
 	if (!raw || typeof raw !== 'object') return structuredClone(DEFAULT_SETTINGS);
 
 	const input = raw as Partial<AppSettings>;
+	const editor = input.editor ?? {};
+	const paneGap =
+		typeof editor.paneGap === 'number' && !Number.isNaN(editor.paneGap)
+			? Math.min(20, Math.max(2, Math.round(editor.paneGap)))
+			: DEFAULT_SETTINGS.editor.paneGap;
+
 	return {
 		editor: {
 			...DEFAULT_SETTINGS.editor,
-			...(input.editor ?? {})
+			...editor,
+			paneGap
 		}
 	};
 }
