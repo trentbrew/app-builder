@@ -13,6 +13,18 @@
 	}
 }
 
+.app-main {
+	flex: 1 1 0;
+	min-height: 0;
+	padding-top: var(--app-header-height);
+	padding-bottom: var(--status-bar-height);
+}
+
+.app-shell {
+	height: 100%;
+	min-height: 0;
+}
+
 /* Set dark mode as default */
 :root {
 	color-scheme: dark;
@@ -20,6 +32,7 @@
 	--status-bar-background: oklch(0.58 0.17 48);
 	--status-bar-foreground: oklch(0.99 0.01 95);
 	--status-bar-hover: oklch(0.52 0.17 48);
+	--app-header-height: 3rem;
 	--editor-chrome-height: 2rem;
 	--editor-tab-active-accent: oklch(0.58 0.17 48);
 	--editor-tab-active-accent-width: 2px;

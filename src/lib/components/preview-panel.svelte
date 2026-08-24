@@ -3,6 +3,7 @@
   import { onMount } from 'svelte'
   import { Button } from '$lib/components/ui/button/index.js'
   import { registerPreviewAnchor, refreshPreviewPosition, setPreviewUrl } from '$lib/previewFrame'
+  import { previewConsole } from '$lib/previewConsole.svelte'
   import { sandboxStore } from '$lib/sandboxStore'
   import { toast } from 'svelte-sonner'
 
@@ -12,6 +13,7 @@
   let previewUrl = $state('')
   let bootPhase = $state('idle')
   let backend = $state<'bun' | 'webcontainer' | 'unknown'>('unknown')
+  let wasBooting = $state(false)
 
   onMount(() => {
     const unsubscribe = sandboxStore.subscribe((state) => {
@@ -45,6 +47,13 @@
       }
     }
   }
+
+  $effect(() => {
+    if (booting && !wasBooting) {
+      previewConsole.clear()
+    }
+    wasBooting = booting
+  })
 
   $effect(() => {
     if (previewUrl) setPreviewUrl(previewUrl)

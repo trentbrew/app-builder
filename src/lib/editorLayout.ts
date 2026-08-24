@@ -24,7 +24,8 @@ export const PANEL_IDS = {
 	files: 'panel:files',
 	preview: 'panel:preview',
 	logs: 'panel:logs',
-	console: 'panel:console'
+	console: 'panel:console',
+	settings: 'panel:settings'
 } as const;
 
 const KNOWN_PANEL_IDS = new Set<string>(Object.values(PANEL_IDS));
@@ -192,6 +193,40 @@ export function removeFileFromLayout(config: LayoutConfig, path: string): Layout
 	const id = fileViewId(path);
 	const next = cloneConfig(config);
 	if (!next.root) return next;
+
+	const parentMap = buildNodeParentMap(next.root);
+	removeTabFromNode(next.root, id, next, parentMap);
+	return next;
+}
+
+export function isSettingsOpen(config: LayoutConfig): boolean {
+	if (!config.root) return false;
+	return Boolean(findTabGroupContaining(config.root, PANEL_IDS.settings));
+}
+
+export function openSettingsInLayout(config: LayoutConfig): LayoutConfig {
+	const id = PANEL_IDS.settings;
+	const next = cloneConfig(config);
+	if (!next.root) return next;
+
+	if (findTabGroupContaining(next.root, id)) {
+		activateTab(next.root, id);
+		return next;
+	}
+
+	const target = findPreferredFileTabGroup(next.root, id) ?? findFirstTabGroup(next.root);
+	if (!target) return next;
+
+	target.tabs = [...target.tabs, id] as typeof target.tabs;
+	target.activeTabIndex = target.tabs.length - 1;
+	return next;
+}
+
+export function closeSettingsInLayout(config: LayoutConfig): LayoutConfig {
+	const id = PANEL_IDS.settings;
+	const next = cloneConfig(config);
+	if (!next.root) return config;
+	if (!findTabGroupContaining(next.root, id)) return config;
 
 	const parentMap = buildNodeParentMap(next.root);
 	removeTabFromNode(next.root, id, next, parentMap);

@@ -2,11 +2,12 @@
   import { page } from '$app/state'
 
   import { cn } from '$lib/utils.js'
+  import { editorChrome } from '$lib/editorChrome.svelte'
   import type { Component } from 'svelte'
 
   import Code2Icon from '@lucide/svelte/icons/code-2'
-  import SettingsIcon from '@lucide/svelte/icons/settings'
   import PlusIcon from '@lucide/svelte/icons/plus'
+  import SettingsIcon from '@lucide/svelte/icons/settings'
 
   type RailItem = {
     href: string
@@ -14,10 +15,7 @@
     icon: Component
   }
 
-  const items: RailItem[] = [
-    { href: '/editor', label: 'Editor', icon: Code2Icon },
-    { href: '/settings', label: 'Settings', icon: SettingsIcon },
-  ]
+  const items: RailItem[] = [{ href: '/editor', label: 'Editor', icon: Code2Icon }]
 
   function isActive(href: string) {
     const pathname = page.url.pathname
@@ -25,25 +23,67 @@
   }
 </script>
 
-<nav
-  class="bg-background border-border fixed top-12 bottom-0 left-0 z-20 flex w-12 shrink-0 flex-col items-center gap-1 border-r py-2"
-  aria-label="App navigation"
->
-  {#each items as item (item.href)}
-    <a
-      href={item.href}
-      aria-label={item.label}
-      aria-current={isActive(item.href) ? 'page' : undefined}
-      title={item.label}
+<nav class="icon-rail" aria-label="App navigation">
+  <div class="flex flex-col items-center gap-1">
+    {#each items as item (item.href)}
+      <a
+        href={item.href}
+        aria-label={item.label}
+        aria-current={isActive(item.href) ? 'page' : undefined}
+        title={item.label}
+        class={cn(
+          'flex size-9 items-center justify-center rounded-md transition-colors',
+          isActive(item.href)
+            ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+            : 'text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+        )}
+      >
+        <item.icon class="size-[18px]" />
+      </a>
+    {/each}
+  </div>
+
+  <div class="mt-auto flex flex-col items-center gap-1 pt-2">
+    <button
+      type="button"
+      class="text-muted-foreground flex size-9 items-center justify-center rounded-md opacity-40 transition-opacity hover:opacity-70"
+      aria-label="New"
+      title="New"
+      disabled
+    >
+      <PlusIcon class="size-[18px] scale-75" />
+    </button>
+    <button
+      type="button"
+      aria-label="Settings"
+      title="Settings"
       class={cn(
         'flex size-9 items-center justify-center rounded-md transition-colors',
-        isActive(item.href)
+        editorChrome.settingsOpen
           ? 'bg-sidebar-accent text-sidebar-accent-foreground'
           : 'text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
       )}
+      onclick={() => editorChrome.toggleSettings()}
     >
-      <item.icon class="size-[18px]" />
-    </a>
-  {/each}
-  <button><PlusIcon class="scale-75 opacity-40" /></button>
+      <SettingsIcon class="size-[18px]" />
+    </button>
+  </div>
 </nav>
+
+<style>
+  .icon-rail {
+    position: fixed;
+    top: var(--app-header-height);
+    bottom: var(--status-bar-height);
+    left: 0;
+    z-index: 20;
+    display: flex;
+    width: 3rem;
+    flex-shrink: 0;
+    flex-direction: column;
+    align-items: center;
+    border-right: 1px solid var(--color-border);
+    background: var(--color-background);
+    padding-block: 0.5rem;
+  }
+</style>

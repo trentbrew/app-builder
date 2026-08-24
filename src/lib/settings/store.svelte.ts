@@ -59,6 +59,26 @@ export function resetSettings() {
 	applyUiSettings(settings);
 }
 
+export function serializeSettings(): string {
+	return JSON.stringify(settings, null, 2);
+}
+
+export function replaceSettingsFromJson(raw: string): { ok: true } | { ok: false; error: string } {
+	try {
+		const parsed = JSON.parse(raw) as unknown;
+		const merged = mergeSettings(parsed);
+		settings.editor = merged.editor;
+		persistSettings(settings);
+		applyUiSettings(settings);
+		return { ok: true };
+	} catch (error) {
+		return {
+			ok: false,
+			error: error instanceof Error ? error.message : 'Invalid JSON'
+		};
+	}
+}
+
 if (browser) {
 	applyUiSettings(settings);
 }

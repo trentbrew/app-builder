@@ -6,21 +6,12 @@
   import StatusBar from '$lib/components/status-bar.svelte'
 </script>
 
-<div class="flex h-svh w-screen flex-col">
+<div class="flex h-svh w-screen flex-col overflow-hidden">
   <AppHeader />
-  <main class="app-main flex min-h-0 flex-1 flex-col pt-0">
-    <AppHeader />
-    <main class="app-main flex min-h-0 flex-1 flex-col pt-12">
-      <slot />
-    </main>
-    <StatusBar />
+  <main class="app-main flex flex-col">
+    <slot />
   </main>
+  <StatusBar />
 </div>
 
 <Toaster richColors closeButton position="bottom-right" />
-
-<style>
-  .app-main {
-    padding-bottom: var(--status-bar-height);
-  }
-</style>

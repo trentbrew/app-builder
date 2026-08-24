@@ -1,6 +1,5 @@
 import { browser } from '$app/environment';
 import { previewConsole, type PreviewConsoleLevel } from '$lib/previewConsole.svelte';
-import { sandboxStore } from '$lib/sandboxStore';
 
 const CONSOLE_MESSAGE_TYPES = new Set<PreviewConsoleLevel>([
 	'log',
@@ -11,7 +10,6 @@ const CONSOLE_MESSAGE_TYPES = new Set<PreviewConsoleLevel>([
 ]);
 
 let listenersInstalled = false;
-let booting = false;
 
 function handlePreviewMessage(event: MessageEvent) {
 	const type = event.data?.type;
@@ -24,15 +22,7 @@ function handlePreviewMessage(event: MessageEvent) {
 export function installPreviewConsoleListener() {
 	if (!browser || listenersInstalled) return;
 	listenersInstalled = true;
-
 	window.addEventListener('message', handlePreviewMessage);
-
-	sandboxStore.subscribe((state) => {
-		if (state.booting && !booting) {
-			previewConsole.clear();
-		}
-		booting = state.booting;
-	});
 }
 
 if (browser) {

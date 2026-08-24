@@ -7,6 +7,7 @@
   import LogsPane from '$lib/components/logs-pane.svelte'
   import ConsolePane from '$lib/components/console-pane.svelte'
   import PreviewPane from '$lib/components/preview-pane.svelte'
+  import SettingsPane from '$lib/components/settings-pane.svelte'
   import TerminalPane from '$lib/components/terminal-pane.svelte'
   import FileIcon from '$lib/components/file-icon.svelte'
   import {
@@ -23,7 +24,10 @@
     isFileViewId,
     isTerminalViewId,
     isConsolePanelVisible,
+    isSettingsOpen,
     loadSavedLayout,
+    openSettingsInLayout,
+    closeSettingsInLayout,
     pathFromFileViewId,
     removeFileFromLayout,
     removeTerminalFromLayout,
@@ -44,6 +48,7 @@
   import ScrollTextIcon from '@lucide/svelte/icons/scroll-text'
   import TerminalSquareIcon from '@lucide/svelte/icons/terminal'
   import BugIcon from '@lucide/svelte/icons/bug'
+  import SettingsIcon from '@lucide/svelte/icons/settings'
 
   let {
     openFiles,
@@ -66,6 +71,7 @@
     loadSavedLayout() ?? createInitialLayout(['/App.svelte'], initialTerminalId),
   )
   editorChrome.setConsoleVisible(isConsolePanelVisible(startingLayout))
+  editorChrome.setSettingsOpen(isSettingsOpen(startingLayout))
   let config = $state<LayoutConfig>(startingLayout)
   let saveTimer: ReturnType<typeof setTimeout> | undefined
 
@@ -173,6 +179,25 @@
     }))
   }
 
+  function createSettingsSnippet(): Snippet {
+    return createRawSnippet(() => ({
+      render: () => `<div class="panel-host h-full min-h-0"></div>`,
+      setup: (element) => {
+        const host = element.querySelector('.panel-host') ?? element
+        const instance = mount(SettingsPane, {
+          target: host,
+          props: {
+            get canSplit() {
+              return tabGroupHasMultipleTabs(config, PANEL_IDS.settings)
+            },
+            onSplit: (direction) => handleSplit(PANEL_IDS.settings, direction),
+          },
+        })
+        return () => unmount(instance)
+      },
+    }))
+  }
+
   function createFileExplorerSnippet(): Snippet {
     return createRawSnippet(() => ({
       render: () => `<div class="panel-host h-full min-h-0"></div>`,
@@ -201,6 +226,7 @@
     preview: createPersistentPanelSnippet(PreviewPane, PANEL_IDS.preview),
     logs: createPersistentPanelSnippet(LogsPane, PANEL_IDS.logs),
     console: createPersistentPanelSnippet(ConsolePane, PANEL_IDS.console),
+    settings: createSettingsSnippet(),
   } as const
 
   function createPanelView(title: string, snippet: Snippet): View {
@@ -234,6 +260,11 @@
     map.set(PANEL_IDS.preview, createPanelView('Preview', panelSnippets.preview))
     map.set(PANEL_IDS.logs, createPanelView('Server logs', panelSnippets.logs))
     map.set(PANEL_IDS.console, createPanelView('Console', panelSnippets.console))
+    map.set(PANEL_IDS.settings, {
+      title: 'Settings',
+      snippet: panelSnippets.settings,
+      tabControls: [settingsTabIcon, settingsTabClose],
+    })
 
     return map
   }
@@ -377,6 +408,30 @@
   })
 
   $effect(() => {
+    const open = editorChrome.settingsOpen
+    untrack(() => {
+      const inLayout = isSettingsOpen(config)
+      if (open && !inLayout) {
+        config = openSettingsInLayout(config)
+      } else if (!open && inLayout) {
+        config = closeSettingsInLayout(config)
+      } else if (open && inLayout) {
+        config = openSettingsInLayout(config)
+      }
+    })
+  })
+
+  $effect(() => {
+    JSON.stringify(config)
+    untrack(() => {
+      const open = isSettingsOpen(config)
+      if (open !== editorChrome.settingsOpen) {
+        editorChrome.setSettingsOpen(open)
+      }
+    })
+  })
+
+  $effect(() => {
     JSON.stringify(config)
     untrack(() => {
       refreshPreviewPosition()
@@ -405,6 +460,10 @@
     openTerminals = openTerminals.filter((id) => id !== sessionId)
   }
 
+  function handleCloseSettings() {
+    editorChrome.closeSettings()
+  }
+
   function addTerminal() {
     openTerminals = [...openTerminals, createTerminalSessionId()]
   }
@@ -419,6 +478,27 @@
     <ScrollTextIcon class="size-3.5 shrink-0 opacity-80" />
   {:else if viewId === PANEL_IDS.console}
     <BugIcon class="size-3.5 shrink-0 opacity-80" />
+  {/if}
+{/snippet}
+
+{#snippet settingsTabIcon(_viewId: string)}
+  <SettingsIcon class="size-3.5 shrink-0 opacity-80" />
+{/snippet}
+
+{#snippet settingsTabClose(viewId: string)}
+  {#if viewId === PANEL_IDS.settings}
+    <button
+      type="button"
+      class="hl-tab-close"
+      aria-label="Close Settings"
+      onmousedown={(event) => event.stopPropagation()}
+      onclick={(event) => {
+        event.stopPropagation()
+        handleCloseSettings()
+      }}
+    >
+      <XIcon class="size-3" />
+    </button>
   {/if}
 {/snippet}
 

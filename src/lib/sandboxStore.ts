@@ -4,20 +4,31 @@ import type { SandboxStore } from '$lib/sandbox/types';
 import { webContainerToFs } from '$lib/sandbox/types';
 import { webcontainerStore } from '$lib/webcontainerStore';
 
-type Backend = 'bun' | 'webcontainer';
+export type SandboxBackend = 'bun' | 'webcontainer';
 
-let resolvedBackend: Backend | null = null;
-let resolvePromise: Promise<Backend> | null = null;
+let resolvedBackend: SandboxBackend | null = null;
+let resolvePromise: Promise<SandboxBackend> | null = null;
 
-async function detectBackend(): Promise<Backend> {
+/** Called from `(app)/+layout.server.ts` so the client never needs a health probe fetch. */
+export function initSandboxBackend(backend: SandboxBackend) {
+	if (resolvedBackend) return;
+	resolvedBackend = backend;
+	resolvePromise = Promise.resolve(backend);
+}
+
+async function detectBackend(): Promise<SandboxBackend> {
+	if (resolvedBackend) return resolvedBackend;
 	if (!browser) return 'webcontainer';
 
 	const forced = import.meta.env.PUBLIC_SANDBOX_BACKEND;
 	if (forced === 'bun' || forced === 'webcontainer') return forced;
 
+	// Fallback when layout server data was not initialized (e.g. tests).
 	try {
-		const res = await fetch('/api/sandbox/health', { signal: AbortSignal.timeout(800) });
-		if (res.ok) return 'bun';
+		const res = await fetch('/sandbox-health', { signal: AbortSignal.timeout(800) });
+		if (!res.ok) return 'webcontainer';
+		const data = (await res.json()) as { ok?: boolean };
+		if (data.ok) return 'bun';
 	} catch {
 		// Bun server not running — fall back to in-browser WebContainer
 	}
@@ -25,7 +36,7 @@ async function detectBackend(): Promise<Backend> {
 	return 'webcontainer';
 }
 
-async function getBackend(): Promise<Backend> {
+async function getBackend(): Promise<SandboxBackend> {
 	if (resolvedBackend) return resolvedBackend;
 	if (!resolvePromise) {
 		resolvePromise = detectBackend().then((backend) => {

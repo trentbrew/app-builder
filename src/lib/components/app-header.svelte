@@ -12,7 +12,10 @@
   })
 </script>
 
-<header class="bg-background fixed inset-x-0 top-0 z-30 flex h-12 shrink-0 items-center gap-2 border-b px-4">
+<header
+  class="bg-background fixed inset-x-0 top-0 z-30 flex shrink-0 items-center gap-2 border-b px-4"
+  style:height="var(--app-header-height)"
+>
   {#if appHeader.breadcrumb.length}
     <Breadcrumb.Root class="min-w-0 flex-1">
       <Breadcrumb.List>

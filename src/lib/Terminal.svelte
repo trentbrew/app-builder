@@ -20,6 +20,12 @@
   let resizeObserver: ResizeObserver | null = null
   let fitRafId: number | null = null
   let userScrolledUp = false
+  let spawning = false
+  let attachedContainer: unknown = null
+
+  function isAbortedError(error: unknown) {
+    return error instanceof Error && /aborted|Process aborted/i.test(error.message)
+  }
 
   function isTerminalReadyForFit(): boolean {
     if (!xterm || !fitAddon || !terminalContainer) return false
@@ -130,39 +136,53 @@
         unsubscribe = sandboxStore.subscribe(async (state) => {
           if (state.backend === 'bun') {
             if (!process && xterm) {
-              xterm.writeln('\r\n\x1b[90mTerminal is available in WebContainer mode.\x1b[0m')
-              xterm.writeln(
-                '\x1b[90mRun `bun run dev:all` and set PUBLIC_SANDBOX_BACKEND=webcontainer to use it.\x1b[0m',
-              )
+              xterm.writeln('\r\n\x1b[90mTerminal requires WebContainer mode in the browser.\x1b[0m')
+              xterm.writeln('\x1b[90mRun `pnpm dev` without the Bun sandbox, or use the server terminal later.\x1b[0m')
               process = { kill() {} }
             }
             return
           }
 
-          if (state.backend === 'bun') {
-            if (!process && xterm) {
-              xterm.writeln('\r\n\x1b[90mTerminal is available in WebContainer mode.\x1b[0m')
-              xterm.writeln(
-                '\x1b[90mRun `bun run dev:all` and set PUBLIC_SANDBOX_BACKEND=webcontainer to use it.\x1b[0m',
-              )
-              process = { kill() {} }
+          if (!state.container || state.booting || !state.previewUrl) {
+            if (process) {
+              try {
+                process.kill()
+              } catch {}
+              process = undefined
+              writer = undefined
+              attachedContainer = null
+              spawning = false
             }
             return
           }
 
-          if (state.container && !process && xterm) {
-            const container = state.container
-            try {
-              process = await container.spawn('jsh', [])
-              if (attachPreviewMessages) {
-                container.on('preview-message', (msg: any) => {
-                  const text = msg.message || (msg.args ? msg.args.join(' ') : JSON.stringify(msg))
-                  xterm?.writeln(`\x1b[90m[preview]\x1b[0m ${text}`)
-                })
-              }
-              writer = process.input.getWriter()
+          if (process || spawning || !xterm || state.container === attachedContainer) return
 
-              process.output.pipeTo(
+          spawning = true
+          const container = state.container
+          try {
+            const spawned = await container.spawn('jsh', [])
+            if (state.container !== container || !xterm) {
+              try {
+                spawned.kill()
+              } catch {}
+              return
+            }
+
+            process = spawned
+            attachedContainer = container
+            void spawned.exit.catch(() => {})
+
+            if (attachPreviewMessages) {
+              container.on('preview-message', (msg: any) => {
+                const text = msg.message || (msg.args ? msg.args.join(' ') : JSON.stringify(msg))
+                xterm?.writeln(`\x1b[90m[preview]\x1b[0m ${text}`)
+              })
+            }
+            writer = process.input.getWriter()
+
+            void process.output
+              .pipeTo(
                 new WritableStream({
                   write(data) {
                     xterm?.write(data)
@@ -170,10 +190,18 @@
                   },
                 }),
               )
-            } catch (spawnError) {
+              .catch((pipeError: unknown) => {
+                if (!isAbortedError(pipeError)) {
+                  console.warn(`Terminal output stream closed (${sessionId}):`, pipeError)
+                }
+              })
+          } catch (spawnError) {
+            if (!isAbortedError(spawnError)) {
               console.error(`Failed to spawn jsh process (${sessionId}):`, spawnError)
               xterm?.write('\r\nFailed to start shell.\r\n')
             }
+          } finally {
+            spawning = false
           }
         })
       } catch (importError) {
