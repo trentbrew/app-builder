@@ -1,12 +1,20 @@
-<script>
-	import { cn } from "$lib/utils.js";
-	let className = undefined;
-	export { className as class };
+<script lang="ts">
+	import type { HTMLAttributes } from "svelte/elements";
+	import { cn, type WithElementRef } from "$lib/utils.js";
+
+	let {
+		ref = $bindable(null),
+		class: className,
+		children,
+		...restProps
+	}: WithElementRef<HTMLAttributes<HTMLSpanElement>> = $props();
 </script>
 
 <span
-	class={cn("text-muted-foreground ml-auto text-xs tracking-widest", className)}
-	{...$$restProps}
+	bind:this={ref}
+	data-slot="menubar-shortcut"
+	class={cn("text-muted-foreground group-focus/menubar-item:text-accent-foreground text-xs tracking-widest ml-auto", className)}
+	{...restProps}
 >
-	<slot />
+	{@render children?.()}
 </span>

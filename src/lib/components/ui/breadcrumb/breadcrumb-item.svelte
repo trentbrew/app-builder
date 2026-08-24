@@ -1,10 +1,20 @@
-<script>
-	import { cn } from "$lib/utils.js";
-	export let el = undefined;
-	let className = undefined;
-	export { className as class };
+<script lang="ts">
+	import type { HTMLLiAttributes } from "svelte/elements";
+	import { cn, type WithElementRef } from "$lib/utils.js";
+
+	let {
+		ref = $bindable(null),
+		class: className,
+		children,
+		...restProps
+	}: WithElementRef<HTMLLiAttributes> = $props();
 </script>
 
-<li bind:this={el} class={cn("inline-flex items-center gap-1.5", className)}>
-	<slot />
+<li
+	bind:this={ref}
+	data-slot="breadcrumb-item"
+	class={cn("gap-1 inline-flex items-center", className)}
+	{...restProps}
+>
+	{@render children?.()}
 </li>

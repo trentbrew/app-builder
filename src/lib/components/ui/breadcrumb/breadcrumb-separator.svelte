@@ -1,19 +1,27 @@
-<script>
-	import ChevronRight from "svelte-radix/ChevronRight.svelte";
-	import { cn } from "$lib/utils.js";
-	export let el = undefined;
-	let className = undefined;
-	export { className as class };
+<script lang="ts">
+	import { cn, type WithElementRef } from "$lib/utils.js";
+	import type { HTMLLiAttributes } from "svelte/elements";
+	import ChevronRightIcon from '@lucide/svelte/icons/chevron-right';
+
+	let {
+		ref = $bindable(null),
+		class: className,
+		children,
+		...restProps
+	}: WithElementRef<HTMLLiAttributes> = $props();
 </script>
 
 <li
+	bind:this={ref}
+	data-slot="breadcrumb-separator"
 	role="presentation"
 	aria-hidden="true"
 	class={cn("[&>svg]:size-3.5", className)}
-	bind:this={el}
-	{...$$restProps}
+	{...restProps}
 >
-	<slot>
-		<ChevronRight tabindex="-1" />
-	</slot>
+	{#if children}
+		{@render children?.()}
+	{:else}
+		<ChevronRightIcon  />
+	{/if}
 </li>

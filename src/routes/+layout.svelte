@@ -1,10 +1,12 @@
 <script>
 	import '../app.css';
+	import { Toaster } from '$lib/components/ui/sonner/index.js';
 </script>
 
-<div class="flex h-screen w-screen flex-col bg-black">
-	<!-- <div class="flex h-12 w-full items-center justify-between bg-[#222] px-4 text-white">hi</div> -->
-	<main class="flex h-screen w-full flex-col bg-black">
+<div class="flex h-svh w-screen flex-col">
+	<main class="flex min-h-0 flex-1 flex-col">
 		<slot />
 	</main>
 </div>
+
+<Toaster richColors closeButton position="bottom-right" />

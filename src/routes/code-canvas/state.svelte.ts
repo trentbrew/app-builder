@@ -1,6 +1,7 @@
 import { browser } from '$app/environment';
 import { WebContainer } from '@webcontainer/api';
 import { initialCode } from '$lib/initialCode';
+import { createWebContainerMount } from '$lib/webcontainerProject';
 
 // Shared state using Svelte 5 runes - each variable must be declared separately
 let webContainer = $state<WebContainer | null>(null);
@@ -250,48 +251,13 @@ export const codeCanvasActions = {
 
 			// Mount project files
 			codeCanvasActions.addWebContainerLog('Mounting project files...');
-			await container.mount({
-				'package.json': {
-					file: {
-						contents: JSON.stringify(
-							{
-								name: 'svelte-repl',
-								type: 'module',
-								scripts: { dev: 'vite --port 3000 --host 0.0.0.0' },
-								dependencies: { svelte: '^5.0.0' },
-								devDependencies: {
-									vite: '^4.0.0',
-									'@sveltejs/vite-plugin-svelte': '^3.0.0'
-								}
-							},
-							null,
-							2
-						)
-					}
-				},
-				'vite.config.js': {
-					file: {
-						contents: `import { svelte } from '@sveltejs/vite-plugin-svelte';\nexport default { plugins: [svelte()] };`
-					}
-				},
-				'index.html': {
-					file: {
-						contents: `<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <meta name="viewport" content="width=device-width, initial-scale=1.0" />\n  <title>Svelte REPL</title>\n</head>\n<body>\n  <script type="module" src="/main.js"></script>\n  <!-- Script to forward console logs -->\n  <script>\n    const originalLog = console.log;\n    const originalError = console.error;\n    const originalWarn = console.warn;\n    console.log = (...args) => {\n      originalLog(...args);\n      window.parent.postMessage({ type: 'log', args }, '*');\n    };\n    console.error = (...args) => {\n      originalError(...args);\n      window.parent.postMessage({ type: 'error', args }, '*');\n    };\n    console.warn = (...args) => {\n      originalWarn(...args);\n      window.parent.postMessage({ type: 'warn', args }, '*');\n    };\n  </script>\n</body>\n</html>`
-					}
-				},
-				'main.js': {
-					file: {
-						contents: `import { mount } from 'svelte';\nimport App from './App.svelte';\n\nmount(App, { target: document.body });`
-					}
-				},
-				'App.svelte': { file: { contents: editorContent } }
-			});
+			await container.mount(createWebContainerMount(editorContent));
 
 			// Install dependencies
 			bootStatus = 'Installing dependencies...';
-			codeCanvasActions.addWebContainerLog('Installing dependencies (pnpm install)...');
+			codeCanvasActions.addWebContainerLog('Installing dependencies (npm install)...');
 
-			const install = await container.spawn('pnpm', ['install']);
+			const install = await container.spawn('npm', ['install']);
 			install.output.pipeTo(
 				new WritableStream({
 					write: (data) => {
@@ -315,8 +281,8 @@ export const codeCanvasActions = {
 			codeCanvasActions.addWebContainerLog('Dependencies installed.');
 
 			// Start dev server
-			codeCanvasActions.addWebContainerLog('Starting dev server (pnpm run dev)...');
-			const dev = await container.spawn('pnpm', ['run', 'dev']);
+			codeCanvasActions.addWebContainerLog('Starting dev server (npm run dev)...');
+			const dev = await container.spawn('npm', ['run', 'dev']);
 			dev.output.pipeTo(
 				new WritableStream({
 					write: (data) => {

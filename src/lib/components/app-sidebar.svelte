@@ -1,165 +1,173 @@
-<script module>
-	import AudioWaveform from "@lucide/svelte/icons/audio-waveform";
-	import BookOpen from "@lucide/svelte/icons/book-open";
-	import Bot from "@lucide/svelte/icons/bot";
-	import ChartPie from "@lucide/svelte/icons/chart-pie";
-	import Command from "@lucide/svelte/icons/command";
-	import Frame from "@lucide/svelte/icons/frame";
-	import GalleryVerticalEnd from "@lucide/svelte/icons/gallery-vertical-end";
-	import Map from "@lucide/svelte/icons/map";
-	import Settings2 from "@lucide/svelte/icons/settings-2";
-	import SquareTerminal from "@lucide/svelte/icons/square-terminal";
+<script lang="ts">
+	import * as Collapsible from '$lib/components/ui/collapsible/index.js';
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import ChevronRightIcon from '@lucide/svelte/icons/chevron-right';
+	import FileIcon from '@lucide/svelte/icons/file';
+	import FolderIcon from '@lucide/svelte/icons/folder';
+	import { webcontainerStore } from '$lib/webcontainerStore';
+	import type { ComponentProps } from 'svelte';
 
-	// This is sample data.
-	const data = {
-		user: {
-			name: "shadcn",
-			email: "m@example.com",
-			avatar: "/avatars/shadcn.jpg",
-		},
-		teams: [
-			{
-				name: "Acme Inc",
-				logo: GalleryVerticalEnd,
-				plan: "Enterprise",
-			},
-			{
-				name: "Acme Corp.",
-				logo: AudioWaveform,
-				plan: "Startup",
-			},
-			{
-				name: "Evil Corp.",
-				logo: Command,
-				plan: "Free",
-			},
-		],
-		navMain: [
-			{
-				title: "Playground",
-				url: "#",
-				icon: SquareTerminal,
-				isActive: true,
-				items: [
-					{
-						title: "History",
-						url: "#",
-					},
-					{
-						title: "Starred",
-						url: "#",
-					},
-					{
-						title: "Settings",
-						url: "#",
-					},
-				],
-			},
-			{
-				title: "Models",
-				url: "#",
-				icon: Bot,
-				items: [
-					{
-						title: "Genesis",
-						url: "#",
-					},
-					{
-						title: "Explorer",
-						url: "#",
-					},
-					{
-						title: "Quantum",
-						url: "#",
-					},
-				],
-			},
-			{
-				title: "Documentation",
-				url: "#",
-				icon: BookOpen,
-				items: [
-					{
-						title: "Introduction",
-						url: "#",
-					},
-					{
-						title: "Get Started",
-						url: "#",
-					},
-					{
-						title: "Tutorials",
-						url: "#",
-					},
-					{
-						title: "Changelog",
-						url: "#",
-					},
-				],
-			},
-			{
-				title: "Settings",
-				url: "#",
-				icon: Settings2,
-				items: [
-					{
-						title: "General",
-						url: "#",
-					},
-					{
-						title: "Team",
-						url: "#",
-					},
-					{
-						title: "Billing",
-						url: "#",
-					},
-					{
-						title: "Limits",
-						url: "#",
-					},
-				],
-			},
-		],
-		projects: [
-			{
-				name: "Design Engineering",
-				url: "#",
-				icon: Frame,
-			},
-			{
-				name: "Sales & Marketing",
-				url: "#",
-				icon: ChartPie,
-			},
-			{
-				name: "Travel",
-				url: "#",
-				icon: Map,
-			},
-		],
-	};
+	type TreeItem = string | TreeItem[];
+
+	interface Props extends ComponentProps<typeof Sidebar.Root> {
+		activeFile?: string;
+		onSelectFile?: (path: string, content: string) => void;
+	}
+
+	let {
+		ref = $bindable(null),
+		activeFile = '/App.svelte',
+		onSelectFile,
+		...restProps
+	}: Props = $props();
+
+	const sourceFiles = ['App.svelte'];
+	let tree = $state<TreeItem[]>([]);
+	let containerReady = $state(false);
+	let treeLoaded = $state(false);
+
+	$effect(() => {
+		const unsubscribe = webcontainerStore.subscribe((state) => {
+			if (state.container) containerReady = true;
+			if (state.fs && !treeLoaded) {
+				treeLoaded = true;
+				loadTree().catch(console.error);
+			}
+		});
+		return unsubscribe;
+	});
+
+	async function loadTree() {
+		const container = webcontainerStore.getContainer();
+		if (!container) return;
+
+		try {
+			const entries = await container.fs.readdir('/', { withFileTypes: true });
+			const visible = entries
+				.filter(
+					(entry) =>
+						!entry.name.startsWith('.') &&
+						entry.name !== 'node_modules' &&
+						entry.name !== 'pnpm-lock.yaml'
+				)
+				.sort((a, b) => {
+					if (a.isDirectory() !== b.isDirectory()) {
+						return a.isDirectory() ? -1 : 1;
+					}
+					return a.name.localeCompare(b.name);
+				});
+
+			tree = await Promise.all(
+				visible.map(async (entry) => {
+					if (!entry.isDirectory()) return entry.name;
+					const subEntries = await container.fs.readdir(`/${entry.name}`, {
+						withFileTypes: true
+					});
+					const children = subEntries
+						.filter((sub) => !sub.name.startsWith('.'))
+						.sort((a, b) => a.name.localeCompare(b.name))
+						.map((sub) => sub.name);
+					return [entry.name, ...children] as TreeItem;
+				})
+			);
+		} catch (error) {
+			console.error('Error loading project tree:', error);
+		}
+	}
+
+	async function openFile(name: string, parent?: string) {
+		const path = parent ? `/${parent}/${name}` : `/${name}`;
+		const container = webcontainerStore.getContainer();
+		if (!container || !onSelectFile) return;
+
+		try {
+			const content = await container.fs.readFile(path, 'utf-8');
+			onSelectFile(path, content);
+		} catch (error) {
+			console.error('Error reading file:', error);
+		}
+	}
+
+	function normalizePath(path: string) {
+		return path.startsWith('/') ? path : `/${path}`;
+	}
+
+	function isActive(name: string, parent?: string) {
+		const path = normalizePath(parent ? `${parent}/${name}` : name);
+		return normalizePath(activeFile) === path;
+	}
 </script>
 
-<script>
-	import NavMain from "$lib/components/nav-main.svelte";
-	import NavProjects from "$lib/components/nav-projects.svelte";
-	import NavUser from "$lib/components/nav-user.svelte";
-	import TeamSwitcher from "$lib/components/team-switcher.svelte";
-	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
-	let { ref = $bindable(null), collapsible = "icon", ...restProps } = $props();
-</script>
-
-<Sidebar.Root bind:ref {collapsible} {...restProps}>
-	<Sidebar.Header>
-		<TeamSwitcher teams={data.teams} />
-	</Sidebar.Header>
+<Sidebar.Root bind:ref {...restProps}>
 	<Sidebar.Content>
-		<NavMain items={data.navMain} />
-		<NavProjects projects={data.projects} />
+		<Sidebar.Group>
+			<Sidebar.GroupLabel>Source</Sidebar.GroupLabel>
+			<Sidebar.GroupContent>
+				<Sidebar.Menu>
+					{#each sourceFiles as file (file)}
+						<Sidebar.MenuItem>
+							<Sidebar.MenuButton isActive={isActive(file)} onclick={() => openFile(file)}>
+								<FileIcon />
+								{file}
+							</Sidebar.MenuButton>
+						</Sidebar.MenuItem>
+					{/each}
+				</Sidebar.Menu>
+			</Sidebar.GroupContent>
+		</Sidebar.Group>
+		<Sidebar.Group>
+			<Sidebar.GroupLabel>Files</Sidebar.GroupLabel>
+			<Sidebar.GroupContent>
+				{#if !containerReady}
+					<p class="text-muted-foreground px-2 py-1 text-xs">Booting project…</p>
+				{:else}
+					<Sidebar.Menu>
+						{#each tree as item, index (index)}
+							{@render Tree({ item })}
+						{/each}
+					</Sidebar.Menu>
+				{/if}
+			</Sidebar.GroupContent>
+		</Sidebar.Group>
 	</Sidebar.Content>
-	<Sidebar.Footer>
-		<NavUser user={data.user} />
-	</Sidebar.Footer>
 	<Sidebar.Rail />
 </Sidebar.Root>
+
+{#snippet Tree({ item, parent }: { item: TreeItem; parent?: string })}
+	{@const [name, ...items] = Array.isArray(item) ? item : [item]}
+	{#if !items.length}
+		<Sidebar.MenuItem>
+			<Sidebar.MenuButton
+				isActive={isActive(String(name), parent)}
+				onclick={() => openFile(String(name), parent)}
+			>
+				<FileIcon />
+				{name}
+			</Sidebar.MenuButton>
+		</Sidebar.MenuItem>
+	{:else}
+		<Sidebar.MenuItem>
+			<Collapsible.Root
+				class="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
+				open={name === 'lib' || name === 'components' || !parent}
+			>
+				<Collapsible.Trigger>
+					{#snippet child({ props })}
+						<Sidebar.MenuButton {...props}>
+							<ChevronRightIcon class="transition-transform" />
+							<FolderIcon />
+							{name}
+						</Sidebar.MenuButton>
+					{/snippet}
+				</Collapsible.Trigger>
+				<Collapsible.Content>
+					<Sidebar.MenuSub>
+						{#each items as subItem, index (index)}
+							{@render Tree({ item: subItem, parent: String(name) })}
+						{/each}
+					</Sidebar.MenuSub>
+				</Collapsible.Content>
+			</Collapsible.Root>
+		</Sidebar.MenuItem>
+	{/if}
+{/snippet}

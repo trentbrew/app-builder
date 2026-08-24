@@ -15,7 +15,11 @@ const coepCoopPlugin = {
 };
 
 export default defineConfig({
-	server: { hmr: { overlay: false } },
+	server: {
+		port: 9898,
+		strictPort: true,
+		hmr: { overlay: false }
+	},
 	plugins: [tailwindcss(), sveltekit(), coepCoopPlugin],
 	optimizeDeps: {
 		// Exclude @xterm/xterm from dependency optimization,

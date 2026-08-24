@@ -10,6 +10,27 @@
 	let writer: any;
 	let fitAddon: any;
 	let resizeObserver: ResizeObserver | null = null;
+	let fitRafId: number | null = null;
+
+	function isTerminalReadyForFit(): boolean {
+		if (!xterm || !fitAddon || !terminalContainer) return false;
+		if (
+			!terminalContainer.isConnected ||
+			terminalContainer.offsetWidth <= 0 ||
+			terminalContainer.offsetHeight <= 0
+		) {
+			return false;
+		}
+		if (!xterm.element?.isConnected || !xterm.element.parentElement) return false;
+
+		const core = xterm._core;
+		const dims = core?._renderService?.dimensions;
+		if (!dims?.css?.cell?.width || !dims?.css?.cell?.height) return false;
+		// FitAddon reads viewport.scrollBarWidth when scrollback > 0
+		if (xterm.options.scrollback !== 0 && !core?.viewport) return false;
+
+		return true;
+	}
 
 	// Control bar actions
 	function handleClear() {
@@ -30,28 +51,28 @@
 		xterm?.writeln('\r\n[Terminal restarted]\r\n');
 	}
 
-	// Defensive fit call: only fit if both xterm and fitAddon are ready and terminalContainer is attached
-	function safeFit() {
-		// Extra guard: fitAddon._terminal and fitAddon._core should be defined (xterm internals)
-		if (xterm && fitAddon && terminalContainer) {
-			// xterm.open must have been called and terminalContainer must be in the DOM
-			const containerInDom =
-				terminalContainer.isConnected &&
-				terminalContainer.offsetWidth > 0 &&
-				terminalContainer.offsetHeight > 0;
-			if (!containerInDom) {
-				// Don't attempt fit if container is not visible or not in DOM
-				return;
+	// Defensive fit: wait until xterm viewport + render dimensions exist before calling FitAddon
+	function safeFit(retries = 8) {
+		if (!isTerminalReadyForFit()) {
+			if (retries > 0) {
+				fitRafId = requestAnimationFrame(() => safeFit(retries - 1));
 			}
-			try {
-				// Some xterm versions require fitAddon to be loaded and terminal to be opened
-				if (typeof fitAddon.fit === 'function' && xterm.element && xterm.element.isConnected) {
-					fitAddon.fit();
-				}
-			} catch (e) {
+			return;
+		}
+		try {
+			fitAddon.fit();
+		} catch (e) {
+			if (retries > 0) {
+				fitRafId = requestAnimationFrame(() => safeFit(retries - 1));
+			} else {
 				console.warn('fitAddon.fit() failed:', e);
 			}
 		}
+	}
+
+	function scheduleFit() {
+		if (fitRafId !== null) cancelAnimationFrame(fitRafId);
+		fitRafId = requestAnimationFrame(() => safeFit());
 	}
 
 	onMount(() => {
@@ -71,9 +92,17 @@
 					return;
 				}
 
+				const surface = document.createElement('div');
+				surface.className = 'bg-background';
+				surface.style.position = 'absolute';
+				surface.style.visibility = 'hidden';
+				document.body.appendChild(surface);
+				const terminalBackground = getComputedStyle(surface).backgroundColor;
+				surface.remove();
+
 				xterm = new Terminal({
 					theme: {
-						background: '#282c34'
+						background: terminalBackground
 					}
 				});
 				fitAddon = new FitAddon();
@@ -82,23 +111,21 @@
 				// Only open the terminal if the container is available
 				if (terminalContainer) {
 					xterm.open(terminalContainer);
-					// Wait for next microtask to ensure DOM is ready before fitting
-					Promise.resolve().then(() => safeFit());
+					scheduleFit();
 
 					// Observe container size changes, but only if terminalContainer is defined
 					resizeObserver = new ResizeObserver(() => {
-						safeFit();
+						scheduleFit();
 					});
 					resizeObserver.observe(terminalContainer);
 				} else {
 					console.error('Terminal container is not available for xterm.');
 				}
 
-				// Set up the key listener ONCE after xterm is created
-				xterm.onKey(({ key }) => {
-					// Only write if the writer is ready
+				// Route all terminal input (keys, paste, etc.) to the shell
+				xterm.onData((data) => {
 					if (writer) {
-						writer.write(key);
+						writer.write(data);
 					}
 				});
 
@@ -133,6 +160,7 @@
 	});
 
 	onDestroy(() => {
+		if (fitRafId !== null) cancelAnimationFrame(fitRafId);
 		if (resizeObserver && terminalContainer) {
 			try {
 				resizeObserver.unobserve(terminalContainer);
@@ -175,7 +203,7 @@
 		flex-direction: column;
 		width: 100%;
 		height: 100%;
-		background: #282c34;
+		background: var(--color-background);
 		border-radius: 8px;
 		overflow: hidden;
 	}
@@ -183,8 +211,8 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		background: #282c34;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+		background: var(--color-background);
+		border-bottom: 1px solid var(--color-border);
 		color: #eee;
 		font-size: 0.95em;
 		padding: 0 10px;
@@ -219,7 +247,7 @@
 		padding: 12px;
 		width: 100%;
 		height: 100%;
-		background: #282c34;
+		background: var(--color-background);
 		flex: 1 1 0;
 		overflow: hidden;
 	}

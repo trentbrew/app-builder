@@ -1,4 +1,15 @@
 @import 'tailwindcss';
+@import 'horizon-layout/horizon-layout.css';
+
+@layer base {
+	* {
+		@apply border-border outline-ring/50;
+	}
+
+	body {
+		@apply bg-background text-foreground;
+	}
+}
 
 /* Set dark mode as default */
 :root {
@@ -126,3 +137,37 @@ body.debug * {
 }
 
 /* Terminal specific styling - handled in component */
+
+/* Horizon dock — map to shadcn tokens */
+:root {
+	--hl-background: var(--color-background);
+	--hl-foreground: var(--color-foreground);
+	--hl-primary: var(--color-foreground);
+	--hl-popover: var(--color-popover);
+	--hl-border: var(--color-border);
+	--hl-card: var(--color-background);
+	--hl-secondary: var(--color-secondary);
+	--hl-muted-foreground: var(--color-muted-foreground);
+	--hl-ring: var(--color-ring);
+	--hl-accent: var(--color-accent);
+	--hl-radius: var(--radius);
+	--hl-tab-inactive-color: var(--color-muted-foreground);
+	--hl-drop-hint-border: color-mix(in oklch, var(--color-primary) 80%, transparent);
+	--hl-drop-hint-bg: color-mix(in oklch, var(--color-primary) 12%, transparent);
+}
+
+.editor-dock .horizon-layout {
+	background: var(--color-background);
+	font-family: inherit;
+}
+
+.editor-dock .horizon-layout-tabgroup {
+	border-radius: 0;
+	background: var(--color-background);
+}
+
+.editor-dock .horizon-layout-tabgroup__content {
+	min-height: 0;
+	flex: 1;
+	overflow: hidden;
+}

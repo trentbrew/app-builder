@@ -1,31 +1,46 @@
-<script>
+<script lang="ts">
 	import { Menubar as MenubarPrimitive } from "bits-ui";
-	import Check from "svelte-radix/Check.svelte";
-	import { cn } from "$lib/utils.js";
-	let className = undefined;
-	export { className as class };
-	export let checked = undefined;
+	import { cn, type WithoutChildrenOrChild } from "$lib/utils.js";
+	import type { Snippet } from "svelte";
+	import MinusIcon from '@lucide/svelte/icons/minus';
+	import CheckIcon from '@lucide/svelte/icons/check';
+
+	let {
+		ref = $bindable(null),
+		class: className,
+		checked = $bindable(false),
+		indeterminate = $bindable(false),
+		inset,
+		children: childrenProp,
+		...restProps
+	}: WithoutChildrenOrChild<MenubarPrimitive.CheckboxItemProps> & {
+		inset?: boolean;
+		children?: Snippet;
+	} = $props();
 </script>
 
 <MenubarPrimitive.CheckboxItem
+	bind:ref
 	bind:checked
+	bind:indeterminate
+	data-slot="menubar-checkbox-item"
+	data-inset={inset}
 	class={cn(
-		"data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+		"focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground gap-1.5 rounded-md py-1 pr-1.5 pl-7 text-sm data-inset:pl-7 relative flex cursor-default items-center outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
 		className
 	)}
-	{...$$restProps}
-	on:click
-	on:keydown
-	on:focusin
-	on:focusout
-	on:pointerleave
-	on:pointermove
-	on:pointerdown
+	{...restProps}
 >
-	<span class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-		<MenubarPrimitive.CheckboxIndicator>
-			<Check class="h-4 w-4" />
-		</MenubarPrimitive.CheckboxIndicator>
-	</span>
-	<slot />
+	{#snippet children({ checked: checked, indeterminate: indeterminate })}
+		<span
+			class="left-1.5 size-4 [&_svg:not([class*='size-'])]:size-4 pointer-events-none absolute flex items-center justify-center"
+		>
+			{#if indeterminate}
+				<MinusIcon  />
+			{:else if checked}
+				<CheckIcon  />
+			{/if}
+		</span>
+		{@render childrenProp?.()}
+	{/snippet}
 </MenubarPrimitive.CheckboxItem>

@@ -402,6 +402,7 @@
 				src={codeCanvasState.previewUrl}
 				class="h-full w-full border-0"
 				class:hidden={!iframeLoaded}
+				allow="cross-origin-isolated"
 				onload={handleIframeLoad}
 				onerror={handleIframeError}
 				title="Preview"

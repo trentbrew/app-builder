@@ -194,7 +194,7 @@
 				<p>{error}</p>
 			</div>
 		{:else}
-			<iframe src={previewUrl} title="Svelte REPL Preview"></iframe>
+			<iframe src={previewUrl} allow="cross-origin-isolated" title="Threlte REPL Preview"></iframe>
 		{/if}
 	</div>
 

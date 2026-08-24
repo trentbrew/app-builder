@@ -1,14 +1,23 @@
-<script>
-	import { cn } from "$lib/utils.js";
-	let className = undefined;
-	export let level = "h5";
-	export { className as class };
+<script lang="ts">
+	import type { HTMLAttributes } from "svelte/elements";
+	import { cn, type WithElementRef } from "$lib/utils.js";
+
+	let {
+		ref = $bindable(null),
+		class: className,
+		children,
+		...restProps
+	}: WithElementRef<HTMLAttributes<HTMLDivElement>> = $props();
 </script>
 
-<svelte:element
-	this={level}
-	class={cn("mb-1 font-medium leading-none tracking-tight", className)}
-	{...$$restProps}
+<div
+	bind:this={ref}
+	data-slot="alert-title"
+	class={cn(
+		"font-medium group-has-[>svg]/alert:col-start-2 [&_a]:hover:text-foreground [&_a]:underline [&_a]:underline-offset-3",
+		className
+	)}
+	{...restProps}
 >
-	<slot />
-</svelte:element>
+	{@render children?.()}
+</div>

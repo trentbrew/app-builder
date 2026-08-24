@@ -1,22 +1,31 @@
-<script>
-	import { cn } from "$lib/utils.js";
-	export let href = undefined;
-	export let el = undefined;
-	export let asChild = false;
-	let className = undefined;
-	export { className as class };
-	let attrs;
-	$: attrs = {
+<script lang="ts">
+	import type { HTMLAnchorAttributes } from "svelte/elements";
+	import type { Snippet } from "svelte";
+	import { cn, type WithElementRef } from "$lib/utils.js";
+
+	let {
+		ref = $bindable(null),
+		class: className,
+		href = undefined,
+		child,
+		children,
+		...restProps
+	}: WithElementRef<HTMLAnchorAttributes> & {
+		child?: Snippet<[{ props: HTMLAnchorAttributes }]>;
+	} = $props();
+
+	const attrs = $derived({
+		"data-slot": "breadcrumb-link",
 		class: cn("hover:text-foreground transition-colors", className),
 		href,
-		...$$restProps,
-	};
+		...restProps,
+	});
 </script>
 
-{#if asChild}
-	<slot {attrs} />
+{#if child}
+	{@render child({ props: attrs })}
 {:else}
-	<a bind:this={el} {...attrs} {href}>
-		<slot {attrs} />
+	<a bind:this={ref} {...attrs}>
+		{@render children?.()}
 	</a>
 {/if}
