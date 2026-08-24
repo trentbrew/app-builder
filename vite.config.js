@@ -14,11 +14,17 @@ const coepCoopPlugin = {
 	}
 };
 
+const sandboxServer = process.env.SANDBOX_SERVER_URL ?? 'http://localhost:9899';
+
 export default defineConfig({
 	server: {
 		port: 9898,
 		strictPort: true,
-		hmr: { overlay: false }
+		hmr: { overlay: false },
+		proxy: {
+			'/api/sandbox': sandboxServer,
+			'/preview': sandboxServer
+		}
 	},
 	plugins: [tailwindcss(), sveltekit(), coepCoopPlugin],
 	optimizeDeps: {

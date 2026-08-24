@@ -1,101 +1,72 @@
 import type { FileSystemTree } from '@webcontainer/api';
-
-const packageJson = {
-	name: 'svelte-repl',
-	type: 'module',
-	scripts: {
-		dev: 'vite --port 3000 --host 0.0.0.0',
-		start: 'npm run dev'
-	},
-	dependencies: {
-		svelte: '5.56.3'
-	},
-	devDependencies: {
-		vite: '6.3.2',
-		'@sveltejs/vite-plugin-svelte': '5.1.1'
-	}
-};
+import {
+	REPL_INDEX_HTML,
+	REPL_MAIN_JS,
+	REPL_PACKAGE_JSON,
+	REPL_SVELTE_CONFIG,
+	replViteConfig
+} from '$lib/replProject';
 
 const npmrc = `legacy-peer-deps=true
 engine-strict=false
 `;
 
-const viteConfig = `import { defineConfig } from 'vite';
-import { svelte } from '@sveltejs/vite-plugin-svelte';
-
-export default defineConfig({
-	plugins: [svelte()],
-	server: {
-		port: 3000,
-		host: '0.0.0.0'
-	}
-});
-`;
-
-const svelteConfig = `import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-
-export default {
-	preprocess: vitePreprocess()
-};
-`;
-
-const indexHtml = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Svelte Counter</title>
-</head>
-<body>
-  <script type="module" src="/main.js"></script>
-  <script>
-    const originalLog = console.log;
-    const originalError = console.error;
-    const originalWarn = console.warn;
-    console.log = (...args) => {
-      originalLog(...args);
-      window.parent.postMessage({ type: 'log', args }, '*');
-    };
-    console.error = (...args) => {
-      originalError(...args);
-      window.parent.postMessage({ type: 'error', args }, '*');
-    };
-    console.warn = (...args) => {
-      originalWarn(...args);
-      window.parent.postMessage({ type: 'warn', args }, '*');
-    };
-  </script>
-</body>
-</html>`;
-
-const mainJs = `import { mount } from 'svelte';
-import App from './App.svelte';
-
-mount(App, { target: document.body });
-`;
-
 export function createWebContainerMount(appContents: string): FileSystemTree {
 	return {
 		'package.json': {
-			file: { contents: JSON.stringify(packageJson, null, 2) }
+			file: { contents: JSON.stringify(REPL_PACKAGE_JSON, null, 2) }
 		},
 		'.npmrc': {
 			file: { contents: npmrc }
 		},
 		'vite.config.js': {
-			file: { contents: viteConfig }
+			file: { contents: replViteConfig(3000) }
 		},
 		'svelte.config.js': {
-			file: { contents: svelteConfig }
+			file: { contents: REPL_SVELTE_CONFIG }
 		},
 		'index.html': {
-			file: { contents: indexHtml }
+			file: { contents: REPL_INDEX_HTML }
 		},
 		'main.js': {
-			file: { contents: mainJs }
+			file: { contents: REPL_MAIN_JS }
 		},
 		'App.svelte': {
 			file: { contents: appContents }
+		},
+		'README.md': {
+			file: {
+				contents: `---
+title: Svelte Counter
+description: Markdown editor demo with frontmatter, callouts, and wiki-links
+tags:
+  - demo
+  - markdown
+draft: false
+---
+
+# Svelte Counter
+
+Welcome to the app builder sandbox.
+
+> [!TIP]
+> Paste markdown from anywhere — headings, lists, callouts, and \`[[README.md]]\` wiki-links auto-format in rich mode.
+
+## Features
+
+- Live preview in WebContainer
+- **Rich/source toggle** for markdown files
+- YAML **Properties** panel for frontmatter
+- Slash commands — type \`/\` at line start
+- @ mentions for open project files
+
+## Task list
+
+- [x] Boot WebContainer
+- [ ] Try slash commands
+- [ ] Paste markdown from another app
+`
+			}
 		}
 	};
 }

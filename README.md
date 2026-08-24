@@ -1,38 +1,80 @@
-# sv
+# App Builder
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Browser-based Svelte REPL with a docked editor, live preview, file explorer, and integrated terminal.
 
-## Creating a project
+## Architecture
 
-If you're seeing this, you've probably already done this step. Congrats!
+| Layer | Role |
+| ----- | ---- |
+| **SvelteKit UI** (port 9898) | Editor shell, CodeMirror, preview iframe, layout |
+| **Bun sandbox server** (port 9899) | Local REPL runtime — `bun install`, Vite dev server, preview proxy |
+| **WebContainer** (fallback) | In-browser Node sandbox when the Bun server isn't running |
 
-```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
-```
+When both are available, the client **auto-detects** the Bun server and uses it (much faster installs). Set `PUBLIC_SANDBOX_BACKEND=webcontainer` to force in-browser mode.
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Install dependencies (pnpm or bun):
 
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+pnpm install
+# or: bun install
 ```
 
-## Building
-
-To create a production version of your app:
+### Recommended — UI + Bun sandbox together
 
 ```bash
-npm run build
+bun run dev:all
 ```
 
-You can preview the production build with `npm run preview`.
+This runs:
+- Vite/SvelteKit on **http://localhost:9898**
+- Bun sandbox API on **http://localhost:9899** (proxied via Vite at `/api/sandbox` and `/preview`)
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+### UI only (WebContainer fallback)
+
+```bash
+pnpm dev
+```
+
+Without the sandbox server, preview boots inside WebContainer (~30–60s first install).
+
+### Sandbox server only
+
+```bash
+bun run dev:sandbox
+```
+
+## Environment
+
+| Variable | Default | Description |
+| -------- | ------- | ----------- |
+| `SANDBOX_SERVER_PORT` | `9899` | Bun sandbox listen port |
+| `SANDBOX_SERVER_URL` | `http://localhost:9899` | Vite dev proxy target |
+| `PUBLIC_SANDBOX_BACKEND` | auto | `bun` or `webcontainer` to force a backend |
+
+## Sandbox API
+
+```
+GET  /health
+GET  /api/sandbox/health
+POST /api/sandbox                         → create session
+GET  /api/sandbox/:id                     → status
+POST /api/sandbox/:id/boot                → { appContents }
+POST /api/sandbox/:id/reboot              → { appContents }
+PUT  /api/sandbox/:id/files               → { path, content }
+GET  /api/sandbox/:id/files?path=/App.svelte
+GET  /api/sandbox/:id/logs                → SSE
+GET  /preview/:id/*                       → proxy to Vite preview
+```
+
+Workspaces are stored in `.sandboxes/` (gitignored).
+
+## Build
+
+```bash
+pnpm build
+pnpm preview
+```
+
+Deploys to Vercel via `@sveltejs/adapter-vercel`. The Bun sandbox server is **local-dev only** for now; production still uses WebContainer unless you deploy the server separately.
