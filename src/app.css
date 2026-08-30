@@ -331,9 +331,38 @@ body.debug * {
 	font-family: inherit;
 }
 
+/* Maximized panes skip tabgroup — mirror tabgroup__content flex fill for xterm fit */
+.editor-dock .horizon-layout__content--maximized,
+.nested-dock .horizon-layout__content--maximized {
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+	min-width: 0;
+	overflow: hidden;
+}
+
+.editor-dock .horizon-layout__content--maximized > *,
+.nested-dock .horizon-layout__content--maximized > * {
+	flex: 1 1 0;
+	min-height: 0;
+	min-width: 0;
+	width: 100%;
+	height: 100%;
+}
+
 .editor-dock .horizon-layout-tabgroup {
 	border-radius: 0;
 	background: var(--color-background);
+}
+
+.editor-dock .horizon-layout-tabgroup:has(.file-explorer) {
+	background: var(--color-chrome-surface);
+	--editor-pane-toolbar-background: var(--color-chrome-surface);
+	--editor-tab-bridge-fill: var(--color-chrome-surface);
+}
+
+.editor-dock .horizon-layout-tabgroup:has(.file-explorer) .horizon-layout-tabgroup__tab-bar {
+	background: var(--color-chrome-surface);
 }
 
 .editor-dock .horizon-layout-tabgroup__content {
@@ -624,6 +653,14 @@ body.debug * {
 	box-shadow: 0 1px 2px color-mix(in oklch, var(--color-foreground) 5%, transparent);
 }
 
+:root[data-editor-pane-style='cards'] .editor-dock .horizon-layout-tabgroup:has(.file-explorer) {
+	background: var(--color-chrome-surface);
+}
+
+:root[data-editor-pane-style='cards'] .editor-dock .horizon-layout-tabgroup:has(.file-explorer) .horizon-layout-tabgroup__tab-bar {
+	background: var(--color-chrome-surface);
+}
+
 :root[data-editor-pane-style='cards'] .editor-dock .horizon-layout-tabgroup__tab-bar {
 	background: color-mix(in oklch, var(--color-muted) 22%, var(--color-background));
 }
@@ -634,6 +671,50 @@ body.debug * {
 
 :root[data-editor-pane-style='cards'] .editor-dock .horizon-layout-tabgroup__tab:first-child {
 	border-top-left-radius: calc(var(--editor-pane-radius) - 1px);
+}
+
+/* Fullscreen (maximizedView) — horizon-layout skips tabgroup; restore card surface in cards mode */
+:root[data-editor-pane-style='cards'] .editor-dock .horizon-layout:has(> .horizon-layout__content--maximized) {
+	padding: var(--editor-pane-gap-half);
+	box-sizing: border-box;
+	background: transparent;
+}
+
+:root[data-editor-pane-style='cards']
+	.horizon-layout-tabgroup__content
+	.horizon-layout:has(> .horizon-layout__content--maximized) {
+	padding: 0;
+}
+
+:root[data-editor-pane-style='cards'] .editor-dock .horizon-layout__content--maximized,
+:root[data-editor-pane-style='cards'] .nested-dock .horizon-layout__content--maximized {
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+	min-width: 0;
+	overflow: hidden;
+}
+
+:root[data-editor-pane-style='cards'] .editor-dock .horizon-layout__content--maximized {
+	border: 1px solid var(--color-border);
+	border-radius: var(--editor-pane-radius);
+	background: var(--color-background);
+	box-shadow: 0 1px 2px color-mix(in oklch, var(--color-foreground) 5%, transparent);
+}
+
+:root[data-editor-pane-style='cards'] .horizon-layout-tabgroup__content .horizon-layout__content--maximized {
+	border: none;
+	border-radius: 0;
+	box-shadow: none;
+	background: transparent;
+}
+
+:root[data-editor-pane-style='cards'] .editor-dock .horizon-layout__content--maximized > *,
+:root[data-editor-pane-style='cards'] .nested-dock .horizon-layout__content--maximized > * {
+	flex: 1 1 0;
+	min-height: 0;
+	min-width: 0;
+	height: 100%;
 }
 
 /* Agent chrome pane — mirror dock tabgroup in cards mode */

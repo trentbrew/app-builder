@@ -12,6 +12,7 @@ type XtermTerminal = {
 	options: { theme?: Record<string, string>; fontFamily?: string; fontSize?: number; scrollback?: number };
 	buffer: { active: { viewportY: number; length: number } };
 	open: (container: HTMLElement) => void;
+	resize: (cols: number, rows: number) => void;
 	onData: (handler: (data: string) => void) => void;
 	onScroll: (handler: () => void) => void;
 	onLineFeed: (handler: () => void) => void;
@@ -20,12 +21,12 @@ type XtermTerminal = {
 	scrollToBottom: () => void;
 	dispose: () => void;
 	_core?: {
-		_renderService?: { dimensions?: { css?: { cell?: { width?: number; height?: number } } } };
-		viewport?: unknown;
+		_renderService?: {
+			dimensions?: { css?: { cell?: { width?: number; height?: number } } };
+			clear?: () => void;
+		};
 	};
 };
-
-type FitAddon = { fit: () => void };
 
 type ShellProcess = {
 	kill: () => void;
@@ -42,12 +43,12 @@ class TerminalSession {
 	private attachPreviewMessages = false;
 	private containerEl: HTMLElement | null = null;
 	private xterm: XtermTerminal | null = null;
-	private fitAddon: FitAddon | null = null;
 	private process: ShellProcess | undefined;
 	private unsubscribe: (() => void) | undefined;
 	private writer: { write: (data: string) => void; releaseLock: () => void } | undefined;
 	private resizeObserver: ResizeObserver | null = null;
 	private fitRafId: number | null = null;
+	private fitFollowupTimers: ReturnType<typeof setTimeout>[] = [];
 	private userScrolledUp = false;
 	private spawning = false;
 	private attachedContainer: unknown = null;
@@ -93,11 +94,30 @@ class TerminalSession {
 		this.fitRafId = requestAnimationFrame(() => this.safeFit());
 	}
 
+	/** RAF fit plus delayed passes — layout/maximize often settles after the first frame. */
+	scheduleFitWithFollowups() {
+		this.scheduleFit();
+		this.clearFitFollowups();
+		for (const delay of [50, 150, 400]) {
+			this.fitFollowupTimers.push(
+				setTimeout(() => {
+					if (!this.disposed) this.safeFit();
+				}, delay)
+			);
+		}
+	}
+
+	private clearFitFollowups() {
+		for (const timer of this.fitFollowupTimers) clearTimeout(timer);
+		this.fitFollowupTimers = [];
+	}
+
 	dispose() {
 		if (this.disposed) return;
 		this.disposed = true;
 
 		if (this.fitRafId !== null) cancelAnimationFrame(this.fitRafId);
+		this.clearFitFollowups();
 		this.teardownResizeObserver();
 		this.teardownPreviewMessageListener();
 		if (this.themeListener) {
@@ -139,7 +159,6 @@ class TerminalSession {
 			this.xterm = null;
 		}
 
-		this.fitAddon = null;
 		this.containerEl = null;
 		this.attachedContainer = null;
 	}
@@ -159,7 +178,6 @@ class TerminalSession {
 
 	private async initialize() {
 		const { Terminal } = await import('@xterm/xterm');
-		const { FitAddon } = await import('@xterm/addon-fit');
 		await import('@xterm/xterm/css/xterm.css');
 
 		if (typeof Terminal !== 'function' || this.disposed) return;
@@ -173,13 +191,9 @@ class TerminalSession {
 			fontFamily: TERMINAL_FONT_FAMILY,
 			fontSize: settings.typography.terminalFontSize,
 			theme: xtermThemeFromDocument()
-		}) as unknown as XtermTerminal & { loadAddon: (addon: FitAddon) => void };
-
-		const fitAddon = new FitAddon() as FitAddon;
-		xterm.loadAddon(fitAddon);
+		}) as unknown as XtermTerminal;
 
 		this.xterm = xterm;
-		this.fitAddon = fitAddon;
 
 		xterm.onData((data: string) => {
 			if (this.bunSocket || this.bunInputQueue.length > 0) this.sendBunInput(data);
@@ -303,7 +317,7 @@ class TerminalSession {
 		this.containerEl = container;
 		this.setupResizeObserver(container);
 		this.applyTerminalTheme();
-		this.scheduleFit();
+		this.scheduleFitWithFollowups();
 	}
 
 	private setupResizeObserver(container: HTMLElement) {
@@ -314,11 +328,12 @@ class TerminalSession {
 		this.resizeObserver.observe(container);
 
 		let parent: HTMLElement | null = container.parentElement;
-		let depth = 0;
-		while (parent && depth < 4) {
+		while (parent) {
 			this.resizeObserver.observe(parent);
+			if (parent.classList.contains('editor-dock') || parent.classList.contains('nested-dock')) {
+				break;
+			}
 			parent = parent.parentElement;
-			depth++;
 		}
 
 		if (typeof window !== 'undefined') {
@@ -389,22 +404,53 @@ class TerminalSession {
 	}
 
 	private isTerminalReadyForFit(): boolean {
-		if (!this.xterm || !this.fitAddon || !this.containerEl) return false;
+		if (!this.xterm || !this.containerEl) return false;
 		if (
 			!this.containerEl.isConnected ||
-			this.containerEl.offsetWidth <= 0 ||
-			this.containerEl.offsetHeight <= 0
+			this.containerEl.clientWidth <= 0 ||
+			this.containerEl.clientHeight <= 0
 		) {
 			return false;
 		}
 		if (!this.xterm.element?.isConnected || !this.xterm.element.parentElement) return false;
 
-		const core = this.xterm._core;
-		const dims = core?._renderService?.dimensions;
+		const dims = this.xterm._core?._renderService?.dimensions;
 		if (!dims?.css?.cell?.width || !dims?.css?.cell?.height) return false;
-		if (this.xterm.options.scrollback !== 0 && !core?.viewport) return false;
 
 		return true;
+	}
+
+	/**
+	 * xterm 5.6 dropped `core.viewport`; addon-fit 0.10 still reads `scrollBarWidth` there
+	 * and throws, leaving the default 80×24 grid (short height, horizontal overflow).
+	 */
+	private proposeDimensions(): { cols: number; rows: number } | null {
+		if (!this.xterm || !this.containerEl) return null;
+		const cell = this.xterm._core?._renderService?.dimensions?.css?.cell;
+		if (!cell?.width || !cell?.height) return null;
+
+		const style = getComputedStyle(this.containerEl);
+		const padX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+		const padY = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+		const availableWidth = this.containerEl.clientWidth - padX;
+		const availableHeight = this.containerEl.clientHeight - padY;
+		if (availableWidth < cell.width || availableHeight < cell.height) return null;
+
+		const scrollable = this.xterm.element?.querySelector('.xterm-scrollable-element') as
+			| HTMLElement
+			| null;
+		let scrollbar = 0;
+		if (scrollable) {
+			scrollbar = Math.max(0, scrollable.offsetWidth - scrollable.clientWidth);
+		}
+		if ((this.xterm.options.scrollback ?? 0) > 0) {
+			scrollbar = Math.max(scrollbar, 10);
+		}
+
+		return {
+			cols: Math.max(2, Math.floor((availableWidth - scrollbar) / cell.width)),
+			rows: Math.max(1, Math.floor(availableHeight / cell.height))
+		};
 	}
 
 	private isTerminalAtBottom() {
@@ -433,7 +479,18 @@ class TerminalSession {
 		}
 
 		try {
-			this.fitAddon?.fit();
+			const next = this.proposeDimensions();
+			if (!next || !this.xterm) {
+				if (retries > 0) {
+					this.fitRafId = requestAnimationFrame(() => this.safeFit(retries - 1));
+				}
+				return;
+			}
+
+			if (this.xterm.cols !== next.cols || this.xterm.rows !== next.rows) {
+				this.xterm._core?._renderService?.clear?.();
+				this.xterm.resize(next.cols, next.rows);
+			}
 			this.scrollToBottom(true);
 			this.sendBunResize();
 			this.resizeShell();
@@ -441,7 +498,7 @@ class TerminalSession {
 			if (retries > 0) {
 				this.fitRafId = requestAnimationFrame(() => this.safeFit(retries - 1));
 			} else {
-				console.warn('fitAddon.fit() failed:', error);
+				console.warn('Terminal fit failed:', error);
 			}
 		}
 	}
@@ -548,6 +605,6 @@ export function disposeTerminalSession(sessionId: string) {
 
 export function refitAllTerminalSessions() {
 	for (const session of sessions.values()) {
-		session.scheduleFit();
+		session.scheduleFitWithFollowups();
 	}
 }

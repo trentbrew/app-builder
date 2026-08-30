@@ -60,6 +60,7 @@
   .terminal-container {
     position: absolute;
     inset: 0;
+    box-sizing: border-box;
     padding: 8px;
     background: var(--color-background);
     overflow: hidden;
