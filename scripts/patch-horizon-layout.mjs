@@ -25,6 +25,22 @@ function patchFile(relativePath, marker, transform) {
 	return true;
 }
 
+const tabViewIdPatched = patchFile(
+	'TabGroup.svelte',
+	'data-view-id={tabId}',
+	(source) => {
+		const needle = `\t\t\t\t\t\ttabindex={-1}
+\t\t\t\t\t\tdraggable={!disableDrag}`;
+
+		const insert = `\t\t\t\t\t\tdata-view-id={tabId}
+\t\t\t\t\t\ttabindex={-1}
+\t\t\t\t\t\tdraggable={!disableDrag}`;
+
+		if (!source.includes(needle)) return source;
+		return source.replace(needle, insert);
+	}
+);
+
 const tabBarPatched = patchFile(
 	'TabGroup.svelte',
 	'{baseClass}__tab-bar-drag',

@@ -240,6 +240,21 @@ async function stopDevProcess(session: SandboxSession) {
   session.devProcess = null
 }
 
+/** PTY shells need interactive + login mode so user dotfiles (aliases, prompts) load. */
+function shellInvocationArgs(shellPath: string): string[] {
+  const name = shellPath.split('/').pop() ?? ''
+  switch (name) {
+    case 'bash':
+    case 'zsh':
+    case 'sh':
+      return ['-il']
+    case 'fish':
+      return ['-l']
+    default:
+      return ['-l']
+  }
+}
+
 export function createTerminal(id: string, options: { cols?: number; rows?: number } = {}): TerminalHandle | null {
   const session = sessions.get(id)
   if (!session) return null
@@ -259,7 +274,7 @@ export function createTerminal(id: string, options: { cols?: number; rows?: numb
   const decoder = new TextDecoder()
   let proc: Subprocess
   try {
-    proc = Bun.spawn([shell, '--login'], {
+    proc = Bun.spawn([shell, ...shellInvocationArgs(shell)], {
       cwd: session.dir,
       env: {
         ...process.env,

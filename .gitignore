@@ -22,3 +22,23 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Agent smoke artifacts
+.agent/
+
+# Local test / automation output
+test-results/
+.playwright-mcp/
+check-exit.txt
+playwright-exit.txt
+
+# Run manifests (experiment trajectories). Commit evaluation summaries, not raw runs.
+runs/
+
+# Manim (docs/artifacts/animations) — 267 MB venv and render intermediates.
+# The rendered .mp4 is committed; everything needed to rebuild it is not.
+.venv-manim/
+docs/artifacts/animations/media/texts/
+docs/artifacts/animations/media/images/
+**/partial_movie_files/
+__pycache__/

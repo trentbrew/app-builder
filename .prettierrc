@@ -10,16 +10,19 @@
 	"htmlWhitespaceSensitivity": "ignore",
 	"vueIndentScriptAndStyle": true,
 	"endOfLine": "auto",
-	"jsxBracketSameLine": true,
-	"vueIndentProps": true,
-	"organizeImportsSkipDestructiveCodeActions": true,
+	"plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"],
 	"overrides": [
-	  {
-		"files": "*.vue",
-		"options": {
-		  "customPrettierPlugin": "long-imports"
+		{
+			"files": "*.svelte",
+			"options": {
+				"parser": "svelte"
+			}
+		},
+		{
+			"files": "*.vue",
+			"options": {
+				"customPrettierPlugin": "long-imports"
+			}
 		}
-	  }
 	]
-  }
-  
+}
