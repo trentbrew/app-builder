@@ -1,16 +1,25 @@
 <script lang="ts">
   import IconRail from '$lib/components/icon-rail.svelte'
   import { initSandboxBackend } from '$lib/sandboxStore'
+  import { initAgentHarnessBridge, exposeHarnessDevHooks } from '$lib/agentHarness/bridge'
+  import { editComponent, watchHarnessHmr } from '$lib/agentHarness/editComponent'
+  import { onMount } from 'svelte'
   import type { Snippet } from 'svelte'
 
   let { data, children }: { data: { sandboxBackend: 'bun' | 'webcontainer' }; children: Snippet } = $props()
 
   initSandboxBackend(data.sandboxBackend)
+
+  onMount(() => {
+    initAgentHarnessBridge()
+    exposeHarnessDevHooks(editComponent)
+    return watchHarnessHmr()
+  })
 </script>
 
-<div class="app-shell relative flex h-full min-h-0 w-full">
+<div class="app-shell relative flex h-full min-h-0 w-full items-stretch">
   <IconRail />
-  <div class="app-shell__workspace flex min-h-0 min-w-0 flex-1 flex-col">
+  <div class="app-shell__workspace relative flex min-h-0 min-w-0 flex-1 flex-col">
     {@render children()}
   </div>
 </div>

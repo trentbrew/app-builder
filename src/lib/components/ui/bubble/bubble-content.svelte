@@ -13,7 +13,7 @@
 <div
   bind:this={ref}
   data-slot="bubble-content"
-  class={cn('rounded-2xl px-3 py-2 text-sm leading-relaxed wrap-break-word whitespace-pre-wrap', className)}
+  class={cn('rounded-xl px-1.5 py-0 text-sm leading-relaxed wrap-break-word whitespace-pre-wrap', className)}
   {...restProps}
 >
   {@render children?.()}

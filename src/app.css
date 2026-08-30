@@ -5,26 +5,73 @@
 @import 'tailwindcss';
 @import 'horizon-layout/horizon-layout.css';
 
+@font-face {
+	font-family: 'JetBrainsMono Nerd Font Mono';
+	src: url('/fonts/JetBrainsMonoNLNerdFontMono-Regular.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
 @layer base {
 	* {
 		@apply border-border outline-ring/50;
+		scrollbar-width: thin;
+		scrollbar-color: var(--scrollbar-thumb) transparent;
+	}
+
+	*::-webkit-scrollbar {
+		width: var(--scrollbar-size);
+		height: var(--scrollbar-size);
+	}
+
+	*::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	*::-webkit-scrollbar-thumb {
+		background-color: var(--scrollbar-thumb);
+		border-radius: 9999px;
+		border: 1px solid transparent;
+		background-clip: padding-box;
+	}
+
+	*::-webkit-scrollbar-thumb:hover {
+		background-color: var(--scrollbar-thumb-hover);
+	}
+
+	*::-webkit-scrollbar-corner {
+		background: transparent;
 	}
 
 	body {
-		@apply bg-background text-foreground font-sans antialiased;
+		@apply text-foreground font-sans antialiased;
+		background: var(--editor-pane-canvas);
 	}
 
-	/* Tabs and labels stay mono */
+	/* Labels stay mono; tabs use sans (see dock tab rules below) */
 	.pane-toolbar,
 	.file-tree-row,
-	.settings-field__label,
 	[data-slot='label'],
 	[data-slot$='-label'],
 	[data-slot$='-group-heading'],
-	[data-slot='tabs-trigger'],
 	[data-slot='message-header'] {
 		font-family: var(--font-mono);
 	}
+
+	[data-slot='tabs-trigger'] {
+		font-family: var(--font-sans);
+	}
+}
+
+.pane-toolbar {
+	/* z-index: -1; */
+}
+
+.terminal-output {
+	font-family: var(--font-terminal);
+	font-size: var(--terminal-font-size);
+	line-height: 1.625;
 }
 
 .app-main {
@@ -34,8 +81,33 @@
 	padding-bottom: var(--status-bar-height);
 }
 
+.app-header {
+	flex: 1 1 auto;
+	min-width: 0;
+	background: var(--color-chrome-surface);
+}
+
+.app-chrome-top {
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	z-index: 30;
+	display: flex;
+	height: var(--app-header-height);
+}
+
+.app-chrome-top .app-logo-mark {
+	border-right: 1px solid var(--color-border);
+	border-bottom: 1px solid var(--color-border);
+}
+
 :root[data-status-bar-hidden] .app-main {
 	padding-bottom: 0;
+}
+
+.app-main.app-main--projects {
+	padding-top: 0;
 }
 
 :root[data-status-bar-hidden] {
@@ -55,18 +127,35 @@
 :root {
 	color-scheme: dark;
 	--status-bar-height: 22px;
-	--status-bar-background: oklch(0.58 0.17 48);
-	--status-bar-foreground: oklch(0.99 0.01 95);
-	--status-bar-hover: oklch(0.52 0.17 48);
+	--status-bar-background: var(--color-primary);
+	--status-bar-foreground: var(--color-primary-foreground);
+	--status-bar-hover: color-mix(in oklch, var(--color-primary) 82%, black);
 	--app-header-height: 3rem;
 	--editor-chrome-height: 2rem;
-	--editor-tab-active-accent: oklch(0.58 0.17 48);
+	--editor-tab-active-accent: var(--color-primary);
 	--editor-tab-active-accent-width: 2px;
 	--editor-tab-active-tint-strength: 10%;
+	--editor-pane-toolbar-background: color-mix(in oklch, var(--color-background) 92%, var(--color-muted));
+	--editor-tab-bridge-fill: var(--color-background);
 	--editor-pane-gap: 6px;
 	--editor-pane-gap-half: calc(var(--editor-pane-gap) / 2);
 	--editor-pane-radius: calc(var(--radius) - 2px);
-	--editor-pane-canvas: #000;
+	--editor-pane-canvas: color-mix(in oklch, var(--color-background) 70%, black);
+	/* Between pane canvas and --color-background; header + icon rail */
+	--color-chrome-surface: color-mix(in oklch, var(--color-background) 86%, black);
+	--color-agent-chat-surface: var(--color-card);
+	--color-agent-composer-surface: color-mix(in oklch, var(--color-foreground) 10%, var(--color-background));
+	--editor-font-size: 13px;
+	--terminal-font-size: 13px;
+	--explorer-font-size: 13px;
+	--font-terminal: 'JetBrainsMono Nerd Font Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco,
+		Consolas, monospace;
+	--scrollbar-size: 5px;
+	--scrollbar-thumb: oklch(1 0 0 / 10%);
+	--scrollbar-thumb-hover: oklch(1 0 0 / 20%);
+	--template-svelte: oklch(0.62 0.19 25);
+	--template-vue: oklch(0.62 0.15 145);
+	--template-next: oklch(0.62 0.02 250);
 }
 
 @theme {
@@ -91,7 +180,7 @@
 	--color-accent: oklch(0.269 0 0);
 	--color-accent-foreground: oklch(0.985 0 0);
 	--color-destructive: oklch(0.704 0.191 22.216);
-	--color-border: oklch(1 0 0 / 10%);
+	--color-border: oklch(1 0 0 / 8%);
 	--color-input: oklch(1 0 0 / 15%);
 	--color-ring: oklch(0.556 0 0);
 	--color-chart-1: oklch(0.646 0.222 41.116);
@@ -105,13 +194,35 @@
 	--color-sidebar-primary-foreground: oklch(0.985 0 0);
 	--color-sidebar-accent: oklch(0.269 0 0);
 	--color-sidebar-accent-foreground: oklch(0.985 0 0);
-	--color-sidebar-border: oklch(1 0 0 / 10%);
+	--color-sidebar-border: oklch(1 0 0 / 8%);
 	--color-sidebar-ring: oklch(0.556 0 0);
+
+	--animate-accordion-down: accordion-down 0.2s ease-out;
+	--animate-accordion-up: accordion-up 0.2s ease-out;
+
+	@keyframes accordion-down {
+		from {
+			height: 0;
+		}
+		to {
+			height: var(--bits-accordion-content-height);
+		}
+	}
+
+	@keyframes accordion-up {
+		from {
+			height: var(--bits-accordion-content-height);
+		}
+		to {
+			height: 0;
+		}
+	}
 }
 
 /* Light mode when .light class is present */
 .light {
 	color-scheme: light;
+	--editor-pane-canvas: color-mix(in oklch, var(--color-background) 84%, black);
 	--color-background: oklch(1 0 0);
 	--color-foreground: oklch(0.145 0 0);
 	--color-card: oklch(1 0 0);
@@ -127,7 +238,7 @@
 	--color-accent: oklch(0.97 0 0);
 	--color-accent-foreground: oklch(0.205 0 0);
 	--color-destructive: oklch(0.577 0.245 27.325);
-	--color-border: oklch(0.922 0 0);
+	--color-border: oklch(0.922 0 0 / 88%);
 	--color-input: oklch(0.922 0 0);
 	--color-ring: oklch(0.708 0 0);
 	--color-sidebar: oklch(0.985 0 0);
@@ -136,8 +247,12 @@
 	--color-sidebar-primary-foreground: oklch(0.985 0 0);
 	--color-sidebar-accent: oklch(0.97 0 0);
 	--color-sidebar-accent-foreground: oklch(0.205 0 0);
-	--color-sidebar-border: oklch(0.922 0 0);
+	--color-sidebar-border: oklch(0.922 0 0 / 88%);
 	--color-sidebar-ring: oklch(0.708 0 0);
+	--scrollbar-thumb: oklch(0 0 0 / 10%);
+	--scrollbar-thumb-hover: oklch(0 0 0 / 20%);
+	--color-agent-chat-surface: var(--color-card);
+	--color-agent-composer-surface: color-mix(in oklch, var(--color-foreground) 10%, var(--color-background));
 }
 
 /* Debug borders: apply only when <body class="debug"> is set */
@@ -240,10 +355,11 @@ body.debug * {
 	cursor: default;
 	height: var(--editor-chrome-height);
 	min-height: var(--editor-chrome-height);
+	border-bottom-color: var(--color-border);
 }
 
 .editor-dock .horizon-layout-tabgroup__tabs {
-	flex: 1 1 auto;
+	/* flex: 1 1 auto; */
 	min-width: 0;
 	height: 100%;
 }
@@ -258,7 +374,7 @@ body.debug * {
 	padding-bottom: 0;
 	border-radius: 0;
 	box-sizing: border-box;
-	font-family: var(--font-mono);
+	font-family: var(--font-sans);
 	font-size: 0.75rem;
 	border-right: 1px solid var(--color-border);
 }
@@ -277,6 +393,24 @@ body.debug * {
 	);
 	color: var(--color-foreground);
 	font-weight: 500;
+	z-index: 2;
+}
+
+/* Bridge active tab to content below — covers tab-bar bottom border (multiplex tab-active-fill pattern) */
+.editor-dock .horizon-layout-tabgroup__tab--active::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: -1px;
+	height: 2px;
+	background: var(--editor-tab-bridge-fill);
+	pointer-events: none;
+	z-index: 3;
+}
+
+.editor-dock .horizon-layout-tabgroup:has(.pane-toolbar) .horizon-layout-tabgroup__tab--active::after {
+	background: var(--editor-pane-toolbar-background);
 }
 
 .editor-dock .horizon-layout-tabgroup__tab:hover:not(.horizon-layout-tabgroup__tab--active) {
@@ -291,15 +425,18 @@ body.debug * {
 	padding-right: 0.375rem;
 }
 
-/* Single-tab panes (Files, Preview, …): stretch the tab across the bar. */
-.editor-dock .horizon-layout-tabgroup__tabs:has(> .horizon-layout-tabgroup__tab:only-of-type) > .horizon-layout-tabgroup__tab {
+/* Single-tab panes (Files, Preview, …): stretch the tab across the bar when enabled. */
+:root[data-editor-stretch-single-tabs='true']
+	.editor-dock
+	.horizon-layout-tabgroup__tabs:has(> .horizon-layout-tabgroup__tab:only-of-type)
+	> .horizon-layout-tabgroup__tab {
 	flex: 1 1 auto;
 	max-width: none;
 	justify-content: flex-start;
 }
 
-/* Single-tab panes already fill the bar via the tab itself. */
-.editor-dock
+:root[data-editor-stretch-single-tabs='true']
+	.editor-dock
 	.horizon-layout-tabgroup__tabs:has(> .horizon-layout-tabgroup__tab:only-of-type)
 	> .horizon-layout-tabgroup__tab-bar-drag {
 	display: none;
@@ -330,7 +467,14 @@ body.debug * {
 	height: 100%;
 }
 
-/* Rounded card panes — toggled via Settings → Editor chrome */
+/* Rounded card panes — toggled via Settings → Editor chrome
+ *
+ * Spacing contract (mirrors multiplex horizon-layout pane cards):
+ * --editor-pane-gap is the sole visual gutter width; --editor-pane-gap-half is inset.
+ * app-frame contributes gap-half padding; each card surface adds the same inset as
+ * margin so neighbors and outer edges sum to one full gap. Split hosts stay
+ * padding-free; tabgroups carry margin on every edge.
+ */
 :root[data-editor-pane-style='cards'] body {
 	background: var(--editor-pane-canvas);
 }
@@ -343,10 +487,33 @@ body.debug * {
 	box-sizing: border-box;
 }
 
-:root[data-editor-pane-style='cards'] .app-header {
+:root[data-editor-pane-style='cards'] .app-chrome-top {
+	position: relative;
+	inset: auto;
+	display: flex;
+	flex-shrink: 0;
+	gap: 0;
+	height: auto;
+	align-items: stretch;
+}
+
+:root[data-editor-pane-style='cards'] .app-logo-mark {
 	position: relative;
 	inset: auto;
 	margin: var(--editor-pane-gap-half);
+	background: var(--color-chrome-surface);
+	border: 1px solid var(--color-border);
+	border-radius: var(--editor-pane-radius);
+	box-shadow: 0 1px 2px color-mix(in oklch, var(--color-foreground) 5%, transparent);
+}
+
+:root[data-editor-pane-style='cards'] .app-header {
+	position: relative;
+	inset: auto;
+	flex: 1 1 auto;
+	min-width: 0;
+	margin: var(--editor-pane-gap-half);
+	background: var(--color-chrome-surface);
 	border: 1px solid var(--color-border);
 	border-radius: var(--editor-pane-radius);
 	box-shadow: 0 1px 2px color-mix(in oklch, var(--color-foreground) 5%, transparent);
@@ -369,8 +536,27 @@ body.debug * {
 
 :root[data-editor-pane-style='cards'] .app-shell {
 	flex-direction: row;
+	align-items: stretch;
 	gap: 0;
+	min-height: 0;
+	height: 100%;
 	background: transparent;
+}
+
+:root[data-editor-pane-style='cards'] .app-shell__workspace {
+	gap: 0;
+	min-height: 0;
+}
+
+/* Icon rail — margin on the shell flex item; no height:100% (that clips bottom margin) */
+:root[data-editor-pane-style='cards'] .icon-rail-trigger {
+	display: flex;
+	flex-direction: column;
+	flex: 0 0 auto;
+	align-self: stretch;
+	min-height: 0;
+	height: auto;
+	margin: var(--editor-pane-gap-half);
 }
 
 :root[data-editor-pane-style='cards'] .icon-rail {
@@ -379,8 +565,12 @@ body.debug * {
 	bottom: auto;
 	left: auto;
 	align-self: stretch;
+	flex: 1 1 auto;
+	width: 3rem;
+	min-height: 0;
 	height: auto;
-	margin: 0 var(--editor-pane-gap-half) 0 0;
+	margin: 0;
+	background: var(--color-chrome-surface);
 	border: 1px solid var(--color-border);
 	border-radius: var(--editor-pane-radius);
 	box-shadow: 0 1px 2px color-mix(in oklch, var(--color-foreground) 5%, transparent);
@@ -398,82 +588,35 @@ body.debug * {
 	box-sizing: border-box;
 }
 
-/* Directional gaps: half-gap only on sides that touch a sibling in the same split */
-:root[data-editor-pane-style='cards'] .editor-dock .horizon-layout-split--horizontal > .horizon-layout-split__pane,
-:root[data-editor-pane-style='cards'] .editor-dock .horizon-layout-split--vertical > .horizon-layout-split__pane {
+:root[data-editor-pane-style='cards'] .editor-dock .horizon-layout-split {
+	gap: 0;
+}
+
+:root[data-editor-pane-style='cards'] .editor-dock .horizon-layout-split__pane {
+	display: flex;
+	flex-direction: column;
+	padding: 0;
 	box-sizing: border-box;
+	min-width: 0;
+	min-height: 0;
 }
 
-:root[data-editor-pane-style='cards'] .editor-dock .horizon-layout-split--horizontal > .horizon-layout-split__pane {
-	padding-top: 0;
-	padding-bottom: 0;
-	padding-left: 0;
-	padding-right: 0;
-}
-
-:root[data-editor-pane-style='cards']
-	.editor-dock
-	.horizon-layout-split--horizontal
-	> .horizon-layout-split__pane:not([data-hl-pane-first]) {
-	padding-left: var(--editor-pane-gap-half);
-}
-
-:root[data-editor-pane-style='cards']
-	.editor-dock
-	.horizon-layout-split--horizontal
-	> .horizon-layout-split__pane:not([data-hl-pane-last]) {
-	padding-right: var(--editor-pane-gap-half);
-}
-
-:root[data-editor-pane-style='cards'] .editor-dock .horizon-layout-split--vertical > .horizon-layout-split__pane {
-	padding-left: 0;
-	padding-right: 0;
-	padding-top: 0;
-	padding-bottom: 0;
-}
-
-:root[data-editor-pane-style='cards']
-	.editor-dock
-	.horizon-layout-split--vertical
-	> .horizon-layout-split__pane:not([data-hl-pane-first]) {
-	padding-top: var(--editor-pane-gap-half);
-}
-
-:root[data-editor-pane-style='cards']
-	.editor-dock
-	.horizon-layout-split--vertical
-	> .horizon-layout-split__pane:not([data-hl-pane-last]) {
-	padding-bottom: var(--editor-pane-gap-half);
-}
-
-/* Root dock split: inset toward header and icon rail */
-:root[data-editor-pane-style='cards']
-	.editor-dock
-	.horizon-layout
-	> .horizon-layout-split--vertical
-	> .horizon-layout-split__pane[data-hl-pane-first] {
-	padding-top: var(--editor-pane-gap-half);
-}
-
-:root[data-editor-pane-style='cards']
-	.editor-dock
-	.horizon-layout
-	> .horizon-layout-split--vertical
-	> .horizon-layout-split__pane[data-hl-pane-last] {
-	padding-bottom: 0;
-}
-
-:root[data-editor-pane-style='cards']
-	.editor-dock
-	.horizon-layout
-	> .horizon-layout-split--vertical
-	> .horizon-layout-split__pane[data-hl-pane-first]
-	> .horizon-layout-split--horizontal
-	> .horizon-layout-split__pane[data-hl-pane-first] {
-	padding-left: var(--editor-pane-gap-half);
+:root[data-editor-pane-style='cards'] .editor-dock .horizon-layout-split__pane > .horizon-layout-split {
+	flex: 1 1 auto;
+	width: 100%;
+	height: 100%;
+	min-width: 0;
+	min-height: 0;
 }
 
 :root[data-editor-pane-style='cards'] .editor-dock .horizon-layout-tabgroup {
+	flex: 1 1 0;
+	width: auto;
+	height: auto;
+	min-width: 0;
+	min-height: 0;
+	margin: var(--editor-pane-gap-half);
+	box-sizing: border-box;
 	border: 1px solid var(--color-border);
 	border-radius: var(--editor-pane-radius);
 	overflow: hidden;
@@ -490,6 +633,122 @@ body.debug * {
 }
 
 :root[data-editor-pane-style='cards'] .editor-dock .horizon-layout-tabgroup__tab:first-child {
+	border-top-left-radius: calc(var(--editor-pane-radius) - 1px);
+}
+
+/* Agent chrome pane — mirror dock tabgroup in cards mode */
+.agent-rail .horizon-layout-tabgroup {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	min-height: 0;
+	min-width: 0;
+	border-radius: 0;
+	background: var(--color-background);
+}
+
+.agent-rail .horizon-layout-tabgroup__content {
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+	flex: 1;
+	overflow: hidden;
+}
+
+.agent-rail .horizon-layout-tabgroup__tab-bar {
+	cursor: default;
+	height: var(--editor-chrome-height);
+	min-height: var(--editor-chrome-height);
+}
+
+.agent-rail .horizon-layout-tabgroup__tabs {
+	flex: 1 1 auto;
+	min-width: 0;
+	height: 100%;
+}
+
+.agent-rail .horizon-layout-tabgroup__tab {
+	gap: 0.375rem;
+	height: 100%;
+	min-height: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-top: 0;
+	padding-bottom: 0;
+	border-radius: 0;
+	box-sizing: border-box;
+	font-family: var(--font-sans);
+	font-size: 0.75rem;
+	border-right: 1px solid var(--color-border);
+}
+
+.agent-rail .horizon-layout-tabgroup__tab--active {
+	box-shadow: inset 0 var(--editor-tab-active-accent-width, 2px) 0 0
+		var(--editor-tab-active-accent, var(--status-bar-background));
+	background: color-mix(
+		in oklch,
+		var(--color-background) calc(100% - var(--editor-tab-active-tint-strength, 10%)),
+		var(--editor-tab-active-accent, var(--status-bar-background))
+	);
+	color: var(--color-foreground);
+	font-weight: 500;
+	z-index: 2;
+}
+
+.agent-rail .horizon-layout-tabgroup__tab--active::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: -1px;
+	height: 2px;
+	background: var(--editor-tab-bridge-fill);
+	pointer-events: none;
+	z-index: 3;
+}
+
+.agent-rail .horizon-layout-tabgroup:has(.pane-toolbar) .horizon-layout-tabgroup__tab--active::after {
+	background: var(--editor-pane-toolbar-background);
+}
+
+.agent-rail .horizon-layout-tabgroup__tab-title {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.375rem;
+	line-height: 100%;
+	padding-right: 0.375rem;
+}
+
+:root[data-editor-pane-style='cards'] .app-shell__workspace > .agent-rail:not(.agent-rail--overlay) {
+	margin: var(--editor-pane-gap-half);
+	padding: 0;
+	box-sizing: border-box;
+	border-left: none;
+	background: transparent;
+}
+
+:root[data-editor-pane-style='cards'] .agent-rail:not(.agent-rail--overlay) .agent-rail__pane {
+	border: 1px solid var(--color-border);
+	border-radius: var(--editor-pane-radius);
+	overflow: hidden;
+	box-shadow: 0 1px 2px color-mix(in oklch, var(--color-foreground) 5%, transparent);
+	background: var(--color-agent-chat-surface);
+}
+
+:root[data-editor-pane-style='cards'] .agent-rail .horizon-layout-tabgroup__content,
+:root[data-editor-pane-style='cards'] .agent-rail .agent-rail__body {
+	background: var(--color-agent-chat-surface);
+}
+
+:root[data-editor-pane-style='cards'] .agent-rail .horizon-layout-tabgroup__tab-bar {
+	background: color-mix(in oklch, var(--color-muted) 22%, var(--color-background));
+}
+
+:root[data-editor-pane-style='cards'] .agent-rail .horizon-layout-tabgroup__tab {
+	border-right-color: color-mix(in oklch, var(--color-border) 70%, transparent);
+}
+
+:root[data-editor-pane-style='cards'] .agent-rail .horizon-layout-tabgroup__tab:first-child {
 	border-top-left-radius: calc(var(--editor-pane-radius) - 1px);
 }
 
@@ -614,6 +873,99 @@ body.debug * {
 [data-component='file-markdown'] [data-component='markdown'] pre code {
 	background: transparent;
 	padding: 0;
+	color: var(--code-syntax-foreground, var(--color-foreground));
+}
+
+[data-component='file-markdown'] [data-component='markdown'] pre {
+	--code-syntax-comment: color-mix(in oklch, var(--color-muted-foreground) 92%, transparent);
+	--code-syntax-keyword: oklch(0.74 0.16 285);
+	--code-syntax-string: oklch(0.76 0.13 150);
+	--code-syntax-number: oklch(0.78 0.14 55);
+	--code-syntax-function: oklch(0.8 0.13 85);
+	--code-syntax-variable: oklch(0.76 0.1 230);
+	--code-syntax-attr: oklch(0.76 0.12 25);
+	--code-syntax-meta: color-mix(in oklch, var(--color-muted-foreground) 80%, transparent);
+}
+
+.light [data-component='file-markdown'] [data-component='markdown'] pre {
+	--code-syntax-keyword: oklch(0.5 0.2 285);
+	--code-syntax-string: oklch(0.48 0.14 150);
+	--code-syntax-number: oklch(0.5 0.16 55);
+	--code-syntax-function: oklch(0.52 0.15 85);
+	--code-syntax-variable: oklch(0.48 0.12 230);
+	--code-syntax-attr: oklch(0.5 0.14 25);
+}
+
+[data-component='file-markdown'] [data-component='markdown'] pre :is(.hljs-comment, .hljs-quote) {
+	color: var(--code-syntax-comment);
+	font-style: italic;
+}
+
+[data-component='file-markdown'] [data-component='markdown'] pre :is(
+	.hljs-keyword,
+	.hljs-selector-tag,
+	.hljs-literal,
+	.hljs-section,
+	.hljs-link
+) {
+	color: var(--code-syntax-keyword);
+}
+
+[data-component='file-markdown'] [data-component='markdown'] pre :is(
+	.hljs-string,
+	.hljs-regexp,
+	.hljs-addition,
+	.hljs-attribute,
+	.hljs-meta .hljs-string
+) {
+	color: var(--code-syntax-string);
+}
+
+[data-component='file-markdown'] [data-component='markdown'] pre :is(
+	.hljs-number,
+	.hljs-symbol,
+	.hljs-bullet,
+	.hljs-template-variable,
+	.hljs-deletion
+) {
+	color: var(--code-syntax-number);
+}
+
+[data-component='file-markdown'] [data-component='markdown'] pre :is(
+	.hljs-title,
+	.hljs-title.class_,
+	.hljs-title.function_,
+	.hljs-built_in,
+	.hljs-name
+) {
+	color: var(--code-syntax-function);
+}
+
+[data-component='file-markdown'] [data-component='markdown'] pre :is(
+	.hljs-variable,
+	.hljs-template-variable,
+	.hljs-type,
+	.hljs-params,
+	.hljs-selector-id,
+	.hljs-selector-class
+) {
+	color: var(--code-syntax-variable);
+}
+
+[data-component='file-markdown'] [data-component='markdown'] pre :is(.hljs-attr, .hljs-attribute) {
+	color: var(--code-syntax-attr);
+}
+
+[data-component='file-markdown'] [data-component='markdown'] pre :is(.hljs-meta, .hljs-subst) {
+	color: var(--code-syntax-meta);
+}
+
+[data-component='file-markdown'] [data-component='markdown'] pre .hljs-emphasis {
+	font-style: italic;
+}
+
+[data-component='file-markdown'] [data-component='markdown'] pre .hljs-strong {
+	font-weight: 600;
 }
 
 [data-component='file-markdown'] [data-component='markdown'] hr {
@@ -622,10 +974,42 @@ body.debug * {
 	border-top: 1px solid var(--color-border);
 }
 
+[data-component='file-markdown'] [data-component='markdown'] .tableWrapper {
+	margin: 1rem 0;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+[data-component='file-markdown'] [data-component='markdown'] table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.875em;
+	line-height: 1.5;
+}
+
+[data-component='file-markdown'] [data-component='markdown'] th,
+[data-component='file-markdown'] [data-component='markdown'] td {
+	padding: 0.5rem 0.75rem;
+	border: 1px solid var(--color-border);
+	text-align: left;
+	vertical-align: top;
+}
+
+[data-component='file-markdown'] [data-component='markdown'] th {
+	font-weight: 600;
+	background: color-mix(in oklch, var(--color-muted) 55%, transparent);
+}
+
+[data-component='file-markdown'] [data-component='markdown'] td p,
+[data-component='file-markdown'] [data-component='markdown'] th p {
+	margin: 0;
+}
+
 [data-component='file-markdown'] [data-component='markdown'] a {
 	color: var(--color-foreground);
 	text-decoration: underline;
 	text-underline-offset: 2px;
+	cursor: pointer;
 }
 
 [data-component='file-markdown'] [data-component='markdown'] ul[data-type='taskList'] {
@@ -717,6 +1101,66 @@ body.debug * {
 	height: 0;
 	pointer-events: none;
 	color: color-mix(in oklab, var(--color-muted-foreground) 70%, transparent);
+}
+
+[data-component='file-markdown'] .markdown-drag-handle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.125rem;
+	height: 1.375rem;
+	border-radius: calc(var(--radius) - 4px);
+	color: var(--color-muted-foreground);
+	cursor: grab;
+	opacity: 0;
+	transition:
+		opacity 120ms ease,
+		color 120ms ease,
+		background 120ms ease;
+}
+
+[data-component='file-markdown'] .markdown-drag-handle::before {
+	content: '';
+	width: 0.375rem;
+	height: 0.75rem;
+	background:
+		radial-gradient(circle, currentColor 1px, transparent 1px) 0 0 / 4px 4px,
+		radial-gradient(circle, currentColor 1px, transparent 1px) 2px 0 / 4px 4px;
+}
+
+[data-component='file-markdown'] .markdown-drag-handle:hover {
+	color: var(--color-foreground);
+	background: color-mix(in oklch, var(--color-muted) 70%, transparent);
+	opacity: 1;
+}
+
+[data-component='file-markdown'] .markdown-drag-handle:active {
+	cursor: grabbing;
+}
+
+[data-component='file-markdown'] [data-component='markdown'] .ProseMirror-selectednode,
+[data-component='file-markdown'] [data-component='markdown'] .ProseMirror-selectednoderange {
+	position: relative;
+}
+
+[data-component='file-markdown'] [data-component='markdown'] .ProseMirror-selectednode::before,
+[data-component='file-markdown'] [data-component='markdown'] .ProseMirror-selectednoderange::before {
+	content: '';
+	position: absolute;
+	inset: -0.2rem;
+	border-radius: calc(var(--radius) - 4px);
+	background: color-mix(in oklch, var(--color-foreground) 8%, transparent);
+	pointer-events: none;
+	z-index: -1;
+}
+
+[data-component='file-markdown'] [data-component='markdown'] .find-and-replace-result {
+	background: color-mix(in oklch, #ffe100 40%, transparent);
+	border-radius: 0.125rem;
+}
+
+[data-component='file-markdown'] [data-component='markdown'] .find-and-replace-result-current {
+	background: color-mix(in oklch, #ffa500 55%, transparent);
 }
 
 @container filemd (max-width: 600px) {
@@ -950,113 +1394,87 @@ body.debug * {
 	text-align: center;
 }
 
-/* Frontmatter panel */
-[data-slot='fm-header'] {
-	padding: 0.25rem 0 0.5rem;
-	display: flex;
-	flex-direction: column;
-	gap: 0.375rem;
+/* Settings — darker backdrop than default dialog overlay */
+[data-slot='dialog-overlay']:has(+ [data-slot='dialog-content'].settings-dialog) {
+	background: oklch(0 0 0 / 0.55);
+	backdrop-filter: blur(8px);
 }
 
-.fm-title-input,
-.fm-desc-input,
-.fm-text-input,
-.fm-number-input {
-	width: 100%;
-	background: transparent;
+/* Settings — centered floating pane (margin:auto; bits-ui sets right/bottom and breaks translate centering) */
+[data-slot='dialog-content'].settings-dialog {
+	display: flex !important;
+	flex-direction: column !important;
+	position: fixed !important;
+	inset: 0 !important;
+	box-sizing: border-box;
+	width: auto;
+	height: auto;
+	min-width: 22rem;
+	min-height: 18rem;
+	max-width: calc(100vw - 2rem);
+	max-height: calc(100vh - 2rem);
+	margin: auto !important;
+	padding: 0 !important;
+	gap: 0 !important;
+	transform: none !important;
 	border: 1px solid var(--color-border);
-	border-radius: calc(var(--radius) - 2px);
+	border-radius: var(--editor-pane-radius);
+	background: var(--color-background) !important;
+	color: var(--color-foreground) !important;
+	box-shadow:
+		0 0 0 1px color-mix(in oklch, var(--color-foreground) 4%, transparent),
+		0 12px 40px color-mix(in oklch, var(--color-foreground) 12%, transparent);
+	overflow: hidden;
 	outline: none;
-	color: var(--color-foreground);
-	padding: 0.375rem 0.5rem;
-	font-family: var(--font-mono);
-	font-size: 0.75rem;
+	font-family: var(--font-sans);
 }
 
-.fm-title-input {
-	font-size: 0.875rem;
+[data-slot='dialog-content'].settings-dialog[data-state='open'],
+[data-slot='dialog-content'].settings-dialog[data-state='closed'] {
+	transform: none !important;
+}
+
+[data-slot='dialog-content'].settings-dialog .pane-toolbar,
+[data-slot='dialog-content'].settings-dialog .settings-dialog__tab-bar,
+[data-slot='dialog-content'].settings-dialog .settings-dialog__nav {
+	font-family: var(--font-sans);
+}
+
+[data-component='settings-prose'] {
+	font-family: var(--font-sans);
+	color: var(--color-foreground);
+}
+
+[data-component='settings-prose'] h1,
+[data-component='settings-prose'] h2 {
+	color: var(--color-foreground);
 	font-weight: 600;
+	letter-spacing: -0.02em;
 }
 
-.fm-desc-input {
-	color: var(--color-muted-foreground);
+[data-component='settings-prose'] h1 {
+	font-size: clamp(1.5rem, 3vw, 2rem);
+	line-height: 1.15;
+	margin: 0 0 0.5rem;
 }
 
-.fm-field {
-	display: flex;
-	flex-direction: column;
-	gap: 0.375rem;
-	padding: 0.625rem 0;
-	border-bottom: 1px solid var(--color-border);
+[data-component='settings-prose'] h2 {
+	font-size: 1.125rem;
+	line-height: 1.25;
+	margin: 0 0 0.375rem;
 }
 
-.fm-field-key {
-	color: var(--color-muted-foreground);
-	font-family: var(--font-mono);
-	font-size: 0.6875rem;
-	text-transform: lowercase;
+[data-component='settings-prose'] p {
+	margin: 0;
+	color: color-mix(in oklch, var(--color-foreground) 88%, var(--color-muted-foreground));
+	line-height: 1.6;
+	font-size: 0.875rem;
 }
 
-.fm-toggle {
-	display: inline-flex;
-	align-items: center;
-	cursor: pointer;
+[data-component='settings-prose'].settings-prose--group {
+	margin-bottom: 1rem;
 }
 
-.fm-toggle-input {
-	position: absolute;
-	opacity: 0;
-	width: 0;
-	height: 0;
-	pointer-events: none;
-}
-
-.fm-toggle-track {
-	position: relative;
-	width: 2rem;
-	height: 1.125rem;
-	border-radius: 999px;
-	background: var(--color-muted);
-}
-
-.fm-toggle-thumb {
-	position: absolute;
-	top: 2px;
-	left: 2px;
-	width: 0.875rem;
-	height: 0.875rem;
-	border-radius: 999px;
-	background: var(--color-foreground);
-	transition: transform 0.15s ease;
-}
-
-.fm-toggle-input:checked + .fm-toggle-track {
-	background: color-mix(in oklch, #4493f8 40%, var(--color-muted));
-}
-
-.fm-toggle-input:checked + .fm-toggle-track .fm-toggle-thumb {
-	transform: translateX(0.875rem);
-}
-
-.fm-add-field {
-	display: flex;
-	flex-direction: column;
-	gap: 0.375rem;
-	padding-top: 0.75rem;
-}
-
-.fm-add-btn {
-	align-self: flex-start;
-	padding: 0.25rem 0.625rem;
-	border: 1px solid var(--color-border);
-	border-radius: calc(var(--radius) - 2px);
-	background: transparent;
-	color: var(--color-foreground);
-	font-family: var(--font-mono);
-	font-size: 0.6875rem;
-	cursor: pointer;
-}
-
-.fm-add-btn:hover {
-	background: var(--color-muted);
+:root:not([data-editor-pane-style='cards']) [data-slot='dialog-content'].settings-dialog {
+	border-radius: var(--editor-pane-radius);
 }

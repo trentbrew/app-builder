@@ -15,15 +15,6 @@
   }
 </script>
 
-<svelte:document
-  onkeydown={(event) => {
-    if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
-      event.preventDefault()
-      appChrome.toggleCommandPalette()
-    }
-  }}
-/>
-
 <Command.Dialog bind:open={appChrome.commandPaletteOpen}>
   <Command.Input placeholder="Type a command or search..." />
   <Command.List>

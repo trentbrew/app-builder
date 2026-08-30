@@ -17,11 +17,12 @@
     {@render meta?.()}
   </div>
   <div class="pane-toolbar__actions">
-    {@render actions?.()}
     {#if viewToggle}
-      <span class="pane-toolbar__sep pane-toolbar__sep--actions" aria-hidden="true"></span>
-      {@render viewToggle()}
+      <div class="pane-toolbar__view-toggle">
+        {@render viewToggle()}
+      </div>
     {/if}
+    {@render actions?.()}
   </div>
 </div>
 
@@ -57,6 +58,13 @@
   .pane-toolbar__actions {
     flex: 0 0 auto;
     margin-left: auto;
+    gap: 0.25rem;
+  }
+
+  .pane-toolbar__view-toggle {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 0.125rem;
   }
 
   :global(.pane-toolbar__sep--actions) {

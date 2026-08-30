@@ -1,10 +1,15 @@
 import { browser } from '$app/environment';
 import { languageLabelForPath } from '$lib/languageLabel';
+import type { Component } from 'svelte';
 
 export type StatusBarItem = {
 	id: string;
 	label: string;
 	title?: string;
+	kind?: 'label' | 'button';
+	disabled?: boolean;
+	icon?: Component;
+	onclick?: () => void;
 };
 
 const STORAGE_KEY = 'app-builder:status-bar-ui:v1';
@@ -90,15 +95,15 @@ export function setStatusBarRight(items: StatusBarItem[]) {
 	statusBar.right = items;
 }
 
-export function setEditorStatus(options: {
-	activeFile?: string;
+export function setEditorStatusLeft(options: {
 	phase?: string;
 	booting?: boolean;
 	error?: string;
+	projectName?: string;
 }) {
-	const { activeFile, phase, booting, error } = options;
+	const { phase, booting, error, projectName } = options;
 
-	const left: StatusBarItem[] = [{ id: 'workspace', label: 'svelte-repl' }];
+	const left: StatusBarItem[] = [{ id: 'workspace', label: projectName ?? 'svelte-repl' }];
 
 	if (error) {
 		left.push({ id: 'error', label: 'Build Error', title: error });
@@ -109,18 +114,33 @@ export function setEditorStatus(options: {
 	}
 
 	statusBar.left = left;
+}
 
-	if (!activeFile) return;
+export function editorFileStatusItems(activeFile?: string): StatusBarItem[] {
+	if (!activeFile) {
+		return [{ id: 'encoding', label: 'UTF-8' }];
+	}
 
 	const language = languageLabelForPath(activeFile);
 	const fileName = activeFile.split('/').filter(Boolean).at(-1) ?? activeFile;
 
-	statusBar.right = [
+	return [
 		{ id: 'file', label: fileName, title: activeFile },
 		{ id: 'language', label: language },
 		{ id: 'encoding', label: 'UTF-8' },
 		{ id: 'eol', label: 'LF' }
 	];
+}
+
+/** @deprecated Use setEditorStatusLeft + setStatusBarRight instead */
+export function setEditorStatus(options: {
+	activeFile?: string;
+	phase?: string;
+	booting?: boolean;
+	error?: string;
+}) {
+	setEditorStatusLeft(options);
+	statusBar.right = editorFileStatusItems(options.activeFile);
 }
 
 if (browser && !statusBar.visible) {

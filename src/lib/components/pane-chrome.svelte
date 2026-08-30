@@ -9,14 +9,24 @@
     children,
     paneKind,
     paneId,
+    id,
   }: {
     toolbar?: Snippet
     children?: Snippet
     paneKind?: PaneKind
     paneId?: string
+    id?: string
   } = $props()
 
   const resolvedPaneId = $derived(paneId ?? paneKindToPanelId(paneKind))
+
+  const shortcutContext = $derived(
+    paneKind === 'preview'
+      ? 'preview'
+      : paneKind === 'terminal'
+        ? 'terminal'
+        : undefined
+  )
 
   function paneKindToPanelId(kind: PaneKind | undefined) {
     switch (kind) {
@@ -25,20 +35,18 @@
       case 'preview':
         return PANEL_IDS.preview
       case 'chat':
-        return PANEL_IDS.chat
+        return PANEL_IDS.agent
       case 'logs':
         return PANEL_IDS.logs
       case 'console':
         return PANEL_IDS.console
-      case 'settings':
-        return PANEL_IDS.settings
       default:
         return 'pane:unknown'
     }
   }
 </script>
 
-<div class="pane-chrome">
+<div class="pane-chrome" {id} data-shortcut-context={shortcutContext}>
   {@render toolbar?.()}
   {#if paneKind && resolvedPaneId}
     <ContextMenuHost

@@ -10,6 +10,6 @@
   }: WithElementRef<HTMLAttributes<HTMLDivElement>> = $props()
 </script>
 
-<div bind:this={ref} data-slot="bubble" class={cn('relative max-w-full', className)} {...restProps}>
+<div bind:this={ref} data-slot="bubble" class={cn('relative max-w-full ', className)} {...restProps}>
   {@render children?.()}
 </div>

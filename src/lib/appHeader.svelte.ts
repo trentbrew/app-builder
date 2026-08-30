@@ -3,6 +3,12 @@ import type { Component } from 'svelte';
 export type AppHeaderBreadcrumb = {
 	label: string;
 	href?: string;
+	/** Lucide (or other) component icon. */
+	icon?: Component;
+	/** VS Code-style file icon from a filename. */
+	fileIcon?: string;
+	/** VS Code-style folder icon. */
+	folderIcon?: boolean;
 };
 
 export type AppHeaderAction = {
