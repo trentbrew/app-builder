@@ -30,7 +30,7 @@
   data-slot="message-scroller-item"
   data-message-id={messageId}
   data-scroll-anchor={scrollAnchor ? 'true' : 'false'}
-  class={cn('[content-visibility:auto] [contain-intrinsic-size:0_5rem]', className)}
+  class={cn('[content-visibility:auto] [contain-intrinsic-size:auto_5rem]', className)}
   {...restProps}
 >
   {@render children?.()}

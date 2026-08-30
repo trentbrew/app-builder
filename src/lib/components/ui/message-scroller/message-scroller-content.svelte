@@ -34,7 +34,7 @@
   {role}
   aria-relevant={ariaRelevant}
   aria-busy={ariaBusy}
-  class={cn('flex min-h-full flex-col gap-3 p-4', className)}
+  class={cn('flex min-h-full flex-col gap-0 p-0', className)}
   {...restProps}
 >
   {@render children?.()}

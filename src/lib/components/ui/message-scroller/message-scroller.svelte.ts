@@ -15,6 +15,8 @@ export type ScrollCommandOptions = {
 	align?: ScrollAlign;
 	behavior?: ScrollBehavior;
 	scrollMargin?: number;
+	/** When false, programmatic scroll does not release auto-scroll follow. */
+	releaseFollow?: boolean;
 };
 
 type ItemRecord = {
@@ -151,8 +153,10 @@ export class MessageScrollerState {
 			return false;
 		}
 
-		this.userReleased = true;
-		this.following = false;
+		if (options.releaseFollow !== false) {
+			this.userReleased = true;
+			this.following = false;
+		}
 		this.scrollElementIntoView(record.el, options);
 		return true;
 	}
@@ -167,7 +171,9 @@ export class MessageScrollerState {
 		this.viewport.scrollTo({ top: this.viewport.scrollHeight, behavior });
 
 		if (this.autoScroll) {
-			this.userReleased = false;
+			if (options.releaseFollow !== false) {
+				this.userReleased = false;
+			}
 			this.following = true;
 		}
 
@@ -182,8 +188,10 @@ export class MessageScrollerState {
 
 	scrollToStart(options: ScrollCommandOptions = {}): boolean {
 		if (!this.viewport) return false;
-		this.userReleased = true;
-		this.following = false;
+		if (options.releaseFollow !== false) {
+			this.userReleased = true;
+			this.following = false;
+		}
 		this.viewport.scrollTo({
 			top: 0,
 			behavior: options.behavior ?? 'auto',
@@ -230,16 +238,49 @@ export class MessageScrollerState {
 		viewport.removeEventListener('keydown', this.handleViewportKeydown);
 	}
 
+	/** Called when transcript layout changes outside ResizeObserver (e.g. streamed markdown). */
+	notifyLayoutChange() {
+		this.followLiveOutput();
+	}
+
 	private attachContentObserver() {
 		if (!this.content || typeof ResizeObserver === 'undefined') return;
 
 		this.resizeObserver = new ResizeObserver(() => {
-			if (this.autoScroll && this.following && !this.userReleased) {
-				this.scrollToEnd({ behavior: 'auto' });
-			}
+			this.followLiveOutput();
 			this.scheduleScrollStateUpdate();
 		});
 		this.resizeObserver.observe(this.content);
+	}
+
+	private followLiveOutput() {
+		if (!this.autoScroll || this.userReleased) return;
+
+		if (this.following) {
+			this.scrollToEnd({ behavior: 'auto', releaseFollow: false });
+			return;
+		}
+
+		this.followOutputIfNeeded();
+	}
+
+	private followOutputIfNeeded() {
+		const viewport = this.viewport;
+		if (!viewport) return;
+
+		const overflow =
+			viewport.scrollHeight - (viewport.scrollTop + viewport.clientHeight);
+
+		if (overflow <= this.scrollEdgeThreshold) return;
+
+		viewport.scrollTo({
+			top: viewport.scrollHeight - viewport.clientHeight,
+			behavior: 'auto',
+		});
+
+		if (this.isAtEnd()) {
+			this.following = true;
+		}
 	}
 
 	private detachContentObserver() {
@@ -342,15 +383,17 @@ export class MessageScrollerState {
 	}
 
 	private applyInitialScrollPosition() {
+		const options: ScrollCommandOptions = { behavior: 'auto', releaseFollow: false };
+
 		switch (this.defaultScrollPosition) {
 			case 'start':
-				this.scrollToStart({ behavior: 'auto' });
+				this.scrollToStart(options);
 				break;
 			case 'last-anchor':
-				this.scrollToLastAnchor({ behavior: 'auto' });
+				this.scrollToLastAnchor(options);
 				break;
 			default:
-				this.scrollToEnd({ behavior: 'auto' });
+				this.scrollToEnd(options);
 		}
 	}
 
@@ -365,7 +408,7 @@ export class MessageScrollerState {
 			return;
 		}
 
-		this.scrollToMessage(last[0], options);
+		this.scrollToMessage(last[0], { ...options, releaseFollow: false });
 	}
 
 	private maybeAnchorTurn(messageId: string, record: ItemRecord) {
@@ -387,15 +430,14 @@ export class MessageScrollerState {
 			record.el.offsetTop - this.scrollMargin - this.scrollPreviousItemPeek,
 		);
 		this.viewport.scrollTo({ top: targetTop, behavior: 'auto' });
-		this.userReleased = true;
+		// Stay in anchored mode until streamed output reaches the live edge.
 		this.following = false;
 		this.scheduleScrollStateUpdate();
 	}
 
-	private updateSpacerForAnchor(anchorEl: HTMLElement) {
-		if (!this.viewport || !this.spacer) return;
-		const room = this.viewport.clientHeight - anchorEl.clientHeight - this.scrollMargin * 2;
-		this.spacer.style.height = `${Math.max(0, room)}px`;
+	private updateSpacerForAnchor(_anchorEl: HTMLElement) {
+		if (!this.spacer) return;
+		this.spacer.style.height = '0.5rem';
 	}
 
 	private scrollElementIntoView(el: HTMLElement, options: ScrollCommandOptions) {

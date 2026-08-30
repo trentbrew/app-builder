@@ -9,10 +9,26 @@ import {
 	type SplitConfig,
 	type TabGroupConfig
 } from 'horizon-layout';
+import { settings } from '$lib/settings/store.svelte';
+import {
+	applyLayoutPreset,
+	createLayoutFromPreset,
+	inferLayoutPreset,
+	type EditorLayoutPresetId
+} from '$lib/editorLayoutPresets';
+import { getActiveEditorScopeId, layoutStorageKey } from '$lib/projects/projectScope';
 
 export const FILE_VIEW_PREFIX = 'file:';
 export const TERMINAL_VIEW_PREFIX = 'terminal:';
+export const AGENT_VIEW_PREFIX = 'agent:';
+export const EMPTY_PANE_VIEW_ID = 'empty:pane';
+export const GROUP_VIEW_PREFIX = 'group:';
 export const LAYOUT_STORAGE_KEY = 'app-builder:horizon-layout:v4';
+
+function resolveLayoutStorageKey(): string {
+	const projectId = getActiveEditorScopeId();
+	return projectId ? layoutStorageKey(projectId) : LAYOUT_STORAGE_KEY;
+}
 const LEGACY_STORAGE_KEYS = [
 	'app-builder:horizon-layout',
 	'app-builder:horizon-layout:v2',
@@ -25,8 +41,10 @@ export const PANEL_IDS = {
 	preview: 'panel:preview',
 	logs: 'panel:logs',
 	console: 'panel:console',
-	settings: 'panel:settings'
+	agent: 'panel:agent'
 } as const;
+
+const LEGACY_SETTINGS_PANEL_ID = 'panel:settings';
 
 const KNOWN_PANEL_IDS = new Set<string>(Object.values(PANEL_IDS));
 
@@ -52,6 +70,41 @@ export function sessionIdFromTerminalViewId(id: string): string | null {
 
 export function isTerminalViewId(id: string): boolean {
 	return id.startsWith(TERMINAL_VIEW_PREFIX);
+}
+
+export function agentViewId(sessionId: string): string {
+	return `${AGENT_VIEW_PREFIX}${sessionId}`;
+}
+
+export function sessionIdFromAgentViewId(id: string): string | null {
+	return id.startsWith(AGENT_VIEW_PREFIX) ? id.slice(AGENT_VIEW_PREFIX.length) : null;
+}
+
+export function isAgentViewId(id: string): boolean {
+	return id.startsWith(AGENT_VIEW_PREFIX);
+}
+
+export function createAgentSessionId(): string {
+	return crypto.randomUUID();
+}
+
+export function collectAgentSessionIds(config: LayoutConfig): string[] {
+	const ids: string[] = [];
+
+	walkNodes(config.root, (tabGroup) => {
+		if (!tabGroup.tabs.some(isAgentViewId)) return;
+
+		for (const tabId of tabGroup.tabs) {
+			const sessionId = sessionIdFromAgentViewId(tabId);
+			if (sessionId) ids.push(sessionId);
+		}
+	});
+
+	return ids;
+}
+
+export function isEmptyPaneViewId(id: string): boolean {
+	return id === EMPTY_PANE_VIEW_ID;
 }
 
 export function createTerminalSessionId(): string {
@@ -86,39 +139,15 @@ export function collectFilePaths(config: LayoutConfig): string[] {
 
 export function createInitialLayout(
 	filePaths: string[],
-	terminalSessionId = createTerminalSessionId()
+	terminalSessionId = createTerminalSessionId(),
+	presetId: EditorLayoutPresetId = settings.editor.layoutPreset
 ): LayoutConfig {
-	const fileTabs = (filePaths.length ? filePaths : ['/App.svelte']).map(
-		fileViewId
-	) as [string, ...string[]];
-	const terminalTabs = [terminalViewId(terminalSessionId)] as [string, ...string[]];
-
-	return {
-		root: {
-			direction: 'vertical',
-			splitPoints: [0.68],
-			views: [
-				{
-					direction: 'horizontal',
-					splitPoints: [0.18, 0.5, 0.78],
-					views: [
-						{ tabs: [PANEL_IDS.files], activeTabIndex: 0 },
-						{ tabs: fileTabs, activeTabIndex: Math.max(0, fileTabs.length - 1) },
-						{ tabs: [PANEL_IDS.preview], activeTabIndex: 0 },
-						{
-							direction: 'vertical',
-							splitPoints: [0.55],
-							views: [
-								{ tabs: [PANEL_IDS.logs], activeTabIndex: 0 },
-								{ tabs: [PANEL_IDS.console], activeTabIndex: 0 }
-							]
-						}
-					]
-				},
-				{ tabs: terminalTabs, activeTabIndex: 0 }
-			]
-		}
-	};
+	return createLayoutFromPreset(presetId, {
+		filePaths: filePaths.length ? filePaths : ['/App.svelte'],
+		terminalSessionIds: [terminalSessionId],
+		includeConsole: true,
+		includeAgent: presetId === 'agent-focus'
+	});
 }
 
 function findTerminalTabGroup(node: NodeConfig): TabGroupConfig | null {
@@ -160,8 +189,65 @@ export function removeTerminalFromLayout(config: LayoutConfig, sessionId: string
 	const next = cloneConfig(config);
 	if (!next.root) return next;
 
-	const tabGroup = findTerminalTabGroup(next.root);
-	if (!tabGroup || tabGroup.tabs.length <= 1) return next;
+	if (!findTabGroupContaining(next.root, id)) return next;
+
+	const parentMap = buildNodeParentMap(next.root);
+	removeTabFromNode(next.root, id, next, parentMap);
+	return next;
+}
+
+function findAgentTabGroup(node: NodeConfig): TabGroupConfig | null {
+	let agentGroup: TabGroupConfig | null = null;
+
+	walkNodes(node, (tabGroup) => {
+		if (
+			tabGroup.tabs.some(isAgentViewId) ||
+			tabGroup.tabs.includes(PANEL_IDS.agent)
+		) {
+			agentGroup = tabGroup;
+		}
+	});
+
+	return agentGroup;
+}
+
+export function addAgentToLayout(config: LayoutConfig, sessionId: string): LayoutConfig {
+	const id = agentViewId(sessionId);
+	const next = cloneConfig(config);
+
+	if (!next.root) {
+		return migrateAddAgentPanel(createInitialLayout(['/App.svelte']), sessionId);
+	}
+
+	if (findTabGroupContaining(next.root, id)) {
+		activateTab(next.root, id);
+		return next;
+	}
+
+	const target = findAgentTabGroup(next.root);
+	if (!target) {
+		if (inferLayoutPreset(next) === 'agent-focus') {
+			return applyLayoutPreset(next, 'agent-focus', {
+				includeAgent: true,
+				includeConsole: isConsolePanelVisible(next),
+				agentSessionIds: [sessionId, ...collectAgentSessionIds(next)]
+			});
+		}
+		return migrateAddAgentPanel(next, sessionId);
+	}
+
+	const tabs = target.tabs.filter((tabId) => tabId !== PANEL_IDS.agent);
+	target.tabs = [...tabs, id] as typeof target.tabs;
+	target.activeTabIndex = target.tabs.length - 1;
+	return next;
+}
+
+export function removeAgentFromLayout(config: LayoutConfig, sessionId: string): LayoutConfig {
+	const id = agentViewId(sessionId);
+	const next = cloneConfig(config);
+	if (!next.root) return next;
+
+	if (!findTabGroupContaining(next.root, id)) return next;
 
 	const parentMap = buildNodeParentMap(next.root);
 	removeTabFromNode(next.root, id, next, parentMap);
@@ -184,49 +270,92 @@ export function addFileToLayout(config: LayoutConfig, path: string): LayoutConfi
 	const target = findPreferredFileTabGroup(next.root, id) ?? findFirstTabGroup(next.root);
 	if (!target) return next;
 
+	const emptyIndex = target.tabs.indexOf(EMPTY_PANE_VIEW_ID);
+	if (emptyIndex !== -1) {
+		target.tabs = target.tabs.map((tabId) =>
+			tabId === EMPTY_PANE_VIEW_ID ? id : tabId
+		) as typeof target.tabs;
+		target.activeTabIndex = target.tabs.indexOf(id);
+		return next;
+	}
+
 	target.tabs = [...target.tabs, id] as typeof target.tabs;
 	target.activeTabIndex = target.tabs.length - 1;
 	return next;
+}
+
+/** Insert an opened file into a tab group that is currently showing the empty pane.
+ * Replaces the empty-pane placeholder in place, so the file opens where the user clicked. */
+export function insertFileIntoEmptyPane(config: LayoutConfig, path: string): LayoutConfig {
+	const id = fileViewId(path);
+	const next = cloneConfig(config);
+	if (!next.root) return next;
+
+	walkNodes(next.root, (tabGroup) => {
+		const emptyIndex = tabGroup.tabs.indexOf(EMPTY_PANE_VIEW_ID);
+		if (emptyIndex === -1) return;
+
+		const tabs = tabGroup.tabs.map((tabId) =>
+			tabId === EMPTY_PANE_VIEW_ID ? id : tabId
+		) as typeof tabGroup.tabs;
+		tabGroup.tabs = tabs;
+		if (tabGroup.activeTabIndex === emptyIndex || tabGroup.activeTabIndex >= tabs.length) {
+			tabGroup.activeTabIndex = tabs.indexOf(id);
+		}
+	});
+
+	return next;
+}
+
+/** Remove any tab (file, terminal, panel, or group view) from the layout. */
+/** Append a view id to the most relevant existing tab group (first file group, else first). */
+export function addViewToPreferredGroup(config: LayoutConfig, viewId: string): LayoutConfig {
+	const next = cloneConfig(config);
+	if (!next.root) {
+		return { ...next, root: { tabs: [viewId], activeTabIndex: 0 } };
+	}
+
+	let target: TabGroupConfig | null = null;
+	let fallback: TabGroupConfig | null = null;
+	walkNodes(next.root, (tabGroup) => {
+		if (!fallback) fallback = tabGroup;
+		if (!target && tabGroup.tabs.some(isFileViewId)) target = tabGroup;
+	});
+
+	const dest = target ?? fallback;
+	if (!dest) return next;
+
+	dest.tabs = [...dest.tabs, viewId] as typeof dest.tabs;
+	dest.activeTabIndex = dest.tabs.length - 1;
+	return next;
+}
+
+export function removeViewFromLayout(config: LayoutConfig, viewId: string): LayoutConfig {
+	const next = cloneConfig(config);
+	if (next.maximizedView === viewId) delete next.maximizedView;
+	if (!next.root) return next;
+
+	const parentMap = buildNodeParentMap(next.root);
+	removeTabFromNode(next.root, viewId, next, parentMap);
+	return next;
+}
+
+/** All container-group view ids present in the layout. */
+export function collectGroupViewIds(config: LayoutConfig): string[] {
+	const ids: string[] = [];
+	if (!config.root) return ids;
+	walkNodes(config.root, (tabGroup) => {
+		for (const tabId of tabGroup.tabs) {
+			if (tabId.startsWith(GROUP_VIEW_PREFIX)) ids.push(tabId);
+		}
+	});
+	return ids;
 }
 
 export function removeFileFromLayout(config: LayoutConfig, path: string): LayoutConfig {
 	const id = fileViewId(path);
 	const next = cloneConfig(config);
 	if (!next.root) return next;
-
-	const parentMap = buildNodeParentMap(next.root);
-	removeTabFromNode(next.root, id, next, parentMap);
-	return next;
-}
-
-export function isSettingsOpen(config: LayoutConfig): boolean {
-	if (!config.root) return false;
-	return Boolean(findTabGroupContaining(config.root, PANEL_IDS.settings));
-}
-
-export function openSettingsInLayout(config: LayoutConfig): LayoutConfig {
-	const id = PANEL_IDS.settings;
-	const next = cloneConfig(config);
-	if (!next.root) return next;
-
-	if (findTabGroupContaining(next.root, id)) {
-		activateTab(next.root, id);
-		return next;
-	}
-
-	const target = findPreferredFileTabGroup(next.root, id) ?? findFirstTabGroup(next.root);
-	if (!target) return next;
-
-	target.tabs = [...target.tabs, id] as typeof target.tabs;
-	target.activeTabIndex = target.tabs.length - 1;
-	return next;
-}
-
-export function closeSettingsInLayout(config: LayoutConfig): LayoutConfig {
-	const id = PANEL_IDS.settings;
-	const next = cloneConfig(config);
-	if (!next.root) return config;
-	if (!findTabGroupContaining(next.root, id)) return config;
 
 	const parentMap = buildNodeParentMap(next.root);
 	removeTabFromNode(next.root, id, next, parentMap);
@@ -275,8 +404,12 @@ function findPreferredFileTabGroup(
 	activeId: string
 ): TabGroupConfig | null {
 	let preferred: TabGroupConfig | null = null;
+	let emptyPane: TabGroupConfig | null = null;
 
 	walkNodes(node, (tabGroup) => {
+		if (tabGroup.tabs.includes(EMPTY_PANE_VIEW_ID)) {
+			emptyPane = tabGroup;
+		}
 		if (tabGroup.tabs.some(isFileViewId)) {
 			preferred = tabGroup;
 		}
@@ -285,7 +418,7 @@ function findPreferredFileTabGroup(
 		}
 	});
 
-	return preferred;
+	return emptyPane ?? preferred;
 }
 
 function activateTab(node: NodeConfig, tabId: string) {
@@ -312,7 +445,18 @@ function removeTabFromNode(
 		if (index === -1) return;
 
 		const nextTabs = tabGroup.tabs.filter((id) => id !== tabId) as typeof tabGroup.tabs;
-		if (nextTabs.length === 0) return;
+		if (nextTabs.length === 0) {
+			if (isFileViewId(tabId) && settings.editor.keepEmptyPanes) {
+				// Keep the pane alive as an empty placeholder (setting enabled).
+				tabGroup.tabs = [EMPTY_PANE_VIEW_ID];
+				tabGroup.activeTabIndex = 0;
+			} else {
+				// Remove the pane and collapse the now-empty split up the tree.
+				tabGroup.tabs = [] as typeof tabGroup.tabs;
+				simplifyTabGroup(tabGroup, parentMap, config);
+			}
+			return;
+		}
 
 		tabGroup.tabs = nextTabs;
 		if (tabGroup.activeTabIndex >= tabGroup.tabs.length) {
@@ -365,7 +509,36 @@ export function getFocusedFilePath(config: LayoutConfig): string | null {
 }
 
 function isAllowedTabId(id: string): boolean {
-	return isFileViewId(id) || isTerminalViewId(id) || KNOWN_PANEL_IDS.has(id);
+	if (id === LEGACY_SETTINGS_PANEL_ID) return false;
+
+	return (
+		isFileViewId(id) ||
+		isTerminalViewId(id) ||
+		isAgentViewId(id) ||
+		KNOWN_PANEL_IDS.has(id) ||
+		id.startsWith(GROUP_VIEW_PREFIX)
+	);
+}
+
+function migrateLegacyAgentPanel(config: LayoutConfig): LayoutConfig {
+	const next = cloneConfig(config);
+	if (!next.root) return next;
+
+	walkNodes(next.root, (tabGroup) => {
+		const legacyIndex = tabGroup.tabs.indexOf(PANEL_IDS.agent);
+		if (legacyIndex === -1) return;
+
+		const replacement = agentViewId(createAgentSessionId());
+		tabGroup.tabs = tabGroup.tabs.map((tabId) =>
+			tabId === PANEL_IDS.agent ? replacement : tabId
+		) as typeof tabGroup.tabs;
+
+		if (tabGroup.activeTabIndex === legacyIndex) {
+			tabGroup.activeTabIndex = tabGroup.tabs.indexOf(replacement);
+		}
+	});
+
+	return next;
 }
 
 function migrateLegacyTerminalPanel(config: LayoutConfig): LayoutConfig {
@@ -387,6 +560,28 @@ function migrateLegacyTerminalPanel(config: LayoutConfig): LayoutConfig {
 	});
 
 	return next;
+}
+
+function normalizeSplitPoints(viewCount: number, existing: number[] = []): number[] {
+	const needed = Math.max(0, viewCount - 1);
+	if (needed === 0) return [];
+	if (existing.length === needed) return [...existing];
+
+	// Preserve the default editor band presets when resizing to common sizes.
+	if (viewCount === 3) return [0.18, 0.5];
+	if (viewCount === 4) return [0.15, 0.42, 0.68];
+
+	return Array.from({ length: needed }, (_, index) => (index + 1) / viewCount);
+}
+
+function repairSplitPoints(node: NodeConfig): void {
+	if (nodeConfigType(node) !== 'split') return;
+
+	const split = node as SplitConfig;
+	split.splitPoints = normalizeSplitPoints(split.views.length, split.splitPoints);
+	for (const child of split.views) {
+		repairSplitPoints(child);
+	}
 }
 
 function sanitizeNode(node: NodeConfig): NodeConfig | null {
@@ -414,7 +609,7 @@ function sanitizeNode(node: NodeConfig): NodeConfig | null {
 
 	return {
 		direction: node.direction,
-		splitPoints: [...node.splitPoints],
+		splitPoints: normalizeSplitPoints(views.length, node.splitPoints),
 		views: views as [NodeConfig, NodeConfig, ...NodeConfig[]]
 	};
 }
@@ -461,15 +656,220 @@ function hasRequiredPanels(config: LayoutConfig): boolean {
 function readStoredLayout(): string | null {
 	if (typeof localStorage === 'undefined') return null;
 
-	const current = localStorage.getItem(LAYOUT_STORAGE_KEY);
+	const current = localStorage.getItem(resolveLayoutStorageKey());
 	if (current) return current;
 
-	for (const key of LEGACY_STORAGE_KEYS) {
-		const legacy = localStorage.getItem(key);
-		if (legacy) return legacy;
+	// Legacy global layouts only apply outside per-project scope (pre–multi-project).
+	if (!getActiveEditorScopeId()) {
+		for (const key of LEGACY_STORAGE_KEYS) {
+			const legacy = localStorage.getItem(key);
+			if (legacy) return legacy;
+		}
 	}
 
 	return null;
+}
+
+export function normalizeEntryPath(entryFile: string): string {
+	return entryFile.startsWith('/') ? entryFile : `/${entryFile}`;
+}
+
+/** Persist the default dock layout for a newly created project. */
+export function seedDefaultProjectLayout(projectId: string, entryFile: string) {
+	if (typeof localStorage === 'undefined') return;
+
+	const key = layoutStorageKey(projectId);
+	if (localStorage.getItem(key)) return;
+
+	const layout = createInitialLayout([normalizeEntryPath(entryFile)], createTerminalSessionId(), settings.editor.layoutPreset);
+	const sanitized = sanitizeLayout(layout);
+	if (!sanitized) return;
+
+	try {
+		localStorage.setItem(key, JSON.stringify(sanitized));
+	} catch {
+		// Ignore quota / private-mode failures.
+	}
+}
+
+function findBottomBandSplit(node: NodeConfig | undefined): SplitConfig | null {
+	if (!node) return null;
+
+	if (nodeConfigType(node) === 'split') {
+		const split = node as SplitConfig;
+		if (split.direction === 'horizontal') {
+			const hasTerminal = split.views.some(
+				(view) =>
+					nodeConfigType(view) === 'tabGroup' &&
+					(view as TabGroupConfig).tabs.some(isTerminalViewId)
+			);
+			const hasLogs = split.views.some(
+				(view) =>
+					nodeConfigType(view) === 'tabGroup' &&
+					(view as TabGroupConfig).tabs.includes(PANEL_IDS.logs)
+			);
+			if (hasTerminal && hasLogs) return split;
+		}
+
+		for (const child of split.views) {
+			const found = findBottomBandSplit(child);
+			if (found) return found;
+		}
+	}
+
+	return null;
+}
+
+function isBottomBandLayout(config: LayoutConfig): boolean {
+	return Boolean(findBottomBandSplit(config.root));
+}
+
+function hasLogsBesidePreview(config: LayoutConfig): boolean {
+	if (!config.root || nodeConfigType(config.root) !== 'split') return false;
+
+	const root = config.root as SplitConfig;
+	if (root.direction !== 'vertical' || root.views.length < 1) return false;
+
+	const top = root.views[0];
+	if (!top || nodeConfigType(top) !== 'split') return false;
+
+	const topSplit = top as SplitConfig;
+	if (topSplit.direction !== 'horizontal') return false;
+
+	let logsInTop = false;
+	walkNodes(top, (tabGroup) => {
+		if (tabGroup.tabs.includes(PANEL_IDS.logs)) logsInTop = true;
+	});
+
+	return logsInTop;
+}
+
+function migrateBottomBandLayout(config: LayoutConfig): LayoutConfig {
+	if (!config.root || isBottomBandLayout(config) || !hasLogsBesidePreview(config)) {
+		return config;
+	}
+
+	const filePaths = collectFilePaths(config);
+	const terminalIds = collectTerminalSessionIds(config);
+	const hasConsole = collectTabIds(config).has(PANEL_IDS.console);
+
+	let next = createInitialLayout(
+		filePaths.length ? filePaths : ['/App.svelte'],
+		terminalIds[0] ?? createTerminalSessionId()
+	);
+
+	for (let index = 1; index < terminalIds.length; index++) {
+		next = addTerminalToLayout(next, terminalIds[index]!);
+	}
+
+	if (!hasConsole) {
+		next = removeConsolePanel(next);
+	}
+
+	return next;
+}
+
+function findMainHorizontalSplit(node: NodeConfig | undefined): SplitConfig | null {
+	if (!node) return null;
+
+	if (nodeConfigType(node) === 'split') {
+		const split = node as SplitConfig;
+		if (split.direction === 'horizontal') {
+			const hasFiles = split.views.some(
+				(view) =>
+					nodeConfigType(view) === 'tabGroup' &&
+					(view as TabGroupConfig).tabs.includes(PANEL_IDS.files)
+			);
+			if (hasFiles) return split;
+		}
+
+		for (const child of split.views) {
+			const found = findMainHorizontalSplit(child);
+			if (found) return found;
+		}
+	}
+
+	return null;
+}
+
+function migrateAddAgentPanel(
+	config: LayoutConfig,
+	sessionId = createAgentSessionId()
+): LayoutConfig {
+	const next = cloneConfig(config);
+	if (!next.root) return next;
+
+	const id = agentViewId(sessionId);
+	const existing = findAgentTabGroup(next.root);
+	if (existing) {
+		if (existing.tabs.includes(id)) return next;
+		const tabs = existing.tabs.filter((tabId) => tabId !== PANEL_IDS.agent);
+		existing.tabs = [...tabs, id] as typeof existing.tabs;
+		existing.activeTabIndex = existing.tabs.length - 1;
+		return next;
+	}
+
+	const mainBand = findMainHorizontalSplit(next.root);
+	if (!mainBand) return next;
+
+	const agentGroup: TabGroupConfig = { tabs: [id], activeTabIndex: 0 };
+	const views = [...mainBand.views, agentGroup] as typeof mainBand.views;
+	mainBand.views = views;
+	mainBand.splitPoints = normalizeSplitPoints(views.length, mainBand.splitPoints);
+	repairSplitPoints(next.root);
+
+	return next;
+}
+
+export function isAgentPanelVisible(config: LayoutConfig): boolean {
+	if (!config.root) return false;
+	const ids = collectTabIds(config);
+	if (ids.has(PANEL_IDS.agent)) return true;
+	return collectAgentSessionIds(config).length > 0;
+}
+
+export function setAgentPanelVisible(config: LayoutConfig, visible: boolean): LayoutConfig {
+	if (!config.root) return config;
+
+	const currentlyVisible = isAgentPanelVisible(config);
+	if (currentlyVisible === visible) return config;
+
+	if (inferLayoutPreset(config) === 'agent-focus') {
+		return applyLayoutPreset(config, 'agent-focus', {
+			includeAgent: visible,
+			includeConsole: isConsolePanelVisible(config),
+			agentSessionIds: collectAgentSessionIds(config)
+		});
+	}
+
+	if (visible) return migrateAddAgentPanel(cloneConfig(config));
+	return removeAgentPanel(cloneConfig(config));
+}
+
+function removeAgentPanel(config: LayoutConfig): LayoutConfig {
+	const next = cloneConfig(config);
+	if (!next.root) return next;
+
+	const mainBand = findMainHorizontalSplit(next.root);
+	if (!mainBand) return next;
+
+	const agentIndex = mainBand.views.findIndex((view) => {
+		if (nodeConfigType(view) !== 'tabGroup') return false;
+		const tabs = (view as TabGroupConfig).tabs;
+		return tabs.some(isAgentViewId) || tabs.includes(PANEL_IDS.agent);
+	});
+	if (agentIndex === -1) return next;
+
+	const remaining = mainBand.views.filter((_, index) => index !== agentIndex) as [
+		NodeConfig,
+		NodeConfig,
+		...NodeConfig[]
+	];
+	mainBand.views = remaining;
+	mainBand.splitPoints = normalizeSplitPoints(remaining.length, mainBand.splitPoints);
+	repairSplitPoints(next.root);
+
+	return next;
 }
 
 function migrateAddConsolePanel(config: LayoutConfig): LayoutConfig {
@@ -479,30 +879,12 @@ function migrateAddConsolePanel(config: LayoutConfig): LayoutConfig {
 	const ids = collectTabIds(next);
 	if (ids.has(PANEL_IDS.console)) return next;
 
-	const parentMap = buildNodeParentMap(next.root);
-	let migrated = false;
+	const bottomBand = findBottomBandSplit(next.root);
+	if (!bottomBand) return next;
 
-	walkNodes(next.root, (tabGroup) => {
-		if (migrated) return;
-		if (tabGroup.tabs.length !== 1 || tabGroup.tabs[0] !== PANEL_IDS.logs) return;
-
-		const parent = parentMap.get(tabGroup);
-		const consoleGroup: TabGroupConfig = { tabs: [PANEL_IDS.console], activeTabIndex: 0 };
-		const split: SplitConfig = {
-			direction: 'vertical',
-			splitPoints: [0.55],
-			views: [tabGroup, consoleGroup]
-		};
-
-		if (!parent) {
-			next.root = split;
-		} else {
-			parent.parent.views[parent.index] = split;
-		}
-
-		migrated = true;
-	});
-
+	const consoleGroup: TabGroupConfig = { tabs: [PANEL_IDS.console], activeTabIndex: 0 };
+	bottomBand.views = [...bottomBand.views, consoleGroup] as typeof bottomBand.views;
+	bottomBand.splitPoints = normalizeSplitPoints(bottomBand.views.length, bottomBand.splitPoints);
 	return next;
 }
 
@@ -525,43 +907,24 @@ function removeConsolePanel(config: LayoutConfig): LayoutConfig {
 	const next = cloneConfig(config);
 	if (!next.root) return next;
 
-	const parentMap = buildNodeParentMap(next.root);
+	const bottomBand = findBottomBandSplit(next.root);
+	if (!bottomBand) return next;
 
-	function replaceSplit(node: NodeConfig): boolean {
-		if (nodeConfigType(node) !== 'split') return false;
+	const consoleIndex = bottomBand.views.findIndex(
+		(view) =>
+			nodeConfigType(view) === 'tabGroup' &&
+			(view as TabGroupConfig).tabs.includes(PANEL_IDS.console)
+	);
+	if (consoleIndex === -1) return next;
 
-		const split = node as SplitConfig;
-		if (split.direction === 'vertical' && split.views.length === 2) {
-			const logsView = split.views.find(
-				(view) =>
-					nodeConfigType(view) === 'tabGroup' &&
-					(view as TabGroupConfig).tabs.includes(PANEL_IDS.logs)
-			);
-			const hasConsole = split.views.some(
-				(view) =>
-					nodeConfigType(view) === 'tabGroup' &&
-					(view as TabGroupConfig).tabs.includes(PANEL_IDS.console)
-			);
+	const remaining = bottomBand.views.filter((_, index) => index !== consoleIndex) as [
+		NodeConfig,
+		NodeConfig,
+		...NodeConfig[]
+	];
+	bottomBand.views = remaining;
+	bottomBand.splitPoints = normalizeSplitPoints(remaining.length, bottomBand.splitPoints);
 
-			if (logsView && hasConsole) {
-				const parent = parentMap.get(split);
-				if (!parent) {
-					next.root = logsView;
-				} else {
-					parent.parent.views[parent.index] = logsView;
-				}
-				return true;
-			}
-		}
-
-		for (const child of split.views) {
-			if (replaceSplit(child)) return true;
-		}
-
-		return false;
-	}
-
-	replaceSplit(next.root);
 	return next;
 }
 
@@ -570,7 +933,11 @@ export function loadSavedLayout(): LayoutConfig | null {
 		const raw = readStoredLayout();
 		if (!raw) return null;
 		const parsed = parseLayoutConfig(JSON.parse(raw));
-		const migrated = migrateAddConsolePanel(migrateLegacyTerminalPanel(parsed));
+		const migrated = migrateAddConsolePanel(
+			migrateBottomBandLayout(
+				migrateLegacyAgentPanel(migrateLegacyTerminalPanel(parsed))
+			)
+		);
 		const sanitized = sanitizeLayout(migrated);
 		if (!sanitized || !hasRequiredPanels(sanitized)) return null;
 		return sanitized;
@@ -585,15 +952,17 @@ export function saveLayout(config: LayoutConfig) {
 	try {
 		const sanitized = sanitizeLayout(config);
 		if (!sanitized) return;
-		localStorage.setItem(LAYOUT_STORAGE_KEY, JSON.stringify(sanitized));
+		localStorage.setItem(resolveLayoutStorageKey(), JSON.stringify(sanitized));
 	} catch {
 		// Ignore quota / private-mode failures.
 	}
 }
 
 export function resolveEditorLayout(filePaths: string[]): LayoutConfig {
-	return loadSavedLayout() ?? createInitialLayout(filePaths);
+	return loadSavedLayout() ?? createInitialLayout(filePaths, createTerminalSessionId(), settings.editor.layoutPreset);
 }
+
+export { applyLayoutPreset, inferLayoutPreset, type EditorLayoutPresetId } from '$lib/editorLayoutPresets';
 
 type SplitDirection = 'left' | 'right' | 'up' | 'down';
 
@@ -640,6 +1009,16 @@ function canSplitTabGroup(
 	}
 
 	return getNodeDepth(tabGroup, nodeParentMap) + 1 <= SPLIT_MAX_DEPTH;
+}
+
+export function toggleMaximizedView(config: LayoutConfig, viewId: string): LayoutConfig {
+	const next = cloneConfig(config);
+	if (next.maximizedView === viewId) {
+		delete next.maximizedView;
+	} else {
+		next.maximizedView = viewId;
+	}
+	return next;
 }
 
 /** Split a view out of its tab group into a new adjacent pane (mirrors horizon-layout Alt+Arrow). */
@@ -697,4 +1076,124 @@ export function tabGroupHasMultipleTabs(config: LayoutConfig, viewId: string): b
 	if (!config.root) return false;
 	const tabGroup = findTabGroupContaining(config.root, viewId);
 	return Boolean(tabGroup && tabGroup.tabs.length > 1);
+}
+
+/** Resolve the layout-active tab when `hintTabId` identifies a tab group. */
+export function resolveActiveTabInLayout(
+	config: LayoutConfig,
+	hintTabId: string | null
+): string | null {
+	if (!hintTabId || !config.root) return hintTabId;
+	const group = findTabGroupContaining(config.root, hintTabId);
+	if (!group) return hintTabId;
+	return group.tabs[group.activeTabIndex] ?? hintTabId;
+}
+
+export function selectAdjacentTabInLayout(
+	config: LayoutConfig,
+	activeTabId: string,
+	delta: -1 | 1
+): LayoutConfig {
+	const next = cloneConfig(config);
+	if (!next.root) return config;
+
+	const group = findTabGroupContaining(next.root, activeTabId);
+	if (!group || group.tabs.length <= 1) return config;
+
+	group.activeTabIndex = (group.activeTabIndex + delta + group.tabs.length) % group.tabs.length;
+	return next;
+}
+
+export function activatePanelTabInLayout(config: LayoutConfig, panelId: string): LayoutConfig {
+	const next = cloneConfig(config);
+	if (!next.root) return config;
+	activateTab(next.root, panelId);
+	return next;
+}
+
+function splitSingleTabGroupInLayout(
+	config: LayoutConfig,
+	tabGroup: TabGroupConfig,
+	direction: SplitDirection
+): LayoutConfig {
+	if (!config.root) return config;
+
+	const splitDirection =
+		direction === 'left' || direction === 'right' ? 'horizontal' : 'vertical';
+	const nodeParentMap = buildNodeParentMap(config.root);
+	if (!canSplitTabGroup(tabGroup, splitDirection, nodeParentMap)) return config;
+
+	const newGroup: TabGroupConfig = { tabs: [EMPTY_PANE_VIEW_ID], activeTabIndex: 0 };
+	const parent = nodeParentMap.get(tabGroup);
+	const isFirst = direction === 'left' || direction === 'up';
+
+	if (!parent || parent.parent.direction !== splitDirection) {
+		const split: SplitConfig = {
+			direction: splitDirection,
+			views: isFirst ? [newGroup, tabGroup] : [tabGroup, newGroup],
+			splitPoints: [0.5]
+		};
+		if (parent) {
+			parent.parent.views[parent.index] = split;
+		} else {
+			config.root = split;
+		}
+	} else {
+		const insertIndex = parent.index + (isFirst ? 0 : 1);
+		parent.parent.views.splice(insertIndex, 0, newGroup);
+		parent.parent.splitPoints.splice(parent.index, 0, paneMidpoint(parent));
+	}
+
+	return config;
+}
+
+export function splitActivePaneInLayout(
+	config: LayoutConfig,
+	activeTabId: string,
+	direction: SplitDirection
+): LayoutConfig {
+	if (!config.root) return config;
+
+	if (tabGroupHasMultipleTabs(config, activeTabId)) {
+		return splitViewInLayout(config, activeTabId, direction);
+	}
+
+	const group = findTabGroupContaining(config.root, activeTabId);
+	if (!group) return config;
+
+	const next = cloneConfig(config);
+	const clonedGroup = findTabGroupContaining(next.root!, activeTabId);
+	if (!clonedGroup) return config;
+	return splitSingleTabGroupInLayout(next, clonedGroup, direction);
+}
+
+export function splitFibonacciInLayout(config: LayoutConfig, activeTabId: string): LayoutConfig {
+	if (!config.root) return config;
+	const group = findTabGroupContaining(config.root, activeTabId);
+	if (!group) return config;
+
+	const nodeParentMap = buildNodeParentMap(config.root);
+	const depth = getNodeDepth(group, nodeParentMap);
+	const direction: SplitDirection = depth % 2 === 0 ? 'right' : 'down';
+	return splitActivePaneInLayout(config, activeTabId, direction);
+}
+
+export function addPaneToLayout(config: LayoutConfig, activeTabId?: string | null): LayoutConfig {
+	const next = cloneConfig(config);
+	if (!next.root) {
+		return { root: { tabs: [EMPTY_PANE_VIEW_ID], activeTabIndex: 0 } };
+	}
+
+	const anchorGroup =
+		(activeTabId ? findTabGroupContaining(next.root, activeTabId) : null) ??
+		findFirstTabGroup(next.root);
+	if (!anchorGroup) return next;
+
+	if (!anchorGroup.tabs.includes(EMPTY_PANE_VIEW_ID)) {
+		anchorGroup.tabs = [...anchorGroup.tabs, EMPTY_PANE_VIEW_ID] as typeof anchorGroup.tabs;
+		anchorGroup.activeTabIndex = anchorGroup.tabs.length - 1;
+		return next;
+	}
+
+	return splitSingleTabGroupInLayout(next, anchorGroup, 'right');
 }

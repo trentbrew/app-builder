@@ -1,76 +1,139 @@
 <script lang="ts">
   import MarkdownView from '$lib/components/markdown-view.svelte'
+  import * as Accordion from '$lib/components/ui/accordion/index.js'
   import * as Bubble from '$lib/components/ui/bubble/index.js'
   import * as Message from '$lib/components/ui/message/index.js'
   import * as MessageScroller from '$lib/components/ui/message-scroller/index.js'
-  import * as Avatar from '$lib/components/ui/avatar/index.js'
-  import { getMessageFiles, getMessageText, isMessageStreaming } from '$lib/ai/messages.js'
-  import { chat } from '$lib/chat.svelte'
+  import TextShine from '$lib/components/text-shine.svelte'
+  import {
+    formatMessageTime,
+    formatThoughtDuration,
+    getMessageFiles,
+    getMessageReasoning,
+    getMessageText,
+    getMessageTimestamp,
+    isMessageStreaming,
+  } from '$lib/ai/messages.js'
+  import { toast } from '$lib/notify'
   import { cn } from '$lib/utils.js'
-  import type { UIMessage } from 'ai'
-  import BotIcon from '@lucide/svelte/icons/bot'
+  import type { ChatStatus, UIMessage } from 'ai'
+  import BrainIcon from '@lucide/svelte/icons/brain'
+  import CopyIcon from '@lucide/svelte/icons/copy'
   import FileIcon from '@lucide/svelte/icons/file'
-  import UserRoundIcon from '@lucide/svelte/icons/user-round'
+  import LoaderCircleIcon from '@lucide/svelte/icons/loader-circle'
 
   let {
     message,
     scrollAnchor = false,
+    chatStatus = 'ready' as ChatStatus,
   }: {
     message: UIMessage
     scrollAnchor?: boolean
+    chatStatus?: ChatStatus
   } = $props()
 
-  const align = $derived(message.role === 'user' ? 'end' : 'start')
   const text = $derived(getMessageText(message))
+  const reasoning = $derived(getMessageReasoning(message))
   const files = $derived(getMessageFiles(message))
-  const streaming = $derived(isMessageStreaming(message, chat.status))
-  const label = $derived(message.role === 'user' ? 'You' : 'Assistant')
+  const streaming = $derived(isMessageStreaming(message, chatStatus))
   const isUser = $derived(message.role === 'user')
+  const isAssistant = $derived(message.role === 'assistant')
+  const timestamp = $derived(getMessageTimestamp(message))
+  const timeLabel = $derived(timestamp ? formatMessageTime(timestamp) : null)
+  const showMetaRow = $derived(Boolean(timeLabel) || (isAssistant && text && !streaming))
+
+  let thinkingAccordion = $state<string | undefined>(undefined)
+  let reasoningStartedAt = $state<number | null>(null)
+  let reasoningDurationSec = $state<number | null>(null)
+
+  const thinkingActive = $derived(isAssistant && streaming && !text.trim())
+  const showThinkingSection = $derived(Boolean(reasoning.trim()) || thinkingActive)
+
+  const thinkingLabel = $derived.by(() => {
+    if (thinkingActive) return 'Thinking…'
+    if (reasoningDurationSec != null) return formatThoughtDuration(reasoningDurationSec)
+    return 'Thought'
+  })
+
+  $effect(() => {
+    if (!showThinkingSection) return
+
+    const inReasoningPhase = thinkingActive || (streaming && Boolean(reasoning.trim()) && !text.trim())
+    if (inReasoningPhase && reasoningStartedAt == null) {
+      reasoningStartedAt = Date.now()
+    }
+
+    if (reasoningStartedAt != null && reasoningDurationSec == null) {
+      if (text.trim() || (!streaming && Boolean(reasoning.trim()))) {
+        reasoningDurationSec = Math.max(1, (Date.now() - reasoningStartedAt) / 1000)
+      }
+    }
+
+    if (streaming) {
+      thinkingAccordion = 'thinking'
+      return
+    }
+
+    thinkingAccordion = undefined
+  })
+
+  async function copyResponse() {
+    if (!text) return
+    try {
+      await navigator.clipboard.writeText(text)
+      toast.success('Copied response')
+    } catch {
+      toast.error('Could not copy response')
+    }
+  }
 </script>
 
 <MessageScroller.Item messageId={message.id} {scrollAnchor} class="w-full">
-  <Message.Root {align}>
-    <Message.Avatar>
-      <Avatar.Root class="size-7">
-        <Avatar.Fallback
-          class={cn(
-            'text-[0.625rem] font-semibold',
-            isUser ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground',
-          )}
-        >
-          {#if isUser}
-            <UserRoundIcon class="size-3.5" />
-          {:else}
-            <BotIcon class="size-3.5" />
-          {/if}
-        </Avatar.Fallback>
-      </Avatar.Root>
-    </Message.Avatar>
+  <Message.Root class={cn('w-full', isUser && scrollAnchor && 'pb-0.5')}>
+    <Message.Content class="relative w-full gap-1">
+      {#if showThinkingSection}
+        <Accordion.Root type="single" collapsible bind:value={thinkingAccordion} class="w-full">
+          <Accordion.Item value="thinking" class="border-0">
+            <Accordion.Trigger
+              class="text-muted-foreground hover:text-foreground flex w-fit max-w-full items-center justify-start gap-1 rounded-md px-0 py-0.5 text-left text-sm font-normal hover:no-underline **:data-[slot=accordion-trigger-icon]:ml-0 **:data-[slot=accordion-trigger-icon]:size-3"
+            >
+              <BrainIcon class="size-3.5 shrink-0 opacity-70" />
+              {#if thinkingActive}
+                <LoaderCircleIcon class="size-3 shrink-0 animate-spin" />
+              {/if}
+              <span>{thinkingLabel}</span>
+            </Accordion.Trigger>
+            <Accordion.Content class="pb-1 pt-0">
+              <div class="chat-thinking-panel">
+                {#if reasoning.trim()}
+                  <span class="block whitespace-pre-wrap">{reasoning}</span>
+                {:else if thinkingActive}
+                  <TextShine class="text-xs">Working through the request…</TextShine>
+                {/if}
+              </div>
+            </Accordion.Content>
+          </Accordion.Item>
+        </Accordion.Root>
+      {/if}
 
-    <Message.Content class={cn(isUser && 'items-end')}>
-      <Message.Header class={cn(isUser && 'text-end')}>{label}</Message.Header>
-      <Bubble.Root class="w-full">
+      <Bubble.Root class="w-full max-w-full">
         <Bubble.Content
           class={cn(
-            'w-full px-3 py-2',
-            isUser ? 'bg-primary text-primary-foreground' : 'bg-muted/60 text-foreground border border-border/60',
+            'w-full text-sm leading-relaxed',
+            isUser && 'rounded-lg border border-border bg-muted/80 px-3.5 py-1.5 text-foreground whitespace-normal',
+            isAssistant && 'rounded-none border-0 bg-transparent p-0 shadow-none',
           )}
         >
           {#if files.length > 0}
-            <div class="mb-2 flex flex-col gap-1.5">
+            <div class="mb-1 flex flex-col gap-1">
               {#each files as file, index (file.url + (file.filename ?? index))}
                 <div
-                  class={cn(
-                    'flex items-center gap-2 rounded-lg border px-2 py-1.5 text-xs',
-                    isUser
-                      ? 'border-primary-foreground/20 bg-primary-foreground/10'
-                      : 'border-border/70 bg-background/40',
-                  )}
+                  class="border-border/60 bg-background/50 flex items-center gap-1.5 rounded-md border px-1.5 py-1 text-sm"
                 >
                   {#if file.mediaType.startsWith('image/')}
-                    <img src={file.url} alt={file.filename ?? 'Attachment'} class="size-8 rounded object-cover" />
+                    <img src={file.url} alt={file.filename ?? 'Attachment'} class="size-7 rounded object-cover" />
                   {:else}
-                    <FileIcon class="size-3.5 shrink-0 opacity-70" />
+                    <FileIcon class="size-3 shrink-0 opacity-70" />
                   {/if}
                   <span class="truncate">{file.filename ?? 'Attachment'}</span>
                 </div>
@@ -79,9 +142,11 @@
           {/if}
 
           {#if text}
-            <MarkdownView markdown={text} compact variant={isUser ? 'user' : 'default'} />
-          {:else if streaming}
-            <span class="text-muted-foreground">Thinking…</span>
+            {#if isUser}
+              <span class="chat-message__user-text block w-full wrap-break-word">{text}</span>
+            {:else}
+              <MarkdownView markdown={text} compact />
+            {/if}
           {/if}
 
           {#if streaming && text}
@@ -90,11 +155,60 @@
         </Bubble.Content>
       </Bubble.Root>
 
-      {#if message.role === 'assistant' && streaming}
-        <Message.Footer>
-          <span class="text-muted-foreground text-[0.65rem]">Streaming</span>
-        </Message.Footer>
+      {#if showMetaRow}
+        <div class="chat-message__meta">
+          {#if isAssistant && text && !streaming}
+            <button
+              type="button"
+              class="text-muted-foreground hover:text-foreground inline-flex size-5 items-center justify-center rounded transition-colors"
+              aria-label="Copy response"
+              onclick={() => void copyResponse()}
+            >
+              <CopyIcon class="size-3" />
+            </button>
+          {/if}
+          {#if timeLabel}
+            <time class="text-muted-foreground shrink-0 tabular-nums" datetime={new Date(timestamp!).toISOString()}>
+              {timeLabel}
+            </time>
+          {/if}
+        </div>
       {/if}
     </Message.Content>
   </Message.Root>
 </MessageScroller.Item>
+
+<style>
+  .chat-thinking-panel {
+    padding: 0.125rem 0 0.375rem;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: color-mix(in oklch, var(--color-muted-foreground) 92%, var(--color-background));
+  }
+
+  .chat-message__user-text {
+    max-height: min(40vh, 12rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .chat-message__meta {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    line-height: 1;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+  }
+
+  :global(.group\/message:hover) .chat-message__meta,
+  :global(.group\/message:focus-within) .chat-message__meta {
+    opacity: 1;
+    pointer-events: auto;
+  }
+</style>

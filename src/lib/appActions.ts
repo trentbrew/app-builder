@@ -7,6 +7,8 @@ import {
 	type AppAction
 } from '$lib/actionContext';
 import { actionRunner } from '$lib/actionRunner.svelte';
+import { getTabName, setTabName } from '$lib/tabNames.svelte'
+import { containers } from '$lib/containerTabs.svelte'
 import { appChrome } from '$lib/appChrome.svelte';
 import { editorChrome } from '$lib/editorChrome.svelte';
 import {
@@ -19,7 +21,7 @@ import {
 } from '$lib/fileOps';
 import { dirname } from '$lib/fileTreeOps';
 import { tabGroupHasMultipleTabs } from '$lib/editorLayout';
-import { isMarkdownPath, isRunnablePath } from '$lib/fileTypes';
+import { hasPreviewToggle, isRunnablePath } from '$lib/fileTypes';
 import { sandboxStore } from '$lib/sandboxStore';
 import { refreshPreviewPosition } from '$lib/previewFrame';
 import { fileTreeState } from '$lib/fileTreeState.svelte';
@@ -30,7 +32,9 @@ import {
 	toggleStatusBarVisible,
 	toggleStatusSegment
 } from '$lib/statusBar.svelte';
-import { toast } from 'svelte-sonner';
+import { toggleAgentPanel } from '$lib/agentHarness/harnessStore.svelte';
+import { toast } from '$lib/notify';
+import BotIcon from '@lucide/svelte/icons/bot';
 import Code2Icon from '@lucide/svelte/icons/code-2';
 import CopyIcon from '@lucide/svelte/icons/copy';
 import ExternalLinkIcon from '@lucide/svelte/icons/external-link';
@@ -99,10 +103,17 @@ const APP_ACTIONS: AppAction[] = [
 		id: 'view.toggle-settings',
 		label: 'Toggle Settings',
 		icon: SettingsIcon,
-		shortcut: '⌘,',
 		group: 'View',
 		when: (ctx) => targetMatches(ctx, ['global', 'pane', 'iconRail', 'statusBar']),
 		run: () => editorChrome.toggleSettings()
+	},
+	{
+		id: 'view.toggle-agent',
+		label: 'Toggle Agent',
+		icon: BotIcon,
+		group: 'View',
+		when: (ctx) => targetMatches(ctx, ['global', 'pane', 'iconRail', 'statusBar']),
+		run: () => toggleAgentPanel()
 	},
 	{
 		id: 'view.toggle-console',
@@ -365,7 +376,8 @@ const APP_ACTIONS: AppAction[] = [
 		label: 'Toggle Markdown Mode',
 		icon: Code2Icon,
 		group: 'View',
-		when: (ctx) => ctx.target.kind === 'fileEditor' && isMarkdownPath(ctx.target.path),
+		when: (ctx) =>
+			ctx.target.kind === 'fileEditor' && hasPreviewToggle(ctx.target.path),
 		run: (ctx) => {
 			if (ctx.target.kind !== 'fileEditor') return;
 			actionRunner.toggleMarkdownMode(ctx.target.path);
@@ -493,14 +505,42 @@ const APP_ACTIONS: AppAction[] = [
 		label: 'Rename Tab',
 		icon: PencilIcon,
 		group: 'Layout',
-		when: (ctx) => ctx.target.kind === 'fileTab' || ctx.target.kind === 'terminalTab',
+		when: (ctx) =>
+			ctx.target.kind === 'fileTab' ||
+			ctx.target.kind === 'terminalTab' ||
+			ctx.target.kind === 'agentTab' ||
+			ctx.target.kind === 'groupTab',
 		run: async (ctx) => {
 			if (ctx.target.kind === 'fileTab') await actionRunner.renameFileTab(ctx.target.viewId);
 			if (ctx.target.kind === 'terminalTab') {
 				await actionRunner.renameTerminalTab(ctx.target.sessionId, ctx.target.viewId);
 			}
+			if (ctx.target.kind === 'agentTab') {
+				await actionRunner.renameAgentTab(ctx.target.sessionId, ctx.target.viewId);
+			}
+			if (ctx.target.kind === 'groupTab') {
+				const fallback =
+					containers[ctx.target.groupId]?.label ?? 'Group';
+				const name = window.prompt('Rename tab', getTabName(ctx.target.viewId) || fallback);
+				if (name !== null) setTabName(ctx.target.viewId, name);
+			}
 		}
 	},
+	{
+		id: 'layout.new-tab-group',
+		label: 'New Tab Group',
+		icon: FolderPlusIcon,
+		group: 'Layout',
+		when: (ctx) =>
+			ctx.target.kind === 'global' ||
+			ctx.target.kind === 'fileTab' ||
+			ctx.target.kind === 'pane' ||
+			ctx.target.kind === 'groupTab',
+		run: () => {
+			actionRunner.createTabGroup();
+		}
+	},
+
 	{
 		id: 'tab.close',
 		label: 'Close Tab',
@@ -508,10 +548,12 @@ const APP_ACTIONS: AppAction[] = [
 		group: 'Layout',
 		when: (ctx) =>
 			ctx.target.kind === 'fileTab' ||
-			(ctx.target.kind === 'terminalTab' && ctx.layout.openTerminals.length > 1),
+			ctx.target.kind === 'terminalTab' ||
+			ctx.target.kind === 'agentTab',
 		run: (ctx) => {
 			if (ctx.target.kind === 'fileTab') actionRunner.closeFileTab(ctx.target.viewId);
 			if (ctx.target.kind === 'terminalTab') actionRunner.closeTerminalTab(ctx.target.viewId);
+			if (ctx.target.kind === 'agentTab') actionRunner.closeAgentTab(ctx.target.viewId);
 		}
 	},
 	{
@@ -591,6 +633,7 @@ function viewIdFromTarget(target: ActionTarget): string | null {
 	switch (target.kind) {
 		case 'fileTab':
 		case 'terminalTab':
+		case 'agentTab':
 			return target.viewId;
 		case 'fileEditor':
 			return `file:${target.path}`;

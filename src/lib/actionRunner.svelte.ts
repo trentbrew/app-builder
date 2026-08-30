@@ -1,5 +1,7 @@
 import type { LayoutConfig } from '$lib/editorLayout';
+import type { EditorLayoutPresetId } from '$lib/editorLayoutPresets';
 import type { EditorRef } from '$lib/actionContext';
+import { editorChrome } from '$lib/editorChrome.svelte';
 
 export type SplitDirection = 'left' | 'right' | 'up' | 'down';
 
@@ -16,6 +18,7 @@ type ActionRunnerHandlers = {
 	splitView: (viewId: string, direction: SplitDirection) => void;
 	closeFileTab: (viewId: string) => void;
 	closeTerminalTab: (viewId: string) => void;
+	closeAgentTab: (viewId: string) => void;
 	closeSettingsTab: () => void;
 	addTerminal: () => void;
 	getOpenFiles: () => string[];
@@ -27,6 +30,10 @@ type ActionRunnerHandlers = {
 	refreshTree: () => void;
 	renameFileTab: (viewId: string) => void | Promise<void>;
 	renameTerminalTab: (sessionId: string, viewId: string) => void | Promise<void>;
+	renameAgentTab: (sessionId: string, viewId: string) => void | Promise<void>;
+	/** Create a new named container tab group in this dock. Returns its view id. */
+	createTabGroup: () => string | null;
+	applyLayoutPreset: (presetId: EditorLayoutPresetId) => boolean;
 };
 
 const defaultHandlers: ActionRunnerHandlers = {
@@ -35,6 +42,7 @@ const defaultHandlers: ActionRunnerHandlers = {
 	splitView: () => {},
 	closeFileTab: () => {},
 	closeTerminalTab: () => {},
+	closeAgentTab: () => {},
 	closeSettingsTab: () => {},
 	addTerminal: () => {},
 	getOpenFiles: () => [],
@@ -45,15 +53,43 @@ const defaultHandlers: ActionRunnerHandlers = {
 	renameFile: () => {},
 	refreshTree: () => {},
 	renameFileTab: () => {},
-	renameTerminalTab: () => {}
+	renameTerminalTab: () => {},
+	renameAgentTab: () => {},
+	createTabGroup: () => null,
+	applyLayoutPreset: () => false
 };
+
+const ROOT_DOCK_ID = 'root';
+
+type ResolvedDockHandlers = ActionRunnerHandlers & { id: string };
 
 class ActionRunnerState {
 	private handlers = { ...defaultHandlers };
 	private filePaneHandlers = new Map<string, FilePaneHandlers>();
+	private docks = new Map<string, ResolvedDockHandlers>();
+	private activeDockId: string = ROOT_DOCK_ID;
 
 	register(next: Partial<ActionRunnerHandlers>) {
 		this.handlers = { ...this.handlers, ...next };
+	}
+
+	/** Register a dock-scoped handler set (nested docks). */
+	registerDock(id: string, handlers: Partial<ActionRunnerHandlers>) {
+		this.docks.set(id, { id, ...defaultHandlers, ...handlers });
+	}
+
+	unregisterDock(id: string) {
+		this.docks.delete(id);
+		if (this.activeDockId === id) this.activeDockId = ROOT_DOCK_ID;
+	}
+
+	/** Route subsequent actions to the dock under the pointer/keyboard focus. */
+	setActiveDock(id: string | null) {
+		this.activeDockId = id ?? ROOT_DOCK_ID;
+	}
+
+	private dock(): ResolvedDockHandlers {
+		return this.docks.get(this.activeDockId) ?? { id: ROOT_DOCK_ID, ...this.handlers };
 	}
 
 	registerFilePane(path: string, handlers: FilePaneHandlers) {
@@ -70,67 +106,83 @@ class ActionRunnerState {
 	}
 
 	getLayout() {
-		return this.handlers.getLayout();
+		return this.dock().getLayout();
 	}
 
 	setLayout(config: LayoutConfig) {
-		this.handlers.setLayout(config);
+		this.dock().setLayout(config);
 	}
 
 	splitView(viewId: string, direction: SplitDirection) {
-		this.handlers.splitView(viewId, direction);
+		this.dock().splitView(viewId, direction);
 	}
 
 	closeFileTab(viewId: string) {
-		this.handlers.closeFileTab(viewId);
+		this.dock().closeFileTab(viewId);
 	}
 
 	closeTerminalTab(viewId: string) {
-		this.handlers.closeTerminalTab(viewId);
+		this.dock().closeTerminalTab(viewId);
+	}
+
+	closeAgentTab(viewId: string) {
+		this.dock().closeAgentTab(viewId);
 	}
 
 	closeSettingsTab() {
-		this.handlers.closeSettingsTab();
+		editorChrome.closeSettings();
 	}
 
 	addTerminal() {
-		this.handlers.addTerminal();
+		this.dock().addTerminal();
 	}
 
 	getOpenFiles() {
-		return this.handlers.getOpenFiles();
+		return this.dock().getOpenFiles();
 	}
 
 	getOpenTerminals() {
-		return this.handlers.getOpenTerminals();
+		return this.dock().getOpenTerminals();
 	}
 
 	getActiveFile() {
-		return this.handlers.getActiveFile();
+		return this.dock().getActiveFile();
 	}
 
 	selectFile(path: string, content: string) {
-		this.handlers.selectFile(path, content);
+		this.dock().selectFile(path, content);
 	}
 
 	closeFile(path: string) {
-		this.handlers.closeFile(path);
+		this.dock().closeFile(path);
 	}
 
 	renameFile(oldPath: string, newPath: string) {
-		this.handlers.renameFile(oldPath, newPath);
+		this.dock().renameFile(oldPath, newPath);
 	}
 
 	refreshTree() {
-		this.handlers.refreshTree();
+		this.dock().refreshTree();
 	}
 
 	renameFileTab(viewId: string) {
-		return this.handlers.renameFileTab(viewId);
+		return this.dock().renameFileTab(viewId);
 	}
 
 	renameTerminalTab(sessionId: string, viewId: string) {
-		return this.handlers.renameTerminalTab(sessionId, viewId);
+		return this.dock().renameTerminalTab(sessionId, viewId);
+	}
+
+	renameAgentTab(sessionId: string, viewId: string) {
+		return this.dock().renameAgentTab(sessionId, viewId);
+	}
+
+	createTabGroup(): string | null {
+		return this.dock().createTabGroup();
+	}
+
+	applyLayoutPreset(presetId: EditorLayoutPresetId): boolean {
+		return this.handlers.applyLayoutPreset(presetId);
 	}
 
 	toggleMarkdownMode(path: string) {

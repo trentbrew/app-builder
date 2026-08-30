@@ -1,6 +1,7 @@
 <script lang="ts">
   import PaneChrome from '$lib/components/pane-chrome.svelte'
   import PaneSplitMenu from '$lib/components/pane-split-menu.svelte'
+  import PaneMaximizeButton from '$lib/components/pane-maximize-button.svelte'
   import PaneToolbar from '$lib/components/pane-toolbar.svelte'
   import ChatTranscript from '$lib/components/chat-transcript.svelte'
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js'
@@ -9,7 +10,7 @@
   import * as MessageScroller from '$lib/components/ui/message-scroller/index.js'
   import * as Tooltip from '$lib/components/ui/tooltip/index.js'
   import { formatFileSize } from '$lib/ai/messages.js'
-  import { chat, isChatBusy, resetChat } from '$lib/chat.svelte'
+  import { chat, isChatBusy, resetChat, sendChatMessage } from '$lib/chat.svelte'
   import {
     chatSettings,
     chatModelCatalog,
@@ -29,10 +30,14 @@
 
   let {
     canSplit = false,
+    maximized = false,
     onSplit,
+    onToggleMaximize,
   }: {
     canSplit?: boolean
+    maximized?: boolean
     onSplit?: (direction: 'left' | 'right' | 'up' | 'down') => void
+    onToggleMaximize?: () => void
   } = $props()
 
   let draft = $state('')
@@ -90,16 +95,16 @@
     pendingFiles = []
 
     if (text && files) {
-      await chat.sendMessage({ text, files })
+      await sendChatMessage({ text, files })
       return
     }
 
     if (files) {
-      await chat.sendMessage({ files })
+      await sendChatMessage({ files })
       return
     }
 
-    await chat.sendMessage({ text })
+    await sendChatMessage({ text })
   }
 </script>
 
@@ -116,7 +121,7 @@
 <PaneChrome paneKind="chat">
   {#snippet toolbar()}
     <PaneToolbar>
-        {#snippet meta()}
+      {#snippet meta()}
         <span class="pane-toolbar__detail">{messages.length} messages</span>
         <span class="pane-toolbar__sep" aria-hidden="true"></span>
         {#if streaming}
@@ -148,6 +153,7 @@
             <Tooltip.Content>Reset conversation</Tooltip.Content>
           </Tooltip.Root>
         </Tooltip.Provider>
+        <PaneMaximizeButton {maximized} onToggle={onToggleMaximize} />
         <PaneSplitMenu disabled={!canSplit} {onSplit} />
       {/snippet}
     </PaneToolbar>
@@ -155,7 +161,7 @@
 
   {#snippet children()}
     <div class="chat-pane">
-      <MessageScroller.Provider autoScroll defaultScrollPosition="last-anchor" scrollPreviousItemPeek={64}>
+      <MessageScroller.Provider autoScroll defaultScrollPosition="last-anchor" scrollPreviousItemPeek={32}>
         <div class="chat-pane__transcript">
           {#if messages.length === 0}
             <Empty.Root class="h-full min-h-0 border-0 bg-transparent">
@@ -200,7 +206,7 @@
             <InputGroup.Textarea
               bind:value={draft}
               rows={1}
-              placeholder="Message the assistant…"
+              placeholder="What do you want to build?"
               aria-label="Message"
               disabled={busy}
               class="min-h-11 py-2.5"

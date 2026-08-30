@@ -8,8 +8,7 @@ export type PaneKind =
 	| 'terminal'
 	| 'logs'
 	| 'console'
-	| 'chat'
-	| 'settings';
+	| 'chat';
 
 export type EditorRef = MarkdownEditorRef & {
 	cut?: () => void;
@@ -26,6 +25,8 @@ export type ActionTarget =
 	| { kind: 'pane'; paneId: string; paneKind: PaneKind }
 	| { kind: 'fileTab'; path: string; viewId: string }
 	| { kind: 'terminalTab'; sessionId: string; viewId: string }
+	| { kind: 'agentTab'; sessionId: string; viewId: string }
+	| { kind: 'groupTab'; groupId: string; viewId: string }
 	| { kind: 'treeNode'; path: string; nodeKind: 'file' | 'directory' }
 	| { kind: 'fileEditor'; path: string; editorRef?: EditorRef; canSplit?: boolean };
 
@@ -48,8 +49,25 @@ export type ActionContext = {
 	sandbox: SandboxSnapshot;
 };
 
-export type ActionGroup = 'Navigation' | 'File' | 'Edit' | 'View' | 'Terminal' | 'Sandbox' | 'System';
-export const ACTION_GROUP_ORDER: ActionGroup[] = ['Navigation', 'File', 'Edit', 'View', 'Terminal', 'Sandbox', 'System'];
+export type ActionGroup =
+	| 'Navigation'
+	| 'Layout'
+	| 'File'
+	| 'Edit'
+	| 'View'
+	| 'Terminal'
+	| 'Sandbox'
+	| 'System';
+export const ACTION_GROUP_ORDER: ActionGroup[] = [
+	'Navigation',
+	'File',
+	'Layout',
+	'Edit',
+	'View',
+	'Terminal',
+	'Sandbox',
+	'System'
+];
 
 export type AppAction = {
 	id: string;
@@ -58,7 +76,7 @@ export type AppAction = {
 	group: ActionGroup | string;
 	when?: (ctx: ActionContext) => boolean;
 	run: (ctx: ActionContext) => void | Promise<void>;
-	shortcut?: string[];
+	shortcut?: string;
 };
 
 export function emptyLayoutSnapshot(): LayoutSnapshot {
