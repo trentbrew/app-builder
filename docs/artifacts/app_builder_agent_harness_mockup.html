@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>App Builder — agent harness (TRL-151 design mock)</title>
+  <style>
+    :root {
+      --background: oklch(0.145 0 0);
+      --foreground: oklch(0.985 0 0);
+      --card: oklch(0.205 0 0);
+      --card-foreground: oklch(0.985 0 0);
+      --primary: oklch(0.922 0 0);
+      --primary-foreground: oklch(0.205 0 0);
+      --secondary: oklch(0.269 0 0);
+      --muted: oklch(0.269 0 0);
+      --muted-foreground: oklch(0.708 0 0);
+      --accent: oklch(0.269 0 0);
+      --destructive: oklch(0.704 0.191 22.216);
+      --border: oklch(1 0 0 / 10%);
+      --ring: oklch(0.556 0 0);
+      --status-bar: oklch(0.58 0.17 48);
+      --guest-canvas: #0f0f12;
+      --agent-glow: oklch(0.58 0.17 48 / 25%);
+      --radius: 0.65rem;
+      --agent-rail-width: 320px;
+      --agent-rail-collapsed: 48px;
+      --font-sans: 'Geist Variable', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--background);
+      color: var(--foreground);
+      font-size: 14px;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .mock-bar {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px;
+      padding: 8px 16px; border-bottom: 1px solid var(--border);
+      background: color-mix(in oklch, var(--card) 80%, transparent);
+      flex-shrink: 0;
+    }
+    .mock-bar span { font-size: 11px; color: var(--muted-foreground); }
+    .toggle { display: flex; gap: 4px; flex-wrap: wrap; }
+    .toggle button {
+      font-size: 11px; padding: 4px 10px; border-radius: calc(var(--radius) * 0.8);
+      border: 1px solid var(--border); background: transparent;
+      color: var(--muted-foreground); cursor: pointer; font-family: var(--font-mono);
+    }
+    .toggle button.active, .toggle button[aria-pressed="true"] {
+      background: var(--secondary); color: var(--foreground); border-color: var(--ring);
+    }
+    .shell { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+    .header {
+      height: 48px; display: flex; align-items: center; gap: 12px;
+      padding: 0 16px; border-bottom: 1px solid var(--border);
+    }
+    .header h1 { font-size: 13px; font-weight: 600; }
+    .badge {
+      font-family: var(--font-mono); font-size: 10px; padding: 2px 8px;
+      border: 1px solid var(--border); border-radius: 4px; color: var(--muted-foreground);
+    }
+    .badge.host { border-color: var(--ring); color: var(--foreground); }
+    .badge.guest { border-color: var(--agent-glow); color: oklch(0.75 0.12 48); }
+    .btn {
+      font-size: 12px; padding: 6px 12px; border-radius: calc(var(--radius) * 0.8);
+      border: 1px solid var(--border); background: var(--primary);
+      color: var(--primary-foreground); cursor: pointer;
+    }
+    .btn.outline { background: transparent; color: var(--foreground); }
+    .header-actions { margin-left: auto; display: flex; gap: 8px; }
+    .workspace { flex: 1; display: flex; min-height: 0; }
+    .icon-rail {
+      width: 48px; border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 0;
+      background: var(--card);
+    }
+    .icon-rail button {
+      width: 32px; height: 32px; border-radius: 8px; border: none;
+      background: var(--secondary); opacity: 0.6; cursor: pointer; color: var(--foreground);
+    }
+    .icon-rail button.on { opacity: 1; outline: 1px solid var(--status-bar); }
+    .editor {
+      width: 32%; min-width: 180px; border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; background: var(--background);
+    }
+    .pane-label {
+      font-family: var(--font-mono); font-size: 10px; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--muted-foreground);
+      padding: 8px 12px; border-bottom: 1px solid var(--border);
+    }
+    .code {
+      flex: 1; padding: 12px; font-family: var(--font-mono); font-size: 11px;
+      line-height: 1.6; color: oklch(0.82 0.02 250); overflow: auto;
+    }
+    .preview-wrap {
+      flex: 1; display: flex; flex-direction: column; min-width: 0;
+      padding: 6px; background: #000;
+    }
+    .preview-toolbar {
+      display: flex; gap: 8px; padding: 4px 8px; font-family: var(--font-mono);
+      font-size: 10px; color: var(--muted-foreground);
+    }
+    .preview-frame-wrap {
+      flex: 1; position: relative; border: 2px solid var(--agent-glow);
+      border-radius: var(--radius); overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .preview-frame-wrap.state-live { border-color: var(--agent-glow); }
+    .preview-frame-wrap.state-idle { border-color: var(--border); }
+    .preview-frame-wrap.state-loading::after {
+      content: 'Starting preview…'; position: absolute; inset: 0;
+      display: grid; place-items: center; background: var(--guest-canvas);
+      color: var(--muted-foreground); font-size: 12px;
+    }
+    .preview-frame-wrap.state-error::after {
+      content: 'Compile error in guest'; position: absolute; inset: 0;
+      display: grid; place-items: center; background: color-mix(in oklch, var(--destructive) 15%, var(--guest-canvas));
+      color: var(--destructive); font-size: 12px;
+    }
+    .preview-frame {
+      width: 100%; height: 100%; border: 0; background: var(--guest-canvas);
+      display: block;
+    }
+    .preview-label {
+      position: absolute; top: 8px; left: 12px; z-index: 1;
+      font-family: var(--font-mono); font-size: 10px; color: var(--muted-foreground);
+      pointer-events: none;
+    }
+    .agent-rail {
+      width: var(--agent-rail-width); border-left: 1px solid var(--border);
+      display: flex; flex-direction: column; background: var(--card);
+      transition: width 0.2s;
+    }
+    .agent-rail.collapsed { width: var(--agent-rail-collapsed); }
+    .agent-rail.collapsed .rail-body { display: none; }
+    .rail-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 10px; border-bottom: 1px solid var(--border);
+    }
+    .rail-collapse {
+      font-size: 14px; background: transparent; border: 1px solid var(--border);
+      border-radius: 4px; color: var(--foreground); cursor: pointer; width: 28px; height: 28px;
+    }
+    .harness-status { padding: 10px 12px; border-bottom: 1px solid var(--border); font-family: var(--font-mono); font-size: 10px; }
+    .harness-status .phase { color: oklch(0.75 0.12 48); }
+    .transcript {
+      max-height: 72px; overflow: auto; padding: 8px 12px; border-bottom: 1px solid var(--border);
+      font-size: 11px; line-height: 1.5;
+    }
+    .transcript .agent { color: var(--foreground); }
+    .transcript .muted { color: var(--muted-foreground); font-size: 10px; }
+    .tool-log {
+      flex: 1; padding: 8px 12px; overflow: auto;
+      font-family: var(--font-mono); font-size: 10px; color: var(--muted-foreground);
+      line-height: 1.7;
+    }
+    .tool-log .ev { color: oklch(0.7 0.1 180); }
+    .tool-log .empty { font-style: italic; opacity: 0.7; }
+    .chat-composer { padding: 12px; border-top: 1px solid var(--border); }
+    .chat-composer input {
+      width: 100%; padding: 8px 10px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--background);
+      color: var(--foreground); font-size: 12px;
+    }
+    .terminal-strip {
+      height: 28px; border-top: 1px solid var(--border); background: var(--card);
+      font-family: var(--font-mono); font-size: 10px; color: var(--muted-foreground);
+      display: flex; align-items: center; padding: 0 12px;
+    }
+    .status-bar {
+      height: 22px; background: var(--status-bar); color: oklch(0.99 0.01 95);
+      font-family: var(--font-mono); font-size: 10px;
+      display: flex; align-items: center; padding: 0 12px; gap: 16px;
+    }
+    .legend {
+      padding: 8px 16px; border-top: 1px solid var(--border);
+      font-size: 10px; color: var(--muted-foreground);
+    }
+    .hidden { display: none !important; }
+    @media (max-width: 1024px) {
+      .agent-rail:not(.collapsed) {
+        position: absolute; right: 0; top: 48px; bottom: 50px; z-index: 10;
+        box-shadow: -4px 0 24px oklch(0 0 0 / 40%);
+      }
+      .editor { width: 28%; min-width: 140px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .preview-frame-wrap, .agent-rail { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="mock-bar">
+    <span>TRL-151 design mock · parent TRL-150</span>
+    <div class="toggle" role="group" aria-label="View mode">
+      <button type="button" class="active" data-view="full" aria-pressed="true">Full harness</button>
+      <button type="button" data-view="guest" aria-pressed="false">Guest iframe</button>
+      <button type="button" data-view="flow" aria-pressed="false">Write → HMR</button>
+      <button type="button" data-view="narrow" aria-pressed="false">Narrow + rail</button>
+    </div>
+    <div class="toggle" role="group" aria-label="Preview state">
+      <button type="button" data-preview="live" aria-pressed="true">live</button>
+      <button type="button" data-preview="loading" aria-pressed="false">loading</button>
+      <button type="button" data-preview="error" aria-pressed="false">error</button>
+    </div>
+  </div>
+
+  <div class="shell" id="view-full">
+    <header class="header">
+      <span class="badge host">host</span>
+      <h1>App.svelte</h1>
+      <span class="badge">guest/components/TaskPanel.svelte</span>
+      <div class="header-actions">
+        <button type="button" class="btn outline">Reboot</button>
+        <button type="button" class="btn">Run</button>
+      </div>
+    </header>
+    <div class="workspace">
+      <nav class="icon-rail" aria-label="App navigation">
+        <button type="button" class="on" aria-label="Editor" title="Editor"></button>
+        <button type="button" aria-label="Settings" title="Settings"></button>
+      </nav>
+      <section class="editor" data-design-note="EditorDock — agent edits guest files only">
+        <div class="pane-label">Editor · guest zone</div>
+        <pre class="code">&lt;script&gt;
+  import { emit } from '$lib/agent-sdk';
+  let count = $state(0);
+&lt;/script&gt;</pre>
+      </section>
+      <section class="preview-wrap">
+        <div class="preview-toolbar">Preview · refresh · copy URL · webcontainer</div>
+        <div class="preview-frame-wrap state-live" id="preview-state" data-design-note="Host frame; guest runs inside iframe">
+          <span class="preview-label">iframe · guest · SDK read-only</span>
+          <iframe
+            class="preview-frame"
+            title="Agent guest preview"
+            aria-label="Agent guest preview"
+            srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;style&gt;body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0f0f12;color:#f4f4f5;font-family:system-ui}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;main style='text-align:center'&gt;&lt;h1 style='font-size:3rem;margin:0 0 1rem'&gt;3&lt;/h1&gt;&lt;div style='display:flex;gap:8px;justify-content:center;margin-bottom:1rem'&gt;&lt;button aria-label='Decrement'&gt;−&lt;/button&gt;&lt;button aria-label='Increment'&gt;+&lt;/button&gt;&lt;/div&gt;&lt;section style='border:1px dashed oklch(0.58 0.17 48 / 50%);padding:12px;border-radius:8px;max-width:240px'&gt;&lt;h2 style='font-size:12px;margin:0 0 6px;color:oklch(0.75 0.12 48)'&gt;TaskPanel&lt;/h2&gt;&lt;button aria-label='Approve step' style='margin-top:6px;font-size:11px'&gt;Approve step&lt;/button&gt;&lt;/section&gt;&lt;/main&gt;&lt;/body&gt;&lt;/html&gt;"
+          ></iframe>
+        </div>
+      </section>
+      <aside class="agent-rail" id="agent-rail" aria-label="Agent harness">
+        <div class="rail-header">
+          <span class="pane-label" style="border:0;padding:0">Agent</span>
+          <button type="button" class="rail-collapse" id="rail-collapse" aria-expanded="true" aria-controls="agent-rail-panel" aria-label="Collapse agent rail">›</button>
+        </div>
+        <div class="rail-body" id="agent-rail-panel">
+          <div class="harness-status" id="harness-status">
+            <div class="phase">HMR · 240ms · snap-a3f2</div>
+            <div>last write: components/TaskPanel.svelte</div>
+            <button type="button" class="btn outline" style="margin-top:6px;font-size:10px;padding:4px 8px">Rollback</button>
+          </div>
+          <div class="transcript" aria-label="Agent transcript">
+            <div class="agent">Agent: add TaskPanel with approve action</div>
+            <div class="muted">You · 2m ago</div>
+          </div>
+          <div class="tool-log" aria-live="polite" aria-label="Tool log">
+            <div><span class="ev">[ui]</span> increment → { count: 3 }</div>
+            <div><span class="ev">[write]</span> TaskPanel.svelte</div>
+            <div><span class="ev">[hmr]</span> vite hot updated</div>
+          </div>
+          <div class="chat-composer">
+            <input type="text" placeholder="Agent composer…" aria-label="Agent composer" />
+          </div>
+        </div>
+      </aside>
+    </div>
+    <div class="terminal-strip" tabindex="0">Terminal · session ready</div>
+    <footer class="status-bar" aria-live="polite">
+      <span id="status-phase">Ready · HMR · 240ms</span>
+      <span>lane · harness</span>
+      <span>port 3000</span>
+    </footer>
+  </div>
+
+  <div class="shell hidden" id="view-guest">
+    <header class="header"><span class="badge guest">guest iframe only</span></header>
+    <div class="preview-wrap" style="flex:1;padding:24px">
+      <iframe class="preview-frame" style="border:1px solid var(--border);border-radius:var(--radius);min-height:320px" title="Agent guest preview"
+        srcdoc="&lt;body style='margin:0;display:grid;place-items:center;min-height:280px;background:#0f0f12;color:#f4f4f5;font-family:system-ui'&gt;&lt;p&gt;Counter bootstrap&lt;/p&gt;&lt;/body&gt;"></iframe>
+    </div>
+  </div>
+
+  <div class="shell hidden" id="view-flow" style="padding:24px">
+    <pre style="font-family:var(--font-mono);font-size:12px;line-height:2;max-width:640px">1. agent edit_component(path, content)
+2. host sandboxStore.write(path)
+3. Vite HMR → guest iframe updates
+4. guest emit(event) → postMessage → ToolLog
+5. status bar aria-live announces HMR timing</pre>
+  </div>
+
+  <p class="legend">Full view uses real iframe for guest boundary. AgentRail 320px open / 48px collapsed; overlay on &lt;1024px.</p>
+
+  <script>
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll('.toggle[aria-label="View mode"] button').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.toggle[aria-label="View mode"] button').forEach((b) => {
+          b.classList.remove('active');
+          b.setAttribute('aria-pressed', 'false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
+        const v = btn.dataset.view;
+        ['full','guest','flow'].forEach((id) => {
+          document.getElementById('view-' + id)?.classList.toggle('hidden', v !== id && v !== 'narrow');
+        });
+        if (v === 'narrow') {
+          document.getElementById('view-full')?.classList.remove('hidden');
+          document.body.style.width = '720px';
+        } else {
+          document.body.style.width = '';
+        }
+      });
+    });
+    document.querySelectorAll('[data-preview]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-preview]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+        btn.setAttribute('aria-pressed', 'true');
+        const el = document.getElementById('preview-state');
+        if (!el) return;
+        el.className = 'preview-frame-wrap state-' + btn.dataset.preview;
+      });
+    });
+    const rail = document.getElementById('agent-rail');
+    const collapseBtn = document.getElementById('rail-collapse');
+    collapseBtn?.addEventListener('click', () => {
+      const collapsed = rail?.classList.toggle('collapsed');
+      collapseBtn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+      collapseBtn.textContent = collapsed ? '‹' : '›';
+    });
+    if (!reducedMotion) {
+      let glow = true;
+      setInterval(() => {
+        const wrap = document.getElementById('preview-state');
+        if (wrap?.classList.contains('state-live')) {
+          wrap.style.borderColor = glow ? 'var(--agent-glow)' : 'var(--border)';
+          glow = !glow;
+        }
+      }, 2000);
+    }
+  </script>
+</body>
+</html>

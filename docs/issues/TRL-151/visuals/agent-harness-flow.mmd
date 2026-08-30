@@ -1,0 +1,36 @@
+flowchart TB
+  subgraph host [HostShell SvelteKit invariant]
+    AgentLoop[Agent loop / chat tools]
+    AgentRail[AgentRail]
+    HarnessStatus[HarnessStatus]
+    ToolLog[ToolLog]
+    EditorDock[EditorDock]
+    PreviewFrame[PreviewFrame ghost iframe]
+    SnapshotStore[snapshotStore ring buffer]
+    Bridge[agentHarness/bridge.ts]
+    Allowlist[pathAllowlist]
+    Sandbox[sandboxStore.write]
+  end
+
+  subgraph guest [GuestApp WebContainer agent-editable]
+    GuestUI[components/*.svelte slots]
+    Manifest[agent.manifest.json]
+    SDK[lib/agent-sdk read-only]
+  end
+
+  AgentLoop -->|edit_component| Allowlist
+  Allowlist -->|allow| SnapshotStore
+  SnapshotStore --> Sandbox
+  Sandbox -->|Vite HMR| GuestUI
+  GuestUI -->|emit callTool| SDK
+  SDK -->|postMessage v1| Bridge
+  Bridge --> ToolLog
+  Bridge --> AgentLoop
+  Bridge -->|proxy read write| Sandbox
+  EditorDock --> Sandbox
+  PreviewFrame -->|iframe src| GuestUI
+  HarnessStatus --> SnapshotStore
+  HarnessStatus --> Sandbox
+  AgentRail --> AgentLoop
+  AgentRail --> HarnessStatus
+  AgentRail --> ToolLog
