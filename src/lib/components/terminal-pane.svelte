@@ -1,6 +1,7 @@
 <script lang="ts">
   import PaneChrome from '$lib/components/pane-chrome.svelte'
   import PaneSplitMenu from '$lib/components/pane-split-menu.svelte'
+  import PaneMaximizeButton from '$lib/components/pane-maximize-button.svelte'
   import PaneToolbar from '$lib/components/pane-toolbar.svelte'
   import Terminal from '$lib/Terminal.svelte'
 
@@ -9,13 +10,17 @@
     title,
     attachPreviewMessages = false,
     canSplit = false,
+    maximized = false,
     onSplit,
+    onToggleMaximize,
   }: {
     sessionId: string
     title: string
     attachPreviewMessages?: boolean
     canSplit?: boolean
+    maximized?: boolean
     onSplit?: (direction: 'left' | 'right' | 'up' | 'down') => void
+    onToggleMaximize?: () => void
   } = $props()
 </script>
 
@@ -28,6 +33,7 @@
       {/snippet}
 
       {#snippet actions()}
+        <PaneMaximizeButton {maximized} onToggle={onToggleMaximize} />
         <PaneSplitMenu disabled={!canSplit} {onSplit} />
       {/snippet}
     </PaneToolbar>
