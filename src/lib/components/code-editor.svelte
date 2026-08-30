@@ -101,14 +101,14 @@
         '.cm-content': {
           backgroundColor: 'var(--color-background)',
           fontFamily: 'var(--font-mono)',
-          fontSize: '13px',
+          fontSize: 'var(--editor-font-size)',
         },
         '.cm-gutters': {
           backgroundColor: 'var(--color-background)',
           color: 'var(--color-muted-foreground)',
           borderRight: '1px solid var(--color-border)',
           fontFamily: 'var(--font-mono)',
-          fontSize: '13px',
+          fontSize: 'var(--editor-font-size)',
         },
         '.cm-activeLine': { backgroundColor: 'var(--color-muted)' },
         '.cm-activeLineGutter': { backgroundColor: 'var(--color-muted)' },
@@ -218,6 +218,7 @@
   .code-editor :global(.cm-content),
   .code-editor :global(.cm-gutters) {
     background-color: var(--color-background) !important;
+    font-size: var(--editor-font-size);
   }
 
   .code-editor :global(.cm-gutters) {
