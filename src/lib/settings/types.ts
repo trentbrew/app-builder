@@ -60,7 +60,7 @@ export const DEFAULT_EXPLORER_FONT_SIZE = 13;
 
 export const DEFAULT_SETTINGS: AppSettings = {
 	theme: {
-		presetId: 'studio',
+		presetId: 'darkmatter',
 		colorScheme: 'dark'
 	},
 	editor: {

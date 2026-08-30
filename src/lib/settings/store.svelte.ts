@@ -16,7 +16,8 @@ function clampFontSize(value: unknown, fallback: number): number {
 	return Math.min(24, Math.max(10, Math.round(value)));
 }
 
-const STORAGE_KEY = 'app-builder:settings:v2';
+const STORAGE_KEY = 'app-builder:settings:v3';
+const LEGACY_STORAGE_KEYS = ['app-builder:settings:v2', 'app-builder:settings:v1'];
 
 function normalizeTabAccentColor(value: unknown): EditorActiveTabAccentColor {
 	if (value === 'brand-orange' || value === 'foreground') return value;
@@ -121,8 +122,16 @@ function loadSettings(): AppSettings {
 			return merged;
 		}
 
-		const legacy = localStorage.getItem('app-builder:settings:v1');
-		if (legacy) return mergeSettings(JSON.parse(legacy));
+		for (const key of LEGACY_STORAGE_KEYS) {
+			const legacy = localStorage.getItem(key);
+			if (!legacy) continue;
+			const merged = mergeSettings(JSON.parse(legacy));
+			if (merged.theme.presetId === 'studio') {
+				merged.theme = { ...merged.theme, presetId: DEFAULT_SETTINGS.theme.presetId };
+			}
+			persistSettings(merged);
+			return merged;
+		}
 	} catch {
 		// fall through
 	}

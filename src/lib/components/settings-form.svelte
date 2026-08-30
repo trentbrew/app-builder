@@ -96,7 +96,7 @@
 
 {#snippet themeFields()}
   {#if showField('color-scheme')}
-    <SettingsField label="Color scheme" description="Dark is the default studio look; system follows your OS.">
+    <SettingsField label="Color scheme" description="Dark is the default look; system follows your OS.">
       {#snippet control()}
         <Select.Root
           type="single"
@@ -134,7 +134,7 @@
           }}
         >
           <Select.Trigger class="w-full min-w-[12rem]">
-            {themePresetOptions.find((option) => option.id === settings.theme.presetId)?.name ?? 'Trellis Studio'}
+            {themePresetOptions.find((option) => option.id === settings.theme.presetId)?.name ?? 'Darkmatter'}
           </Select.Trigger>
           <Select.Content class="max-h-[300px]">
             {#each themePresetOptions as option (option.id)}

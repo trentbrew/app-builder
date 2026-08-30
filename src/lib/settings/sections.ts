@@ -55,7 +55,7 @@ export const SETTINGS_FIELDS: SettingFieldMeta[] = [
 		id: 'color-scheme',
 		sectionId: 'theme',
 		label: 'Color scheme',
-		description: 'Dark is the default studio look; system follows your OS.',
+		description: 'Dark is the default look; system follows your OS.',
 		keywords: ['dark', 'light', 'system'],
 	},
 	{
@@ -63,7 +63,7 @@ export const SETTINGS_FIELDS: SettingFieldMeta[] = [
 		sectionId: 'theme',
 		label: 'Theme preset',
 		description: 'Built-in palettes compatible with tweakcn exports.',
-		keywords: ['supabase', 'catppuccin', 'graphite', 'studio', 'palette'],
+		keywords: ['darkmatter', 'supabase', 'catppuccin', 'graphite', 'studio', 'palette'],
 	},
 	{
 		id: 'import-tweakcn',

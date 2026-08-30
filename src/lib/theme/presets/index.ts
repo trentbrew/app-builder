@@ -17,11 +17,16 @@ const TWEAKCN_PRESET_ITEMS = Object.fromEntries(
 
 export const THEME_PRESETS: ThemePresetMeta[] = [
 	{
+		id: 'darkmatter',
+		name: 'Darkmatter',
+		description: 'Default app-builder theme'
+	},
+	{
 		id: 'studio',
 		name: 'Trellis Studio',
-		description: 'Default app-builder dark theme'
+		description: 'Original Trellis Studio palette'
 	},
-	...tweakcnManifest
+	...tweakcnManifest.filter((preset) => preset.id !== 'darkmatter')
 ];
 
 const PRESET_ITEMS: Record<string, TweakcnRegistryItem> = {
@@ -38,7 +43,7 @@ export function resolveThemeSettings(theme: ThemeSettings): ResolvedTheme {
 		return resolveRegistryItem(theme.custom, theme.custom.name ?? 'Custom');
 	}
 
-	const preset = getPresetRegistry(theme.presetId) ?? studio;
+	const preset = getPresetRegistry(theme.presetId) ?? getPresetRegistry('darkmatter') ?? studio;
 	const meta = THEME_PRESETS.find((p) => p.id === theme.presetId);
 	return resolveRegistryItem(preset, meta?.name ?? preset.name ?? 'Theme');
 }
