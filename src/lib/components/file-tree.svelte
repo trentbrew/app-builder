@@ -77,7 +77,7 @@
     background: transparent;
     color: var(--color-foreground);
     font: inherit;
-    font-size: 0.8125rem;
+    font-size: 1em;
     line-height: 1.25rem;
     text-align: left;
     cursor: pointer;
@@ -89,8 +89,12 @@
   }
 
   :global(.file-tree-row--active) {
-    background: color-mix(in oklch, var(--color-sidebar-primary) 22%, transparent);
-    color: var(--color-sidebar-primary-foreground);
+    background: color-mix(in oklch, var(--editor-tab-active-accent, var(--color-primary)) 22%, transparent);
+    color: var(--color-foreground);
+  }
+
+  :global(.file-tree-row--active:hover) {
+    color: var(--color-foreground);
   }
 
   :global(.file-tree-row__label) {

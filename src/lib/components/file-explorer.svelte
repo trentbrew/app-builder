@@ -17,7 +17,7 @@
   import { actionRunner } from '$lib/actionRunner.svelte'
   import { sandboxStore } from '$lib/sandboxStore'
   import { isBinaryPreviewPath } from '$lib/fileTypes'
-  import { toast } from 'svelte-sonner'
+  import { toast } from '$lib/notify'
 
   let {
     activeFile = '/App.svelte',
@@ -274,6 +274,7 @@
     height: 100%;
     min-height: 0;
     background: var(--color-background);
+    font-size: var(--explorer-font-size);
   }
 
   :global(.file-explorer__host) {
@@ -300,7 +301,7 @@
   .file-explorer__section-label {
     padding: 0.125rem 0.5rem;
     font-family: var(--font-mono);
-    font-size: 0.6875rem;
+    font-size: 0.846em;
     font-weight: 600;
     letter-spacing: 0.04em;
     text-transform: uppercase;
@@ -320,7 +321,7 @@
     justify-content: space-between;
     padding: 0.25rem 0.5rem;
     font-family: var(--font-mono);
-    font-size: 0.6875rem;
+    font-size: 0.846em;
     font-weight: 600;
     letter-spacing: 0.04em;
     text-transform: uppercase;
@@ -328,7 +329,7 @@
   }
 
   .file-explorer__hidden-count {
-    font-size: 0.625rem;
+    font-size: 0.769em;
     opacity: 0.75;
   }
 </style>

@@ -1,9 +1,33 @@
 <script lang="ts" module>
+  export type FindAndReplaceState = {
+    searchTerm: string
+    replaceTerm: string
+    caseSensitive: boolean
+    useRegex: boolean
+    wholeWord: boolean
+    results: Array<{ from: number; to: number }>
+    currentIndex: number | null
+  }
+
   export interface MarkdownEditorRef {
     undo: () => void
     redo: () => void
     canUndo: () => boolean
     canRedo: () => boolean
+    getCharacterCount: () => number
+    getWordCount: () => number
+    getFindAndReplaceState: () => FindAndReplaceState
+    setSearchTerm: (term: string) => void
+    setReplaceTerm: (term: string) => void
+    setCaseSensitive: (value: boolean) => void
+    setUseRegex: (value: boolean) => void
+    setWholeWord: (value: boolean) => void
+    goToNextResult: () => void
+    goToPreviousResult: () => void
+    replace: () => void
+    replaceAll: () => void
+    clearSearch: () => void
+    subscribe: (callback: () => void) => () => void
   }
 </script>
 
@@ -11,6 +35,7 @@
   import { Editor } from '@tiptap/core'
   import { createMarkdownExtensions } from '$lib/tiptap/markdown-extensions.js'
   import type { EditorRef } from '$lib/actionContext'
+  import { setPreviewUrl } from '$lib/previewFrame.js'
   import { browser } from '$app/environment'
   import { onMount, untrack } from 'svelte'
 
@@ -21,6 +46,7 @@
     onFocus,
     onEditorRef,
     onNavigateFile,
+    currentFilePath,
     mentionSearch = () => [],
   }: {
     value: string
@@ -29,6 +55,7 @@
     onFocus?: () => void
     onEditorRef?: (ref: EditorRef | undefined) => void
     onNavigateFile?: (path: string) => void
+    currentFilePath?: string
     mentionSearch?: (query: string) => MentionItem[] | Promise<MentionItem[]>
   } = $props()
 
@@ -40,18 +67,21 @@
 
   const mentionSearchRef = { current: mentionSearch }
   const onNavigateRef = { current: onNavigateFile }
+  const currentFilePathRef = { current: currentFilePath }
+  const updateListeners = new Set<() => void>()
 
   $effect(() => {
     mentionSearchRef.current = mentionSearch
     onNavigateRef.current = onNavigateFile
+    currentFilePathRef.current = currentFilePath
   })
 
-  function publishRef(instance: Editor | undefined) {
-    if (!instance) {
-      onEditorRef?.(undefined)
-      return
-    }
-    onEditorRef?.({
+  function notifyUpdate() {
+    for (const listener of updateListeners) listener()
+  }
+
+  function createEditorRef(instance: Editor): MarkdownEditorRef {
+    return {
       undo: () => {
         instance.chain().focus().undo().run()
       },
@@ -60,6 +90,65 @@
       },
       canUndo: () => instance.can().undo(),
       canRedo: () => instance.can().redo(),
+      getCharacterCount: () => instance.storage.characterCount?.characters?.() ?? 0,
+      getWordCount: () => instance.storage.characterCount?.words?.() ?? 0,
+      getFindAndReplaceState: () => {
+        const state = instance.storage.findAndReplace
+        return {
+          searchTerm: state.searchTerm,
+          replaceTerm: state.replaceTerm,
+          caseSensitive: state.caseSensitive,
+          useRegex: state.useRegex,
+          wholeWord: state.wholeWord,
+          results: state.results,
+          currentIndex: state.currentIndex,
+        }
+      },
+      setSearchTerm: (term) => {
+        instance.commands.setSearchTerm(term)
+      },
+      setReplaceTerm: (term) => {
+        instance.commands.setReplaceTerm(term)
+      },
+      setCaseSensitive: (value) => {
+        instance.commands.setCaseSensitive(value)
+      },
+      setUseRegex: (value) => {
+        instance.commands.setUseRegex(value)
+      },
+      setWholeWord: (value) => {
+        instance.commands.setWholeWord(value)
+      },
+      goToNextResult: () => {
+        instance.commands.goToNextResult()
+      },
+      goToPreviousResult: () => {
+        instance.commands.goToPreviousResult()
+      },
+      replace: () => {
+        instance.commands.replace()
+      },
+      replaceAll: () => {
+        instance.commands.replaceAll()
+      },
+      clearSearch: () => {
+        instance.commands.clearSearch()
+      },
+      subscribe: (callback) => {
+        updateListeners.add(callback)
+        return () => updateListeners.delete(callback)
+      },
+    }
+  }
+
+  function publishRef(instance: Editor | undefined) {
+    if (!instance) {
+      onEditorRef?.(undefined)
+      return
+    }
+    const ref = createEditorRef(instance)
+    onEditorRef?.({
+      ...ref,
       cut: () => {
         instance.chain().focus().run()
         document.execCommand('cut')
@@ -86,6 +175,8 @@
         mode: 'editor',
         mentionSearch: (query) => mentionSearchRef.current(query),
         onNavigateFile: (path) => onNavigateRef.current?.(path),
+        onOpenUrl: (url) => setPreviewUrl(url),
+        getCurrentFilePath: () => currentFilePathRef.current,
       }),
       editorProps: {
         attributes: {
@@ -112,12 +203,17 @@
         canUndo = next.can().undo()
         canRedo = next.can().redo()
         publishRef(next)
+        queueMicrotask(notifyUpdate)
+      },
+      onTransaction: () => {
+        queueMicrotask(notifyUpdate)
       },
     })
 
     editor = instance
 
     return () => {
+      updateListeners.clear()
       onEditorRef?.(undefined)
       instance.destroy()
       editor = undefined

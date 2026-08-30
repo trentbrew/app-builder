@@ -1,6 +1,7 @@
 <script lang="ts">
   import PaneChrome from '$lib/components/pane-chrome.svelte'
   import PaneSplitMenu from '$lib/components/pane-split-menu.svelte'
+  import PaneMaximizeButton from '$lib/components/pane-maximize-button.svelte'
   import PaneToolbar from '$lib/components/pane-toolbar.svelte'
   import FileEditor from '$lib/components/file-editor.svelte'
   import ContextMenuHost from '$lib/components/context-menu-host.svelte'
@@ -9,25 +10,32 @@
   import { countLines, formatBytes } from '$lib/formatBytes'
   import { basename } from '$lib/fileIcons'
   import {
+    hasPreviewToggle,
     isBinaryPreviewPath,
     isCsvPath,
     isLargeText,
     isMarkdownPath,
-    isRunnablePath,
+    isMermaidPath,
+    isGlbPath,
+    isSvgPath,
     type FileViewMode,
   } from '$lib/fileTypes'
   import { languageLabelForPath } from '$lib/languageLabel'
   import { sandboxStore } from '$lib/sandboxStore'
   import { browser } from '$app/environment'
-  import { toast } from 'svelte-sonner'
+  import { toast } from '$lib/notify'
+  import NodeLoadingOverlay from '$lib/components/node-loading-overlay.svelte'
+  import EditorSaveIndicator from '$lib/components/editor-save-indicator.svelte'
+  import MarkdownFindReplacePopover from '$lib/components/markdown-find-replace-popover.svelte'
   import BracesIcon from '@lucide/svelte/icons/braces'
   import CodeIcon from '@lucide/svelte/icons/code'
   import CopyIcon from '@lucide/svelte/icons/copy'
   import LetterTextIcon from '@lucide/svelte/icons/letter-text'
-  import PlayIcon from '@lucide/svelte/icons/play'
   import RedoIcon from '@lucide/svelte/icons/redo-2'
   import TableIcon from '@lucide/svelte/icons/table'
   import UndoIcon from '@lucide/svelte/icons/undo-2'
+  import WorkflowIcon from '@lucide/svelte/icons/workflow'
+  import ImageIcon from '@lucide/svelte/icons/image'
   import { parseFrontmatter } from '$lib/frontmatter'
   import { createEmptyFrontmatter, serializeFrontmatter } from '$lib/frontmatterEditor'
 
@@ -38,25 +46,31 @@
     content,
     knownPaths = [],
     canSplit = false,
+    maximized = false,
     onChange,
     onFocus,
     onNavigateFile,
     onSplit,
+    onToggleMaximize,
   }: {
     path: string
     content: string
     knownPaths?: string[]
     canSplit?: boolean
+    maximized?: boolean
     onChange: (content: string) => void
     onFocus: () => void
     onNavigateFile?: (filePath: string) => void
     onSplit?: (direction: 'left' | 'right' | 'up' | 'down') => void
+    onToggleMaximize?: () => void
   } = $props()
 
   const markdown = $derived(isMarkdownPath(path))
+  const mermaid = $derived(isMermaidPath(path))
+  const svg = $derived(isSvgPath(path))
+  const previewToggle = $derived(hasPreviewToggle(path))
   const csv = $derived(isCsvPath(path))
   const binary = $derived(isBinaryPreviewPath(path))
-  const runnable = $derived(isRunnablePath(path))
   const fileName = $derived(basename(path))
   const language = $derived(languageLabelForPath(path))
   const safeContent = $derived(content ?? '')
@@ -69,10 +83,28 @@
   let editorRef = $state<EditorRef | undefined>()
   let canUndo = $state(false)
   let canRedo = $state(false)
+  let markdownCharCount = $state(0)
+  let markdownWordCount = $state(0)
+  let sandboxBooting = $state(false)
+  let sandboxLoading = $state(false)
+  let sandboxFsReady = $state(false)
+  let sandboxPhase = $state('')
+
+  $effect(() => {
+    const unsubscribe = sandboxStore.subscribe((state) => {
+      sandboxBooting = state.booting
+      sandboxLoading = state.loading
+      sandboxFsReady = state.fsReady
+      sandboxPhase = state.phase
+    })
+    return unsubscribe
+  })
+
+  const showSandboxOverlay = $derived(!binary && !sandboxFsReady && (sandboxBooting || sandboxLoading))
 
   function defaultMode(filePath: string): FileViewMode {
     if (isCsvPath(filePath)) return 'table'
-    if (isMarkdownPath(filePath)) return 'rich'
+    if (hasPreviewToggle(filePath) || isGlbPath(filePath)) return 'rich'
     return 'raw'
   }
 
@@ -85,7 +117,7 @@
       const map = JSON.parse(raw) as Record<string, FileViewMode>
       const stored = map[filePath]
       if (isCsvPath(filePath)) return stored === 'raw' ? 'raw' : 'table'
-      if (isMarkdownPath(filePath)) return stored === 'raw' ? 'raw' : 'rich'
+      if (hasPreviewToggle(filePath) || isGlbPath(filePath)) return stored === 'raw' ? 'raw' : 'rich'
       return fallback
     } catch {
       return fallback
@@ -117,7 +149,29 @@
     editorRef = ref
     canUndo = ref?.canUndo() ?? false
     canRedo = ref?.canRedo() ?? false
+    syncMarkdownStats()
   }
+
+  function syncMarkdownStats() {
+    queueMicrotask(() => {
+      markdownCharCount = editorRef?.getCharacterCount?.() ?? 0
+      markdownWordCount = editorRef?.getWordCount?.() ?? 0
+    })
+  }
+
+  $effect(() => {
+    const ref = editorRef
+    if (!markdown || mode !== 'rich' || !ref?.subscribe) {
+      markdownCharCount = 0
+      markdownWordCount = 0
+      return
+    }
+
+    syncMarkdownStats()
+    return ref.subscribe(() => {
+      syncMarkdownStats()
+    })
+  })
 
   const editorTarget = $derived({
     kind: 'fileEditor' as const,
@@ -131,10 +185,10 @@
       getEditorRef: () => editorRef,
       toggleMarkdownMode: () => {
         if (csv) setMode(mode === 'table' ? 'raw' : 'table')
-        else if (markdown) setMode(mode === 'rich' ? 'raw' : 'rich')
+        else if (previewToggle) setMode(mode === 'rich' ? 'raw' : 'rich')
       },
-      syncToSandbox,
       copyContent,
+      syncToSandbox,
     })
 
     return () => actionRunner.unregisterFilePane(path)
@@ -173,9 +227,9 @@
     const normalized = path.startsWith('/') ? path : `/${path}`
     try {
       await sandboxStore.write(normalized, safeContent)
-      toast.success(`Synced ${fileName}`)
+      toast.success(`Saved ${fileName}`)
     } catch {
-      toast.error(`Could not sync ${fileName}`)
+      toast.error(`Could not save ${fileName}`)
     }
   }
 </script>
@@ -185,8 +239,12 @@
     <PaneToolbar>
       {#snippet meta()}
         <span class="pane-toolbar__detail">{language}</span>
-        <span class="pane-toolbar__detail">{formatBytes(byteSize)}</span>
+        {#if markdown && mode === 'rich'}
+          <span class="pane-toolbar__detail">{markdownCharCount} chars</span>
+          <span class="pane-toolbar__detail">{markdownWordCount} words</span>
+        {/if}
         {#if !binary}
+          <span class="pane-toolbar__detail">{formatBytes(byteSize)}</span>
           <span class="pane-toolbar__detail">{lineCount} {lineCount === 1 ? 'line' : 'lines'}</span>
         {/if}
         {#if largeText}
@@ -216,6 +274,7 @@
           >
             <RedoIcon class="size-3.5" />
           </button>
+          <MarkdownFindReplacePopover {editorRef} />
           {#if !hasFrontmatter}
             <button
               type="button"
@@ -240,17 +299,10 @@
             <CopyIcon class="size-3.5" />
           </button>
         {/if}
-        {#if runnable}
-          <button
-            type="button"
-            class="pane-toolbar__btn"
-            title="Sync file to sandbox"
-            aria-label="Sync to sandbox"
-            onclick={syncToSandbox}
-          >
-            <PlayIcon class="size-3.5" />
-          </button>
+        {#if !binary}
+          <EditorSaveIndicator />
         {/if}
+        <PaneMaximizeButton {maximized} onToggle={onToggleMaximize} />
         <PaneSplitMenu disabled={!canSplit} {onSplit} />
       {/snippet}
 
@@ -301,24 +353,100 @@
               <CodeIcon class="size-3.5" />
             </button>
           </div>
+        {:else if mermaid}
+          <div class="pane-toolbar__group" role="group" aria-label="Mermaid view mode">
+            <button
+              type="button"
+              class="pane-toolbar__btn"
+              class:pane-toolbar__btn--active={mode === 'rich'}
+              title="Diagram preview"
+              aria-label="Diagram preview"
+              aria-pressed={mode === 'rich'}
+              onclick={() => setMode('rich')}
+            >
+              <WorkflowIcon class="size-3.5" />
+            </button>
+            <button
+              type="button"
+              class="pane-toolbar__btn"
+              class:pane-toolbar__btn--active={mode === 'raw'}
+              title="Mermaid source"
+              aria-label="Mermaid source"
+              aria-pressed={mode === 'raw'}
+              onclick={() => setMode('raw')}
+            >
+              <CodeIcon class="size-3.5" />
+            </button>
+          </div>
+        {:else if svg}
+          <div class="pane-toolbar__group" role="group" aria-label="SVG view mode">
+            <button
+              type="button"
+              class="pane-toolbar__btn"
+              class:pane-toolbar__btn--active={mode === 'rich'}
+              title="SVG preview"
+              aria-pressed={mode === 'rich'}
+              onclick={() => setMode('rich')}
+            >
+              <ImageIcon class="size-3.5" />
+            </button>
+            <button
+              type="button"
+              class="pane-toolbar__btn"
+              class:pane-toolbar__btn--active={mode === 'raw'}
+              title="SVG source"
+              aria-pressed={mode === 'raw'}
+              onclick={() => setMode('raw')}
+            >
+              <CodeIcon class="size-3.5" />
+            </button>
+          </div>
+        {:else if previewToggle}
+          <div class="pane-toolbar__group" role="group" aria-label="Preview mode">
+            <button
+              type="button"
+              class="pane-toolbar__btn"
+              class:pane-toolbar__btn--active={mode === 'rich'}
+              title="Preview"
+              aria-pressed={mode === 'rich'}
+              onclick={() => setMode('rich')}
+            >
+              <ImageIcon class="size-3.5" />
+            </button>
+            <button
+              type="button"
+              class="pane-toolbar__btn"
+              class:pane-toolbar__btn--active={mode === 'raw'}
+              title="Source"
+              aria-pressed={mode === 'raw'}
+              onclick={() => setMode('raw')}
+            >
+              <CodeIcon class="size-3.5" />
+            </button>
+          </div>
         {/if}
       {/snippet}
     </PaneToolbar>
   {/snippet}
 
   {#snippet children()}
-    <ContextMenuHost target={editorTarget} triggerClass="file-editor-context-trigger h-full min-h-0">
-      <FileEditor
-        {path}
-        content={safeContent}
-        {mode}
-        {knownPaths}
-        {onChange}
-        {onFocus}
-        {onNavigateFile}
-        onEditorRef={handleEditorRef}
-      />
-    </ContextMenuHost>
+    <div class="file-pane-editor relative h-full min-h-0">
+      <ContextMenuHost target={editorTarget} triggerClass="file-editor-context-trigger h-full min-h-0">
+        <FileEditor
+          {path}
+          content={safeContent}
+          {mode}
+          {knownPaths}
+          {onChange}
+          {onFocus}
+          {onNavigateFile}
+          onEditorRef={handleEditorRef}
+        />
+      </ContextMenuHost>
+      {#if showSandboxOverlay}
+        <NodeLoadingOverlay title="Loading sandbox" message={sandboxPhase || 'Starting sandbox…'} />
+      {/if}
+    </div>
   {/snippet}
 </PaneChrome>
 

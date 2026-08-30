@@ -4,6 +4,8 @@ export function languageLabelForPath(path: string): string {
 	switch (ext) {
 		case 'svelte':
 			return 'Svelte';
+		case 'vue':
+			return 'Vue';
 		case 'js':
 			return 'JavaScript';
 		case 'mjs':
@@ -33,6 +35,9 @@ export function languageLabelForPath(path: string): string {
 		case 'md':
 		case 'markdown':
 			return 'Markdown';
+		case 'mmd':
+		case 'mermaid':
+			return 'Mermaid';
 		case 'csv':
 			return 'CSV';
 		case 'tsv':
@@ -64,6 +69,19 @@ export function languageLabelForPath(path: string): string {
 		case 'bmp':
 		case 'ico':
 			return 'Image';
+		case 'svg':
+			return 'SVG';
+		case 'ttf':
+		case 'otf':
+		case 'woff':
+		case 'woff2':
+		case 'eot':
+			return 'Font';
+		case 'dds':
+			return 'Texture';
+		case 'glb':
+		case 'gltf':
+			return '3D Model';
 		default:
 			return 'Plain Text';
 	}

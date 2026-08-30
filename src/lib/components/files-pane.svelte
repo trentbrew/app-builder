@@ -1,6 +1,7 @@
 <script lang="ts">
   import PaneChrome from '$lib/components/pane-chrome.svelte'
   import PaneSplitMenu from '$lib/components/pane-split-menu.svelte'
+  import PaneMaximizeButton from '$lib/components/pane-maximize-button.svelte'
   import PaneToolbar from '$lib/components/pane-toolbar.svelte'
   import FileExplorer from '$lib/components/file-explorer.svelte'
   import { sandboxStore } from '$lib/sandboxStore'
@@ -14,13 +15,17 @@
   let {
     activeFile = '/App.svelte',
     canSplit = false,
+    maximized = false,
     onSelectFile,
     onSplit,
+    onToggleMaximize,
   }: {
     activeFile?: string
     canSplit?: boolean
+    maximized?: boolean
     onSelectFile?: (path: string, content: string) => void
     onSplit?: (direction: 'left' | 'right' | 'up' | 'down') => void
+    onToggleMaximize?: () => void
   } = $props()
 
   let fsReady = $state(false)
@@ -104,6 +109,7 @@
         >
           <RefreshCwIcon class="size-3.5" />
         </button>
+        <PaneMaximizeButton {maximized} onToggle={onToggleMaximize} />
         <PaneSplitMenu disabled={!canSplit} {onSplit} />
       {/snippet}
     </PaneToolbar>

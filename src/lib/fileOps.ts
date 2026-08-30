@@ -1,7 +1,7 @@
 import { dirname, joinPath } from '$lib/fileTreeOps';
 import { isBinaryPreviewPath } from '$lib/fileTypes';
 import { sandboxStore } from '$lib/sandboxStore';
-import { toast } from 'svelte-sonner';
+import { toast } from '$lib/notify';
 import type { SandboxFs } from '$lib/sandbox/types';
 
 export function basename(path: string): string {

@@ -1,14 +1,30 @@
 export type MarkdownEditorMode = 'rich' | 'raw';
 export type FileViewMode = 'rich' | 'raw' | 'table';
 
-export type FileKind = 'markdown' | 'csv' | 'pdf' | 'video' | 'audio' | 'image' | 'code';
+export type FileKind =
+	| 'markdown'
+	| 'mermaid'
+	| 'csv'
+	| 'pdf'
+	| 'video'
+	| 'audio'
+	| 'image'
+	| 'svg'
+	| 'font'
+	| 'texture'
+	| 'model3d'
+	| 'code';
 
 const RUNNABLE_EXTENSIONS = new Set(['svelte', 'js', 'mjs', 'cjs', 'ts', 'tsx', 'jsx']);
 const CSV_EXTENSIONS = new Set(['csv', 'tsv', 'tab']);
 const PDF_EXTENSIONS = new Set(['pdf']);
 const VIDEO_EXTENSIONS = new Set(['mp4', 'webm', 'ogv', 'mov', 'm4v']);
-const AUDIO_EXTENSIONS = new Set(['mp3', 'wav', 'flac', 'aac', 'm4a', 'oga', 'opus', 'weba']);
+const AUDIO_EXTENSIONS = new Set(['mp3', 'wav', 'flac', 'aac', 'm4a', 'oga', 'ogg', 'opus', 'weba']);
 const IMAGE_EXTENSIONS = new Set(['png', 'jpg', 'jpeg', 'gif', 'webp', 'avif', 'bmp', 'ico']);
+const SVG_EXTENSIONS = new Set(['svg']);
+const FONT_EXTENSIONS = new Set(['ttf', 'otf', 'woff', 'woff2', 'eot']);
+const TEXTURE_EXTENSIONS = new Set(['dds']);
+const MODEL3D_EXTENSIONS = new Set(['glb', 'gltf']);
 
 export const LARGE_FILE_BYTES = 256 * 1024;
 export const LARGE_FILE_LINES = 5_000;
@@ -23,6 +39,40 @@ export function extensionOf(path: string): string {
 export function isMarkdownPath(path: string): boolean {
 	const ext = extensionOf(path);
 	return ext === 'md' || ext === 'markdown';
+}
+
+export function isMermaidPath(path: string): boolean {
+	const ext = extensionOf(path);
+	return ext === 'mmd' || ext === 'mermaid';
+}
+
+export function isSvgPath(path: string): boolean {
+	return SVG_EXTENSIONS.has(extensionOf(path));
+}
+
+export function isFontPath(path: string): boolean {
+	return FONT_EXTENSIONS.has(extensionOf(path));
+}
+
+export function isTexturePath(path: string): boolean {
+	return TEXTURE_EXTENSIONS.has(extensionOf(path));
+}
+
+export function isModel3dPath(path: string): boolean {
+	return MODEL3D_EXTENSIONS.has(extensionOf(path));
+}
+
+export function isGltfPath(path: string): boolean {
+	return extensionOf(path) === 'gltf';
+}
+
+export function isGlbPath(path: string): boolean {
+	return extensionOf(path) === 'glb';
+}
+
+/** Files with a rich preview / source toggle in the editor toolbar. */
+export function hasPreviewToggle(path: string): boolean {
+	return isMarkdownPath(path) || isMermaidPath(path) || isSvgPath(path) || isGltfPath(path);
 }
 
 /** Files whose contents can be synced/run in the sandbox preview pipeline. */
@@ -52,16 +102,29 @@ export function isImagePath(path: string): boolean {
 
 /** Binary files that should not be loaded or saved as UTF-8 text. */
 export function isBinaryPreviewPath(path: string): boolean {
-	return isPdfPath(path) || isVideoPath(path) || isAudioPath(path) || isImagePath(path);
+	return (
+		isPdfPath(path) ||
+		isVideoPath(path) ||
+		isAudioPath(path) ||
+		isImagePath(path) ||
+		isFontPath(path) ||
+		isTexturePath(path) ||
+		isGlbPath(path)
+	);
 }
 
 export function fileKindForPath(path: string): FileKind {
 	if (isMarkdownPath(path)) return 'markdown';
+	if (isMermaidPath(path)) return 'mermaid';
 	if (isCsvPath(path)) return 'csv';
 	if (isPdfPath(path)) return 'pdf';
 	if (isVideoPath(path)) return 'video';
 	if (isAudioPath(path)) return 'audio';
 	if (isImagePath(path)) return 'image';
+	if (isSvgPath(path)) return 'svg';
+	if (isFontPath(path)) return 'font';
+	if (isTexturePath(path)) return 'texture';
+	if (isModel3dPath(path)) return 'model3d';
 	return 'code';
 }
 
@@ -110,6 +173,24 @@ export function mimeTypeForPath(path: string): string {
 			return 'image/bmp';
 		case 'ico':
 			return 'image/x-icon';
+		case 'svg':
+			return 'image/svg+xml';
+		case 'ttf':
+			return 'font/ttf';
+		case 'otf':
+			return 'font/otf';
+		case 'woff':
+			return 'font/woff';
+		case 'woff2':
+			return 'font/woff2';
+		case 'eot':
+			return 'application/vnd.ms-fontobject';
+		case 'dds':
+			return 'image/vnd.ms-dds';
+		case 'glb':
+			return 'model/gltf-binary';
+		case 'gltf':
+			return 'model/gltf+json';
 		case 'csv':
 			return 'text/csv';
 		case 'tsv':

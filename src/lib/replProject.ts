@@ -1,3 +1,11 @@
+import {
+	AGENT_MANIFEST_JSON,
+	COMPONENTS_GITKEEP,
+	GUEST_SDK_INDEX,
+	GUEST_SDK_TYPES
+} from '$lib/agentHarness/guestMount';
+import { thumbnailCaptureScriptTag } from '$lib/projects/thumbnailCaptureScript';
+
 export const REPL_PACKAGE_JSON = {
 	name: 'svelte-repl',
 	type: 'module',
@@ -36,7 +44,7 @@ export default {
 };
 `;
 
-export const REPL_INDEX_HTML = `<!DOCTYPE html>
+const REPL_INDEX_HTML_BASE = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -66,6 +74,11 @@ export const REPL_INDEX_HTML = `<!DOCTYPE html>
 </body>
 </html>`;
 
+export const REPL_INDEX_HTML = REPL_INDEX_HTML_BASE.replace(
+	'</body>',
+	`${thumbnailCaptureScriptTag()}\n</body>`
+);
+
 export const REPL_MAIN_JS = `import { mount } from 'svelte';
 import App from './App.svelte';
 
@@ -84,6 +97,10 @@ export function replProjectFiles(options: WriteReplProjectOptions): Record<strin
 		'svelte.config.js': REPL_SVELTE_CONFIG,
 		'index.html': REPL_INDEX_HTML,
 		'main.js': REPL_MAIN_JS,
-		'App.svelte': options.appContents
+		'App.svelte': options.appContents,
+		'agent.manifest.json': AGENT_MANIFEST_JSON,
+		'lib/agent-sdk/types.ts': GUEST_SDK_TYPES,
+		'lib/agent-sdk/index.ts': GUEST_SDK_INDEX,
+		'components/.gitkeep': COMPONENTS_GITKEEP
 	};
 }

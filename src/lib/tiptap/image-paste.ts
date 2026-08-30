@@ -1,5 +1,6 @@
 import { Extension, type Editor } from '@tiptap/core';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
+import { clipboardHasImage } from '$lib/tiptap/clipboard';
 
 function readFileAsDataUrl(file: File): Promise<string> {
 	return new Promise((resolve, reject) => {
@@ -24,11 +25,6 @@ async function insertImage(editor: Editor, file: File, pos?: number) {
 	}
 
 	chain.run();
-}
-
-function clipboardHasImage(data: DataTransfer | null): boolean {
-	if (!data) return false;
-	return Array.from(data.items).some((item) => item.type.startsWith('image/'));
 }
 
 export const ImagePaste = Extension.create({

@@ -1,33 +1,5 @@
 import { Node, mergeAttributes } from '@tiptap/core';
-import mermaid from 'mermaid';
-
-let mermaidReady = false;
-
-function ensureMermaid() {
-	if (mermaidReady || typeof document === 'undefined') return;
-	mermaid.initialize({
-		startOnLoad: false,
-		theme: 'dark',
-		securityLevel: 'strict',
-		fontFamily: 'inherit'
-	});
-	mermaidReady = true;
-}
-
-async function renderMermaid(source: string, container: HTMLElement) {
-	ensureMermaid();
-	const id = `mermaid-${Math.random().toString(36).slice(2, 11)}`;
-	container.replaceChildren();
-	try {
-		const { svg } = await mermaid.render(id, source.trim() || 'graph TD\n  Empty');
-		container.innerHTML = svg;
-	} catch {
-		const pre = document.createElement('pre');
-		pre.className = 'mermaid-source-fallback';
-		pre.textContent = source;
-		container.replaceChildren(pre);
-	}
-}
+import { renderMermaidDiagram } from '$lib/mermaid/render';
 
 export const Mermaid = Node.create({
 	name: 'mermaid',
@@ -85,7 +57,7 @@ export const Mermaid = Node.create({
 			dom.append(diagram);
 
 			let currentSource = node.attrs.source as string;
-			void renderMermaid(currentSource, diagram);
+			void renderMermaidDiagram(currentSource, diagram);
 
 			return {
 				dom,
@@ -94,7 +66,7 @@ export const Mermaid = Node.create({
 					const nextSource = updatedNode.attrs.source as string;
 					if (nextSource !== currentSource) {
 						currentSource = nextSource;
-						void renderMermaid(nextSource, diagram);
+						void renderMermaidDiagram(nextSource, diagram);
 					}
 					return true;
 				},

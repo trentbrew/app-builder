@@ -11,6 +11,7 @@
   import { movePath } from '$lib/fileOps'
   import { actionRunner } from '$lib/actionRunner.svelte'
   import { sandboxStore } from '$lib/sandboxStore'
+  import { cn } from '$lib/utils.js'
 
   let {
     node,
@@ -88,7 +89,7 @@
   }
 </script>
 
-<Collapsible.Root open={open} onOpenChange={handleToggle} class="group/collapsible">
+<Collapsible.Root {open} onOpenChange={handleToggle} class="group/collapsible">
   <Collapsible.Trigger>
     {#snippet child({ props })}
       <ContextMenuHost
@@ -116,7 +117,10 @@
           ondrop={handleDrop}
         >
           <ChevronRightIcon
-            class="file-tree-row__chevron size-3.5 shrink-0 transition-transform group-data-[state=open]/collapsible:rotate-90"
+            class={cn(
+              'file-tree-row__chevron size-3.5 shrink-0 transition-transform duration-200',
+              open && 'rotate-90',
+            )}
           />
           <FileIcon path={node.path} kind="folder" {open} />
           <span class="file-tree-row__label">{node.name}</span>
@@ -127,11 +131,7 @@
       </ContextMenuHost>
     {/snippet}
   </Collapsible.Trigger>
-  <Collapsible.Content
-    ondragover={handleDragOver}
-    ondragleave={handleDragLeave}
-    ondrop={handleDrop}
-  >
+  <Collapsible.Content ondragover={handleDragOver} ondragleave={handleDragLeave} ondrop={handleDrop}>
     {#if node.children?.length}
       <FileTreeBranch nodes={node.children} {activeFile} {onSelectFile} depth={depth + 1} {section} />
     {/if}

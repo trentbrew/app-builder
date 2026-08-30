@@ -4,6 +4,11 @@
   import { splitFrontmatter } from '$lib/frontmatter'
   import { serializeFrontmatter } from '$lib/frontmatterEditor'
   import { basename } from '$lib/fileIcons'
+  import { settings } from '$lib/settings/store.svelte'
+  import { onMount } from 'svelte'
+
+  /** Editor min width + open properties rail (w-72) + flex slack */
+  const PROPERTIES_COLLAPSE_BELOW = 720
 
   let {
     path,
@@ -24,6 +29,8 @@
   } = $props()
 
   const split = $derived(splitFrontmatter(value))
+  const propertiesLayout = $derived(settings.editor.markdownPropertiesLayout)
+  const inlineProperties = $derived(propertiesLayout === 'inline')
 
   function compose(meta: Record<string, unknown> | undefined, body: string) {
     if (!meta) return body
@@ -57,22 +64,63 @@
         )
       })
   }
+
+  let root = $state<HTMLDivElement | undefined>()
+  let containerWidth = $state(0)
+  const narrowProperties = $derived(
+    !inlineProperties && containerWidth > 0 && containerWidth < PROPERTIES_COLLAPSE_BELOW,
+  )
+
+  onMount(() => {
+    const element = root
+    if (!element || typeof ResizeObserver === 'undefined') return
+
+    const observer = new ResizeObserver(([entry]) => {
+      containerWidth = entry.contentRect.width
+    })
+    observer.observe(element)
+    containerWidth = element.getBoundingClientRect().width
+
+    return () => observer.disconnect()
+  })
 </script>
 
-<div class="markdown-with-frontmatter flex h-full min-h-0">
-  <div class="min-h-0 min-w-0 flex-1 overflow-hidden">
-    <MarkdownEditor
-      value={split.body}
-      active={true}
-      onChange={onBodyChange}
-      {onFocus}
-      {onEditorRef}
-      onNavigateFile={(filePath) => onNavigateFile?.(`/${filePath.replace(/^\//, '')}`)}
-      mentionSearch={searchMentions}
+<div
+  bind:this={root}
+  class="markdown-with-frontmatter flex h-full min-h-0"
+  class:flex-col={inlineProperties}
+>
+  {#if split.meta && inlineProperties}
+    <FrontmatterPanel
+      meta={split.meta}
+      onChange={onMetaChange}
+      defaultOpen={Object.keys(split.meta).length > 1}
+      layout="inline"
     />
-  </div>
-
-  {#if split.meta}
-    <FrontmatterPanel meta={split.meta} onChange={onMetaChange} defaultOpen={Object.keys(split.meta).length > 1} />
   {/if}
+
+  <div class="flex min-h-0 min-w-0 flex-1 overflow-hidden">
+    <div class="min-h-0 min-w-0 flex-1 overflow-hidden">
+      <MarkdownEditor
+        value={split.body}
+        active={true}
+        onChange={onBodyChange}
+        {onFocus}
+        {onEditorRef}
+        currentFilePath={path}
+        onNavigateFile={(filePath) => onNavigateFile?.(`/${filePath.replace(/^\//, '')}`)}
+        mentionSearch={searchMentions}
+      />
+    </div>
+
+    {#if split.meta && !inlineProperties}
+      <FrontmatterPanel
+        meta={split.meta}
+        onChange={onMetaChange}
+        defaultOpen={Object.keys(split.meta).length > 1}
+        narrow={narrowProperties}
+        layout="sidebar"
+      />
+    {/if}
+  </div>
 </div>
