@@ -1,8 +1,14 @@
 import { browser } from '$app/environment';
+import { fileTreeStorageKey, getActiveEditorScopeId } from '$lib/projects/projectScope';
 
 export type TreeExpandMode = 'default' | 'expanded' | 'collapsed';
 
-const STORAGE_KEY = 'app-builder:file-tree-ui:v1';
+const LEGACY_STORAGE_KEY = 'app-builder:file-tree-ui:v1';
+
+function storageKey(): string {
+	const projectId = getActiveEditorScopeId();
+	return projectId ? fileTreeStorageKey(projectId) : LEGACY_STORAGE_KEY;
+}
 
 type Persisted = {
 	pinned: string[];
@@ -16,7 +22,7 @@ function loadPersisted(): Persisted {
 		return { pinned: [], hidden: [], showDotfiles: false, terminalTitles: {} };
 	}
 	try {
-		const raw = localStorage.getItem(STORAGE_KEY);
+		const raw = localStorage.getItem(storageKey());
 		if (!raw) return { pinned: [], hidden: [], showDotfiles: false, terminalTitles: {} };
 		const parsed = JSON.parse(raw) as Partial<Persisted>;
 		return {
@@ -33,7 +39,7 @@ function loadPersisted(): Persisted {
 function savePersisted(state: Persisted) {
 	if (!browser) return;
 	try {
-		localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+		localStorage.setItem(storageKey(), JSON.stringify(state));
 	} catch {
 		// ignore storage failures
 	}
@@ -168,6 +174,18 @@ class FileTreeState {
 		this.pinnedPaths = remapSet(this.pinnedPaths);
 		this.hiddenPaths = remapSet(this.hiddenPaths);
 		this.persist();
+	}
+
+	reloadFromProjectScope() {
+		const next = loadPersisted();
+		this.pinnedPaths = new Set(next.pinned);
+		this.hiddenPaths = new Set(next.hidden);
+		this.showDotfiles = next.showDotfiles;
+		this.terminalTitles = { ...next.terminalTitles };
+		this.expandedPaths = new Set();
+		this.focusedPath = null;
+		this.dropTargetPath = null;
+		this.mode = 'default';
 	}
 }
 

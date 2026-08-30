@@ -57,7 +57,12 @@ function wrapWebContainerStore(): SandboxStore {
           fsReady: Boolean(state.fs),
         }),
       ),
-    boot: () => webcontainerStore.boot(),
+    boot: (projectId) => webcontainerStore.boot(projectId),
+    bootUserTemplate: (templateId) => webcontainerStore.bootUserTemplate(templateId),
+    saveActiveProject: (options) => webcontainerStore.saveActiveProject(options),
+    flushPendingSnapshot: () => webcontainerStore.flushPendingSnapshot(),
+    releaseActiveProject: () => webcontainerStore.releaseActiveProject(),
+    switchProject: (fromId, toId) => webcontainerStore.switchProject(fromId, toId),
     write: (path, content) => webcontainerStore.write(path, content),
     getContainer: () => webcontainerStore.getContainer(),
     getFs: () => {
@@ -76,7 +81,11 @@ function wrapWebContainerStore(): SandboxStore {
 function wrapBunStore(): SandboxStore {
   return {
     subscribe: (run) => bunSandboxStore.subscribe(run),
-    boot: () => bunSandboxStore.boot(),
+    boot: (_projectId) => bunSandboxStore.boot(),
+    saveActiveProject: async () => {},
+    flushPendingSnapshot: async () => {},
+    releaseActiveProject: async () => {},
+    switchProject: async (_fromId, _toId) => {},
     write: (path, content) => bunSandboxStore.write(path, content),
     getContainer: () => undefined,
     getFs: () => bunSandboxStore.getFs(),
@@ -114,8 +123,24 @@ export const sandboxStore: SandboxStore = {
       innerUnsub?.()
     }
   },
-  async boot() {
-    return (await ensureStore()).boot()
+  async boot(projectId?: string) {
+    return (await ensureStore()).boot(projectId)
+  },
+  async bootUserTemplate(templateId?: string) {
+    const store = await ensureStore()
+    if (store.bootUserTemplate) return store.bootUserTemplate(templateId)
+  },
+  async saveActiveProject(options?: { overlay?: boolean; thumbnail?: boolean; snapshot?: boolean }) {
+    return (await ensureStore()).saveActiveProject?.(options)
+  },
+  async flushPendingSnapshot() {
+    return (await ensureStore()).flushPendingSnapshot?.()
+  },
+  async releaseActiveProject() {
+    return (await ensureStore()).releaseActiveProject?.()
+  },
+  async switchProject(fromId: string | null, toId: string) {
+    return (await ensureStore()).switchProject?.(fromId, toId)
   },
   async write(path, content) {
     return (await ensureStore()).write(path, content)

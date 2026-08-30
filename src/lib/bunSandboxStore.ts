@@ -99,6 +99,9 @@ function createBunSandboxStore() {
     restoredFromSnapshot: false,
     backend: 'bun',
     fsReady: false,
+    templateId: null,
+    expoGoUrl: '',
+    projectId: null,
   })
 
   function pushLog(line: string) {

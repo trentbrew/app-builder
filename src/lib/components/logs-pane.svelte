@@ -1,18 +1,23 @@
 <script lang="ts">
   import PaneChrome from '$lib/components/pane-chrome.svelte'
   import PaneSplitMenu from '$lib/components/pane-split-menu.svelte'
+  import PaneMaximizeButton from '$lib/components/pane-maximize-button.svelte'
   import PaneToolbar from '$lib/components/pane-toolbar.svelte'
   import LogsPanel from '$lib/components/logs-panel.svelte'
   import { sandboxStore } from '$lib/sandboxStore'
-  import { toast } from 'svelte-sonner'
+  import { toast } from '$lib/notify'
   import CopyIcon from '@lucide/svelte/icons/copy'
 
   let {
     canSplit = false,
+    maximized = false,
     onSplit,
+    onToggleMaximize,
   }: {
     canSplit?: boolean
+    maximized?: boolean
     onSplit?: (direction: 'left' | 'right' | 'up' | 'down') => void
+    onToggleMaximize?: () => void
   } = $props()
 
   let logs = $state<string[]>([])
@@ -49,6 +54,7 @@
         <button type="button" class="pane-toolbar__btn" title="Copy logs" aria-label="Copy logs" onclick={copyLogs}>
           <CopyIcon class="size-3.5" />
         </button>
+        <PaneMaximizeButton {maximized} onToggle={onToggleMaximize} />
         <PaneSplitMenu disabled={!canSplit} {onSplit} />
       {/snippet}
     </PaneToolbar>

@@ -1,0 +1,27 @@
+flowchart TB
+  subgraph routes [Routes]
+    Root["/"]
+    Dashboard["/dashboard"]
+    Editor["/editor/projectId"]
+  end
+
+  subgraph stores [Dexie + localStorage]
+    ProjectStore["projects table"]
+    SnapshotStore["snapshots keyed by projectId"]
+    LayoutStore["layout v5 projectId"]
+  end
+
+  subgraph runtime [Single WebContainer]
+    SandboxStore["sandboxStore.boot projectId"]
+    WC["WebContainer"]
+  end
+
+  Root --> Dashboard
+  Dashboard -->|open card| Editor
+  Editor -->|breadcrumb Projects| Dashboard
+  Dashboard -->|create| ProjectStore
+  Editor --> SandboxStore
+  SandboxStore -->|load or fresh| SnapshotStore
+  SandboxStore --> WC
+  Editor --> LayoutStore
+  ProjectStore --> SnapshotStore

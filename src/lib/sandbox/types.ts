@@ -1,4 +1,5 @@
 import type { WebContainer } from '@webcontainer/api'
+import { normalizeSandboxPath } from '$lib/sandbox/paths'
 
 export interface SandboxDirent {
   name: string
@@ -27,12 +28,24 @@ export interface SandboxPreviewState {
   restoredFromSnapshot: boolean
   backend: 'bun' | 'webcontainer'
   fsReady: boolean
+  templateId: string | null
+  expoGoUrl: string
+  projectId: string | null
   container?: WebContainer
 }
 
 export interface SandboxStore {
   subscribe: (run: (state: SandboxPreviewState) => void) => () => void
-  boot: () => Promise<void>
+  boot: (projectId?: string) => Promise<void>
+  bootUserTemplate?: (templateId?: string) => Promise<void>
+  saveActiveProject?: (options?: {
+    overlay?: boolean
+    thumbnail?: boolean
+    snapshot?: boolean
+  }) => Promise<void>
+  flushPendingSnapshot?: () => Promise<void>
+  releaseActiveProject?: () => Promise<void>
+  switchProject?: (fromId: string | null, toId: string) => Promise<void>
   write: (path: string, content: string) => Promise<void>
   getContainer: () => WebContainer | undefined
   getFs: () => SandboxFs | undefined
@@ -46,12 +59,16 @@ export interface SandboxStore {
 }
 
 export function webContainerToFs(container: WebContainer): SandboxFs {
+  const path = (p: string) => normalizeSandboxPath(p)
   return {
-    readFile: (path, encoding) => container.fs.readFile(path, encoding),
-    readBinary: (path) => container.fs.readFile(path),
-    writeFile: (path, content) => container.fs.writeFile(path, content),
-    writeBinary: (path, content) => container.fs.writeFile(path, content),
-    mkdir: (path, options) => container.fs.mkdir(path, options),
-    readdir: (path, options) => container.fs.readdir(path, options),
+    readFile: (filePath, encoding) => container.fs.readFile(path(filePath), encoding),
+    readBinary: (filePath) => container.fs.readFile(path(filePath)),
+    writeFile: (filePath, content) => container.fs.writeFile(path(filePath), content),
+    writeBinary: (filePath, content) => container.fs.writeFile(path(filePath), content),
+    mkdir: (filePath, options) =>
+      options?.recursive
+        ? container.fs.mkdir(path(filePath), { recursive: true })
+        : container.fs.mkdir(path(filePath)),
+    readdir: (filePath, options) => container.fs.readdir(path(filePath), options),
   }
 }

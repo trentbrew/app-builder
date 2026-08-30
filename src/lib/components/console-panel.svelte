@@ -54,7 +54,7 @@
   })
 </script>
 
-<div bind:this={container} class="console-panel h-full min-h-0 overflow-y-auto p-3 font-mono text-xs leading-relaxed">
+<div bind:this={container} class="console-panel terminal-output h-full min-h-0 overflow-y-auto p-3">
   {#if entries.length === 0}
     <p class="text-muted-foreground">Preview console output will appear here…</p>
   {:else}

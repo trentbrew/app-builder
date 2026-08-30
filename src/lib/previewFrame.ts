@@ -5,7 +5,10 @@ const HORIZON_TAB_DRAG_SELECTOR =
 let iframe: HTMLIFrameElement | null = null;
 let park: HTMLDivElement | null = null;
 let anchor: HTMLElement | null = null;
+let chromeAnchor: HTMLElement | null = null;
+let chromeLayer: HTMLDivElement | null = null;
 let anchorObserver: ResizeObserver | null = null;
+let chromeObserver: ResizeObserver | null = null;
 let positionRaf: number | null = null;
 let lastUrl = '';
 let tabDragActive = false;
@@ -83,8 +86,7 @@ function ensureIframe() {
 	installTabDragListeners();
 
 	iframe = document.createElement('iframe');
-	iframe.title = 'Svelte REPL Preview';
-	iframe.allow = 'cross-origin-isolated';
+	iframe.title = 'Agent guest preview';
 	iframe.className = IFRAME_CLASS;
 	iframe.style.position = 'fixed';
 	iframe.style.border = '0';
@@ -112,11 +114,65 @@ function parkIframe() {
 	});
 }
 
+function ensureChromeLayer() {
+	if (chromeLayer?.isConnected) return chromeLayer;
+
+	chromeLayer = document.createElement('div');
+	chromeLayer.dataset.previewChrome = '';
+	chromeLayer.setAttribute('aria-hidden', 'true');
+	Object.assign(chromeLayer.style, {
+		position: 'fixed',
+		pointerEvents: 'none',
+		zIndex: '6',
+		visibility: 'hidden'
+	});
+	document.body.appendChild(chromeLayer);
+	return chromeLayer;
+}
+
+function parkChrome() {
+	if (!chromeLayer) return;
+	Object.assign(chromeLayer.style, {
+		left: '-120vw',
+		top: '0',
+		width: '0',
+		height: '0',
+		visibility: 'hidden'
+	});
+}
+
+function syncChromePosition() {
+	if (!chromeAnchor?.isConnected) {
+		parkChrome();
+		return;
+	}
+
+	const rect = chromeAnchor.getBoundingClientRect();
+	if (rect.width < 2 || rect.height < 2) {
+		parkChrome();
+		return;
+	}
+
+	const layer = ensureChromeLayer();
+	if (layer.parentElement !== document.body) {
+		document.body.appendChild(layer);
+	}
+
+	Object.assign(layer.style, {
+		left: `${rect.left}px`,
+		top: `${rect.top}px`,
+		width: `${rect.width}px`,
+		height: `${rect.height}px`,
+		visibility: 'visible'
+	});
+}
+
 function schedulePositionSync() {
 	if (positionRaf !== null) return;
 	positionRaf = requestAnimationFrame(() => {
 		positionRaf = null;
 		syncIframePosition();
+		syncChromePosition();
 	});
 }
 
@@ -139,9 +195,11 @@ function syncIframePosition() {
 	}
 
 	const cardStyle = document.documentElement.dataset.editorPaneStyle === 'cards';
-	const radius =
+	const paneRadius =
 		getComputedStyle(document.documentElement).getPropertyValue('--editor-pane-radius').trim() ||
 		'0';
+	const isMobileScreen = anchor.dataset.previewScreen === 'mobile';
+	const iframeRadius = isMobileScreen ? 'calc(2.25rem - 3px)' : cardStyle ? paneRadius : '0';
 
 	Object.assign(iframe.style, {
 		left: `${rect.left}px`,
@@ -150,15 +208,40 @@ function syncIframePosition() {
 		height: `${rect.height}px`,
 		visibility: 'visible',
 		zIndex: '5',
-		borderBottomLeftRadius: cardStyle ? radius : '0',
-		borderBottomRightRadius: cardStyle ? radius : '0',
-		overflow: cardStyle ? 'hidden' : 'visible',
+		borderRadius: iframeRadius,
+		borderBottomLeftRadius: cardStyle && !isMobileScreen ? paneRadius : iframeRadius,
+		borderBottomRightRadius: cardStyle && !isMobileScreen ? paneRadius : iframeRadius,
+		overflow: 'hidden',
 		...iframeInteractionStyle()
 	});
 }
 
 if (typeof window !== 'undefined') {
 	installTabDragListeners();
+}
+
+let glowTimer: ReturnType<typeof setTimeout> | null = null;
+
+const AGENT_GLOW =
+	'2px solid color-mix(in oklch, var(--color-primary) 45%, transparent)';
+
+/** Brief border tint on preview iframe after agent write (respects reduced motion). */
+export function triggerAgentGlow() {
+	if (!iframe) return;
+	const reduced =
+		typeof window !== 'undefined' &&
+		window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	iframe.style.boxShadow = AGENT_GLOW;
+	if (glowTimer) clearTimeout(glowTimer);
+	const duration = reduced ? 0 : 2000;
+	if (duration === 0) {
+		iframe.style.boxShadow = '';
+		return;
+	}
+	glowTimer = setTimeout(() => {
+		if (iframe) iframe.style.boxShadow = '';
+		glowTimer = null;
+	}, duration);
 }
 
 export function setPreviewUrl(url: string) {
@@ -172,8 +255,75 @@ export function setPreviewUrl(url: string) {
 	schedulePositionSync();
 }
 
+export function clearPreviewFrame() {
+	lastUrl = '';
+	if (iframe) {
+		iframe.src = 'about:blank';
+		parkIframe();
+	}
+}
+
 export function refreshPreviewPosition() {
 	schedulePositionSync();
+}
+
+export function requestPreviewThumbnail(timeoutMs = 15000): Promise<string | null> {
+	if (!iframe?.contentWindow) return Promise.resolve(null);
+
+	const requestId = crypto.randomUUID();
+
+	return new Promise((resolve) => {
+		const timer = setTimeout(() => {
+			window.removeEventListener('message', onMessage);
+			resolve(null);
+		}, timeoutMs);
+
+		function onMessage(event: MessageEvent) {
+			const data = event.data as {
+				v?: number;
+				type?: string;
+				requestId?: string;
+				ok?: boolean;
+				dataUrl?: string;
+			};
+			if (
+				data?.v !== 1 ||
+				data.type !== 'app-builder-thumbnail-result' ||
+				data.requestId !== requestId
+			) {
+				return;
+			}
+
+			clearTimeout(timer);
+			window.removeEventListener('message', onMessage);
+			resolve(data.ok && data.dataUrl ? data.dataUrl : null);
+		}
+
+		window.addEventListener('message', onMessage);
+		iframe!.contentWindow!.postMessage(
+			{ v: 1, type: 'app-builder-capture-thumbnail', requestId },
+			'*'
+		);
+	});
+}
+
+export function registerPreviewChrome(node: HTMLElement) {
+	installTabDragListeners();
+	chromeAnchor = node;
+	schedulePositionSync();
+
+	chromeObserver?.disconnect();
+	chromeObserver = new ResizeObserver(() => schedulePositionSync());
+	chromeObserver.observe(node);
+
+	return () => {
+		chromeObserver?.disconnect();
+		chromeObserver = null;
+
+		if (chromeAnchor !== node) return;
+		chromeAnchor = null;
+		parkChrome();
+	};
 }
 
 export function registerPreviewAnchor(node: HTMLElement) {

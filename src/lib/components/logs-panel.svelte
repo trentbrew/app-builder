@@ -39,6 +39,4 @@
   const logText = $derived(logs.slice(-80).join('\n') || 'Waiting for server output…')
 </script>
 
-<pre
-  class="h-full min-h-0 overflow-y-auto p-3 font-mono text-xs leading-relaxed"
-  bind:this={logsContainer}>{logText}</pre>
+<pre class="terminal-output h-full min-h-0 overflow-y-auto p-3" bind:this={logsContainer}>{logText}</pre>
