@@ -10,12 +10,14 @@
     paneKind,
     paneId,
     id,
+    surface = 'default',
   }: {
     toolbar?: Snippet
     children?: Snippet
     paneKind?: PaneKind
     paneId?: string
     id?: string
+    surface?: 'default' | 'chrome'
   } = $props()
 
   const resolvedPaneId = $derived(paneId ?? paneKindToPanelId(paneKind))
@@ -46,7 +48,7 @@
   }
 </script>
 
-<div class="pane-chrome" {id} data-shortcut-context={shortcutContext}>
+<div class="pane-chrome" {id} data-shortcut-context={shortcutContext} data-surface={surface}>
   {@render toolbar?.()}
   {#if paneKind && resolvedPaneId}
     <ContextMenuHost
@@ -74,6 +76,14 @@
     min-width: 0;
     overflow: hidden;
     background: var(--color-background);
+  }
+
+  .pane-chrome[data-surface='chrome'] {
+    background: var(--color-chrome-surface);
+  }
+
+  .pane-chrome[data-surface='chrome'] :global(.pane-toolbar) {
+    background: var(--color-chrome-surface);
   }
 
   :global(.pane-chrome__body-trigger) {

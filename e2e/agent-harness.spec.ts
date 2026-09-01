@@ -1,5 +1,11 @@
 import { expect, test, type Page } from '@playwright/test';
-import { agentPanel, agentToggle, expectAgentPanelClosed, openAgentPanel } from './helpers/agent-panel';
+import {
+	agentPanel,
+	agentToggle,
+	expectAgentPanelClosed,
+	openAgentPanel,
+	openAgentToolLog,
+} from './helpers/agent-panel';
 
 const CREATE_PROJECT_TIMEOUT_MS = 60_000;
 
@@ -40,7 +46,7 @@ test.describe('agent harness', () => {
 	test('AgentRail visible with idle tool log on editor', async ({ page }) => {
 		test.setTimeout(180_000);
 		await createSvelteProject(page, 'Harness Idle');
-		await page.getByRole('button', { name: 'Show tool log' }).click();
+		await openAgentToolLog(page);
 		await expect(page.getByText('No agent events yet')).toBeVisible();
 	});
 
@@ -62,7 +68,7 @@ test.describe('agent harness', () => {
 		test.setTimeout(180_000);
 		await createSvelteProject(page, 'Harness Deny');
 		await waitForHarnessHook(page);
-		await page.getByRole('button', { name: 'Show tool log' }).click();
+		await openAgentToolLog(page);
 		await page.evaluate(async () => {
 			const fn = (window as Window & { __harnessEditComponent?: (p: string, c: string) => Promise<unknown> })
 				.__harnessEditComponent;
@@ -85,7 +91,14 @@ test.describe('agent harness', () => {
 				'<script>import { emit } from "../lib/agent-sdk/index.ts";</script><button onclick={() => emit("click", { ok: true })} aria-label="task">Task</button>'
 			);
 		});
-		await page.getByRole('button', { name: 'Show harness status' }).click();
-		await expect(page.getByText('components/TaskPanel.svelte')).toBeVisible();
+		await expect
+			.poll(async () =>
+				page.evaluate(
+					() =>
+						(window as Window & { __harnessLastWritePath?: () => string }).__harnessLastWritePath?.() ??
+						'',
+				),
+			)
+			.toBe('components/TaskPanel.svelte');
 	});
 });

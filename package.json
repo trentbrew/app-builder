@@ -16,10 +16,12 @@
 		"design:lint": "design.md lint docs/artifacts/app_builder_agent_harness_design.md",
 		"check": "rm -rf .vercel/output && svelte-kit sync && vite build",
 		"check:fast": "svelte-kit sync && vite build",
+		"test:unit": "node --test \"src/**/*.test.ts\"",
 		"test:e2e": "playwright test",
 		"test:e2e:expo": "playwright test e2e/expo-preview.spec.ts",
 		"agent:smoke": "bun scripts/agent-smoke.mjs",
-		"theme:sync-presets": "node scripts/sync-tweakcn-presets.mjs"
+		"theme:sync-presets": "node scripts/sync-tweakcn-presets.mjs",
+		"trellis:pack": "node scripts/pack-trellis.mjs"
 	},
 	"devDependencies": {
 		"@google/design.md": "0.4.0",

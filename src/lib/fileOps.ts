@@ -1,5 +1,6 @@
 import { dirname, joinPath } from '$lib/fileTreeOps';
 import { isBinaryPreviewPath } from '$lib/fileTypes';
+import { promptText } from '$lib/promptDialog.svelte';
 import { sandboxStore } from '$lib/sandboxStore';
 import { toast } from '$lib/notify';
 import type { SandboxFs } from '$lib/sandbox/types';
@@ -79,14 +80,9 @@ export async function renamePath(
 	if (!nextName?.trim() || nextName.trim() === currentName) return null;
 
 	const nextPath = joinPath(dirname(path), nextName.trim());
-	const containerFs = sandboxStore.getContainer()?.fs;
-	if (!containerFs?.rename) {
-		toast.error('Rename is not supported in this sandbox backend');
-		return null;
-	}
 
 	try {
-		await containerFs.rename(path, nextPath);
+		await fs.rename(path, nextPath);
 		sandboxStore.notifyFilesystemChange();
 		toast.success(`Renamed to ${nextName.trim()}`);
 		return nextPath;
@@ -105,14 +101,8 @@ export async function deletePath(
 	const confirmed = window.confirm(`Delete ${nodeKind} "${name}"?`);
 	if (!confirmed) return false;
 
-	const containerFs = sandboxStore.getContainer()?.fs;
-	if (!containerFs?.rm) {
-		toast.error('Delete is not supported in this sandbox backend');
-		return false;
-	}
-
 	try {
-		await containerFs.rm(path, { recursive: nodeKind === 'directory', force: true });
+		await fs.rm(path, { recursive: nodeKind === 'directory', force: true });
 		sandboxStore.notifyFilesystemChange();
 		toast.success(`Deleted ${name}`);
 		return true;
@@ -123,18 +113,12 @@ export async function deletePath(
 }
 
 export async function movePath(fs: SandboxFs, path: string, targetDir: string): Promise<string | null> {
-	const containerFs = sandboxStore.getContainer()?.fs;
-	if (!containerFs?.rename) {
-		toast.error('Move is not supported in this sandbox backend');
-		return null;
-	}
-
 	const name = basename(path);
 	const nextPath = joinPath(targetDir, name);
 	if (normalizeTreePath(path) === normalizeTreePath(nextPath)) return path;
 
 	try {
-		await containerFs.rename(path, nextPath);
+		await fs.rename(path, nextPath);
 		sandboxStore.notifyFilesystemChange();
 		return nextPath;
 	} catch {
@@ -145,6 +129,35 @@ export async function movePath(fs: SandboxFs, path: string, targetDir: string): 
 
 function normalizeTreePath(path: string) {
 	return path.startsWith('/') ? path : `/${path}`;
+}
+
+export async function saveTextToWorkspace(defaultName: string, content: string): Promise<string | null> {
+	const fs = sandboxStore.getFs();
+	if (!fs) {
+		toast.error('Project not ready');
+		return null;
+	}
+
+	const name = await promptText({
+		title: 'Save as',
+		description: 'Save this snippet into the project.',
+		defaultValue: defaultName,
+		confirmLabel: 'Save',
+		inputLabel: 'File name',
+		placeholder: defaultName,
+	});
+	if (!name) return null;
+
+	const path = normalizeTreePath(name.trim());
+	try {
+		await fs.writeFile(path, content);
+		sandboxStore.notifyFilesystemChange();
+		toast.success(`Saved ${basename(path)}`);
+		return path;
+	} catch {
+		toast.error(`Could not save ${name.trim()}`);
+		return null;
+	}
 }
 
 export async function writeExternalFile(

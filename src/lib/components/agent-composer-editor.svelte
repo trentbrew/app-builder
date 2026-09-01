@@ -94,6 +94,11 @@
     value = ''
   }
 
+  export function setMarkdown(text: string) {
+    editor?.commands.setContent(text, { contentType: 'markdown' })
+    value = text
+  }
+
   export function focus() {
     editor?.commands.focus()
   }

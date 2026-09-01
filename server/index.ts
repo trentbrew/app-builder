@@ -10,11 +10,14 @@ import {
   readSandboxDir,
   readSandboxFile,
   readSandboxFileBinary,
+  sandboxStat,
   rebootSession,
   subscribeLogs,
   writeSandboxFile,
   writeSandboxFileBinary,
   mkdirSandbox,
+  renameSandbox,
+  rmSandbox,
 } from './sandboxManager'
 import { mimeFromPath } from './mime'
 
@@ -145,10 +148,21 @@ const server = Bun.serve({
         }
       }
 
+      if (rest === 'files/stat' && request.method === 'GET') {
+        const filePath = url.searchParams.get('path') ?? '/'
+        try {
+          const info = await sandboxStat(id, filePath)
+          return json({ exists: true, isDirectory: info.isDirectory() })
+        } catch {
+          return json({ exists: false, isDirectory: false })
+        }
+      }
+
       if (rest === 'files' && request.method === 'GET') {
         const filePath = url.searchParams.get('path') ?? '/'
         try {
-          if (filePath.endsWith('/') || filePath === '/') {
+          const info = await sandboxStat(id, filePath)
+          if (info.isDirectory()) {
             const entries = await readSandboxDir(id, filePath)
             return json({
               entries: entries.map((entry) => ({
@@ -187,6 +201,30 @@ const server = Bun.serve({
           return json({ ok: true })
         } catch (error) {
           const message = error instanceof Error ? error.message : 'Mkdir failed'
+          return json({ error: message }, 400)
+        }
+      }
+
+      if (rest === 'files/rename' && request.method === 'POST') {
+        const body = await readJson<{ from?: string; to?: string }>(request)
+        if (!body?.from || !body?.to) return badRequest('from and to are required')
+        try {
+          await renameSandbox(id, body.from, body.to)
+          return json({ ok: true })
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'Rename failed'
+          return json({ error: message }, 400)
+        }
+      }
+
+      if (rest === 'files/rm' && request.method === 'POST') {
+        const body = await readJson<{ path?: string; recursive?: boolean; force?: boolean }>(request)
+        if (!body?.path) return badRequest('path is required')
+        try {
+          await rmSandbox(id, body.path, { recursive: body.recursive, force: body.force })
+          return json({ ok: true })
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'Delete failed'
           return json({ error: message }, 400)
         }
       }

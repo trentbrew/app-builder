@@ -12,6 +12,7 @@ import {
 import { setActiveProjectId as resetAgentSnapshots } from '$lib/agentHarness/snapshotStore';
 import { ensureWebContainerShellConfig } from '$lib/webcontainerShell';
 import { ensureThumbnailCaptureScript } from '$lib/projects/ensureThumbnailCapture';
+import { ensureTrellisRepo, installTrellis } from '$lib/trellis/bootstrap';
 import expoWcPreload from '$lib/projects/templates/expoWcPreload.cjs?raw';
 import expoDevScript from '$lib/projects/templates/expoDev.cjs?raw';
 import { EXPO_COMPAT_VERSION, EXPO_DEV_SCRIPT } from '$lib/projects/templates/expoConstants';
@@ -272,6 +273,28 @@ function createWebContainerStore() {
 		bumpTreeGeneration();
 	}
 
+	/**
+	 * Mount the bundled Trellis CLI and make sure the project has a `.trellis/`
+	 * repo. Runs after dependency install, since npm can prune node_modules.
+	 *
+	 * Never fatal: a sandbox without Trellis is still a usable sandbox, so a
+	 * failure here is logged and the boot continues.
+	 */
+	async function ensureTrellis(container: WebContainer): Promise<void> {
+		try {
+			setPhase('Bundling Trellis CLI…');
+			const version = await installTrellis(container);
+			const created = await ensureTrellisRepo(container);
+			pushLog(`Trellis v${version} available — try \`trellis status\`.`);
+			if (created) pushLog('Initialized .trellis/ repo.');
+			bumpTreeGeneration();
+		} catch (error) {
+			pushLog(
+				`Trellis unavailable: ${error instanceof Error ? error.message : 'unknown error'}`
+			);
+		}
+	}
+
 	async function nodeModulesPresent(container: WebContainer): Promise<boolean> {
 		try {
 			const entries = await container.fs.readdir('node_modules');
@@ -464,6 +487,7 @@ function createWebContainerStore() {
 		bumpTreeGeneration();
 
 		await installDependencies(container);
+		await ensureTrellis(container);
 
 		setPhase('Saving template snapshot…');
 		await persistSandboxSnapshot(container);
@@ -488,6 +512,7 @@ function createWebContainerStore() {
 		bumpTreeGeneration();
 
 		await installDependencies(container);
+		await ensureTrellis(container);
 
 		setPhase('Saving project snapshot…');
 		await saveCachedSnapshot(container, project.id, template.snapshotVersion, template.id);
@@ -646,6 +671,7 @@ function createWebContainerStore() {
 					update((s) => ({ ...s, restoredFromSnapshot: true }));
 					await ensureWebContainerShellConfig(container);
 					await ensureThumbnailCaptureScript(container);
+					await ensureTrellis(container);
 					exposeFilesystem(container);
 					pushLog('Restored project from local snapshot.');
 					bumpTreeGeneration();
@@ -805,6 +831,7 @@ function createWebContainerStore() {
 					update((s) => ({ ...s, restoredFromSnapshot: true }));
 					await ensureWebContainerShellConfig(container);
 					await ensureThumbnailCaptureScript(container);
+					await ensureTrellis(container);
 					exposeFilesystem(container);
 					pushLog('Restored template from local snapshot.');
 					bumpTreeGeneration();

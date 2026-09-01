@@ -1,0 +1,18 @@
+Running criteria for TRL-156...
+
+  ✓ PASSED  Spec documents ProjectStore
+    $ grep -q ProjectStore Projects/Sandbox/svelte-wc/app-builder/docs/issues/TRL-155/summary.md
+  ✓ PASSED  Spec documents ProjectStore
+    $ grep -q ProjectStore Projects/Sandbox/svelte-wc/app-builder/docs/issues/TRL-155/summary.md
+  ✓ PASSED  Spec documents template registry
+    $ grep -q templates/svelte Projects/Sandbox/svelte-wc/app-builder/docs/issues/TRL-155/summary.md
+  ✓ PASSED  Design artifact exists
+    $ test -f Projects/Sandbox/svelte-wc/app-builder/docs/artifacts/app_builder_multi_project_design.md
+  ✓ PASSED  Design token parity
+    $ node Projects/Sandbox/svelte-wc/app-builder/docs/artifacts/verify-app-builder-multi-project-tokens.mjs
+  ✓ PASSED  Typecheck and build
+    $ cd Projects/Sandbox/svelte-wc/app-builder && pnpm run check
+  ✓ PASSED  Spec summary exists
+    $ test -f Projects/Sandbox/svelte-wc/app-builder/docs/issues/TRL-155/summary.md
+
+All 7 criteria passed. Close with: trellis issue close TRL-156 --confirm

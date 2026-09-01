@@ -141,10 +141,20 @@
 	--editor-pane-gap-half: calc(var(--editor-pane-gap) / 2);
 	--editor-pane-radius: calc(var(--radius) - 2px);
 	--editor-pane-canvas: color-mix(in oklch, var(--color-background) 70%, black);
-	/* Between pane canvas and --color-background; header + icon rail */
 	--color-chrome-surface: color-mix(in oklch, var(--color-background) 86%, black);
+	--color-code-surface: color-mix(in oklch, var(--color-background) 72%, black);
+	--color-editor-gutter: color-mix(in oklch, var(--color-background) 90%, var(--color-muted));
+	--color-active-line: color-mix(in oklch, var(--color-muted) 55%, transparent);
 	--color-agent-chat-surface: var(--color-card);
-	--color-agent-composer-surface: color-mix(in oklch, var(--color-foreground) 10%, var(--color-background));
+	--color-agent-composer-surface: color-mix(in oklch, var(--color-foreground) 8%, var(--color-background));
+	--background: var(--color-background);
+	--foreground: var(--color-foreground);
+	--card: var(--color-card);
+	--card-foreground: var(--color-card-foreground);
+	--border: var(--color-border);
+	--muted: var(--color-muted);
+	--muted-foreground: var(--color-muted-foreground);
+	--accent: var(--color-accent);
 	--editor-font-size: 13px;
 	--terminal-font-size: 13px;
 	--explorer-font-size: 13px;
@@ -219,40 +229,9 @@
 	}
 }
 
-/* Light mode when .light class is present */
+/* Light mode — runtime theme injects palette tokens; keep scheme hint only */
 .light {
 	color-scheme: light;
-	--editor-pane-canvas: color-mix(in oklch, var(--color-background) 84%, black);
-	--color-background: oklch(1 0 0);
-	--color-foreground: oklch(0.145 0 0);
-	--color-card: oklch(1 0 0);
-	--color-card-foreground: oklch(0.145 0 0);
-	--color-popover: oklch(1 0 0);
-	--color-popover-foreground: oklch(0.145 0 0);
-	--color-primary: oklch(0.205 0 0);
-	--color-primary-foreground: oklch(0.985 0 0);
-	--color-secondary: oklch(0.97 0 0);
-	--color-secondary-foreground: oklch(0.205 0 0);
-	--color-muted: oklch(0.97 0 0);
-	--color-muted-foreground: oklch(0.556 0 0);
-	--color-accent: oklch(0.97 0 0);
-	--color-accent-foreground: oklch(0.205 0 0);
-	--color-destructive: oklch(0.577 0.245 27.325);
-	--color-border: oklch(0.922 0 0 / 88%);
-	--color-input: oklch(0.922 0 0);
-	--color-ring: oklch(0.708 0 0);
-	--color-sidebar: oklch(0.985 0 0);
-	--color-sidebar-foreground: oklch(0.145 0 0);
-	--color-sidebar-primary: oklch(0.205 0 0);
-	--color-sidebar-primary-foreground: oklch(0.985 0 0);
-	--color-sidebar-accent: oklch(0.97 0 0);
-	--color-sidebar-accent-foreground: oklch(0.205 0 0);
-	--color-sidebar-border: oklch(0.922 0 0 / 88%);
-	--color-sidebar-ring: oklch(0.708 0 0);
-	--scrollbar-thumb: oklch(0 0 0 / 10%);
-	--scrollbar-thumb-hover: oklch(0 0 0 / 20%);
-	--color-agent-chat-surface: var(--color-card);
-	--color-agent-composer-surface: color-mix(in oklch, var(--color-foreground) 10%, var(--color-background));
 }
 
 /* Debug borders: apply only when <body class="debug"> is set */
@@ -937,7 +916,8 @@ body.debug * {
 	margin: 1rem 0;
 	padding: 0.875rem 1rem;
 	border-radius: var(--radius);
-	background: var(--color-muted);
+	border: 1px solid var(--color-border);
+	background: var(--color-code-surface);
 	overflow-x: auto;
 	font-family: var(--font-mono);
 	font-size: 0.8125rem;
@@ -1140,12 +1120,148 @@ body.debug * {
 }
 
 [data-component='file-markdown'] .mermaid-block {
+	position: relative;
 	margin: 1rem 0;
 	padding: 0.75rem;
 	border: 1px solid var(--color-border);
 	border-radius: var(--radius);
-	background: color-mix(in oklch, var(--color-muted) 40%, transparent);
+	background: var(--color-code-surface);
 	overflow-x: auto;
+}
+
+[data-component='file-markdown'] .mermaid-block__header {
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: 0.375rem;
+}
+
+[data-component='file-markdown'] .mermaid-block__expand {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.5rem;
+	height: 1.5rem;
+	border: 1px solid var(--color-border);
+	border-radius: calc(var(--radius) - 4px);
+	background: color-mix(in oklch, var(--color-muted) 35%, transparent);
+	color: var(--color-muted-foreground);
+	cursor: pointer;
+}
+
+[data-component='file-markdown'] .mermaid-block__expand:hover {
+	color: var(--color-foreground);
+	background: color-mix(in oklch, var(--color-muted) 55%, transparent);
+}
+
+.markdown-code-block-wrap {
+	margin: 1rem 0;
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius);
+	background: var(--color-code-surface);
+	overflow: hidden;
+}
+
+.markdown-code-block-wrap pre {
+	margin: 0;
+	border: none;
+	border-radius: 0;
+	background: transparent;
+}
+
+.markdown-block-actions {
+	display: flex;
+	justify-content: flex-start;
+	gap: 0.375rem;
+	padding: 0.375rem 0.5rem;
+	border-top: 1px solid var(--color-border);
+	background: color-mix(in oklch, var(--color-muted) 22%, transparent);
+}
+
+.markdown-block-action {
+	border: 1px solid var(--color-border);
+	border-radius: calc(var(--radius) - 4px);
+	background: color-mix(in oklch, var(--color-background) 88%, var(--color-muted));
+	padding: 0.125rem 0.5rem;
+	font-size: 0.6875rem;
+	line-height: 1.25rem;
+	color: var(--color-muted-foreground);
+	cursor: pointer;
+}
+
+.markdown-block-action:hover {
+	color: var(--color-foreground);
+	background: color-mix(in oklch, var(--color-muted) 45%, transparent);
+}
+
+.mermaid-expand-dialog {
+	margin: auto;
+	padding: 0;
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius);
+	background: var(--color-background);
+	color: var(--color-foreground);
+	max-width: min(92vw, 56rem);
+	width: min(92vw, 56rem);
+	max-height: 88vh;
+}
+
+.mermaid-expand-dialog::backdrop {
+	background: color-mix(in oklch, var(--color-foreground) 18%, transparent);
+	backdrop-filter: blur(4px);
+}
+
+.light .mermaid-expand-dialog::backdrop {
+	background: color-mix(in oklch, var(--color-foreground) 24%, transparent);
+}
+
+.mermaid-expand-dialog__panel {
+	display: flex;
+	flex-direction: column;
+	max-height: 88vh;
+}
+
+.mermaid-expand-dialog__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	padding: 0.625rem 0.75rem;
+	border-bottom: 1px solid var(--color-border);
+}
+
+.mermaid-expand-dialog__title {
+	font-size: 0.8125rem;
+	font-weight: 500;
+}
+
+.mermaid-expand-dialog__close {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.75rem;
+	height: 1.75rem;
+	border: none;
+	border-radius: calc(var(--radius) - 4px);
+	background: transparent;
+	color: var(--color-muted-foreground);
+	cursor: pointer;
+}
+
+.mermaid-expand-dialog__close:hover {
+	color: var(--color-foreground);
+	background: color-mix(in oklch, var(--color-muted) 45%, transparent);
+}
+
+.mermaid-expand-dialog__body {
+	padding: 1rem;
+	overflow: auto;
+}
+
+.mermaid-expand-dialog__body svg {
+	display: block;
+	max-width: 100%;
+	height: auto;
+	margin: 0 auto;
 }
 
 [data-component='file-markdown'] .mermaid-block--selected {
@@ -1319,9 +1435,10 @@ body.debug * {
 	padding: 0.375rem;
 	border: 1px solid var(--color-border);
 	border-radius: 0.75rem;
-	background: color-mix(in oklch, var(--color-popover) 92%, transparent);
-	backdrop-filter: blur(24px);
-	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+	background: var(--color-popover);
+	box-shadow:
+		0 8px 32px color-mix(in oklch, var(--color-foreground) 10%, transparent),
+		0 1px 2px color-mix(in oklch, var(--color-foreground) 6%, transparent);
 }
 
 .slash-item {
@@ -1387,14 +1504,14 @@ body.debug * {
 	padding: 0.0625rem 0.375rem;
 	border-radius: 0.375rem;
 	background: color-mix(in oklch, #4493f8 16%, transparent);
-	color: #7cb3ff;
+	color: color-mix(in oklch, #4493f8 72%, var(--color-foreground));
 	cursor: pointer;
 	vertical-align: baseline;
 	user-select: none;
 }
 
 .mention-node:hover {
-	background: color-mix(in oklch, #4493f8 28%, transparent);
+	background: color-mix(in oklch, #4493f8 24%, transparent);
 	text-decoration: underline;
 	text-underline-offset: 0.15em;
 }
@@ -1415,9 +1532,10 @@ body.debug * {
 	padding: 0.375rem;
 	border: 1px solid var(--color-border);
 	border-radius: 0.75rem;
-	background: color-mix(in oklch, var(--color-popover) 92%, transparent);
-	backdrop-filter: blur(24px);
-	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+	background: var(--color-popover);
+	box-shadow:
+		0 8px 32px color-mix(in oklch, var(--color-foreground) 10%, transparent),
+		0 1px 2px color-mix(in oklch, var(--color-foreground) 6%, transparent);
 }
 
 .mention-suggestion-item {
@@ -1475,10 +1593,14 @@ body.debug * {
 	text-align: center;
 }
 
-/* Settings — darker backdrop than default dialog overlay */
+/* Settings — theme-aware dialog overlay */
 [data-slot='dialog-overlay']:has(+ [data-slot='dialog-content'].settings-dialog) {
-	background: oklch(0 0 0 / 0.55);
+	background: color-mix(in oklch, var(--color-foreground) 28%, transparent);
 	backdrop-filter: blur(8px);
+}
+
+.light [data-slot='dialog-overlay']:has(+ [data-slot='dialog-content'].settings-dialog) {
+	background: color-mix(in oklch, var(--color-foreground) 18%, transparent);
 }
 
 /* Settings — centered floating pane (margin:auto; bits-ui sets right/bottom and breaks translate centering) */

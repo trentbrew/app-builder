@@ -1,0 +1,149 @@
+
+Running 1 test using 1 worker
+
+(node:91451) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › e2e/explorer-pin-hide.spec.ts:17:2 › explorer pin and hide › pin keeps a dimmed duplicate in main tree; hide moves to accordion (2.0m)
+
+
+  1) [chromium] › e2e/explorer-pin-hide.spec.ts:17:2 › explorer pin and hide › pin keeps a dimmed duplicate in main tree; hide moves to accordion 
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.click: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Add shortcut', exact: true }).first()
+        - locator resolved to <button type="button" aria-pressed="false" title="Add shortcut" aria-label="Add shortcut" class="file-tree-row__action-btn file-tree-row__pin-btn">…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <div class="file-tree-row__actions">…</div> intercepts pointer events
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <div class="file-tree-row__actions">…</div> intercepts pointer events
+        - retrying click action
+          - waiting 100ms
+        24 × waiting for element to be visible, enabled and stable
+           - element is visible, enabled and stable
+           - scrolling into view if needed
+           - done scrolling
+           - <div class="file-tree-row__actions">…</div> intercepts pointer events
+         - retrying click action
+           - waiting 500ms
+      2 × element was detached from the DOM, retrying
+          - locator resolved to <button type="button" aria-pressed="false" title="Add shortcut" aria-label="Add shortcut" class="file-tree-row__action-btn file-tree-row__pin-btn">…</button>
+        - attempting click action
+          - waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <div class="file-tree-row__actions">…</div> intercepts pointer events
+        - retrying click action
+          - waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <div class="file-tree-row__actions">…</div> intercepts pointer events
+        - retrying click action
+          - waiting 20ms
+          - waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <div class="file-tree-row__actions">…</div> intercepts pointer events
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <div class="file-tree-row__actions">…</div> intercepts pointer events
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <div class="file-tree-row__actions">…</div> intercepts pointer events
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+        19 × element is visible, enabled and stable
+           - scrolling into view if needed
+           - done scrolling
+           - <div class="file-tree-row__actions">…</div> intercepts pointer events
+         - retrying click action
+           - waiting 500ms
+           - waiting for element to be visible, enabled and stable
+      - element was detached from the DOM, retrying
+        - locator resolved to <button type="button" aria-pressed="false" title="Add shortcut" aria-label="Add shortcut" class="file-tree-row__action-btn file-tree-row__pin-btn">…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <div class="file-tree-row__actions">…</div> intercepts pointer events
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <div class="file-tree-row__actions">…</div> intercepts pointer events
+        - retrying click action
+          - waiting 100ms
+        12 × waiting for element to be visible, enabled and stable
+           - element is visible, enabled and stable
+           - scrolling into view if needed
+           - done scrolling
+           - <div class="file-tree-row__actions">…</div> intercepts pointer events
+         - retrying click action
+           - waiting 500ms
+        - waiting for "http://localhost:9898/editor/d6c94f51-0d79-4103-bcc6-9f0653ac82d7" navigation to finish...
+        - navigated to "http://localhost:9898/editor/d6c94f51-0d79-4103-bcc6-9f0653ac82d7"
+        - waiting for element to be visible, enabled and stable
+      - element was detached from the DOM, retrying
+        - locator resolved to <button type="button" aria-pressed="false" title="Add shortcut" aria-label="Add shortcut" class="file-tree-row__action-btn file-tree-row__pin-btn">…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <div class="file-tree-row__actions">…</div> intercepts pointer events
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <div class="file-tree-row__actions">…</div> intercepts pointer events
+        - retrying click action
+          - waiting 100ms
+        124 × waiting for element to be visible, enabled and stable
+            - element is visible, enabled and stable
+            - scrolling into view if needed
+            - done scrolling
+            - <div class="file-tree-row__actions">…</div> intercepts pointer events
+          - retrying click action
+            - waiting 500ms
+
+
+      21 | 		const packageRow = page.locator('[data-tree-path="/package.json"]').first();
+      22 | 		await packageRow.hover();
+    > 23 | 		await page.getByRole('button', { name: 'Add shortcut', exact: true }).first().click();
+         | 		                                                                              ^
+      24 |
+      25 | 		await expect(page.getByRole('button', { name: /^Pinned/i })).toBeVisible();
+      26 | 		await expect(page.locator('.file-explorer__section [data-tree-path="/package.json"]')).toBeVisible();
+        at /Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/e2e/explorer-pin-hide.spec.ts:23:81
+
+    Error Context: test-results/explorer-pin-hide-explorer-2bce4-ree-hide-moves-to-accordion-chromium/error-context.md
+
+  1 failed
+    [chromium] › e2e/explorer-pin-hide.spec.ts:17:2 › explorer pin and hide › pin keeps a dimmed duplicate in main tree; hide moves to accordion 

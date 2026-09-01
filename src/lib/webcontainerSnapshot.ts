@@ -1,6 +1,7 @@
 import Dexie, { type Table } from 'dexie';
 import type { FileSystemTree, WebContainer } from '@webcontainer/api';
 import type { ProjectRecord, UserTemplateRecord } from '$lib/projects/types';
+import type { SessionEventRow } from '$lib/agent/session/events';
 
 export type CachedSnapshot =
 	| { format: 'json'; tree: FileSystemTree }
@@ -47,6 +48,7 @@ class AppBuilderDatabase extends Dexie {
 	thumbnails!: Table<ThumbnailRecord, string>;
 	userTemplates!: Table<UserTemplateRecord, string>;
 	userTemplateSnapshots!: Table<UserTemplateSnapshotRecord, string>;
+	sessionEvents!: Table<SessionEventRow, number>;
 
 	constructor() {
 		super('app-builder-webcontainer');
@@ -69,6 +71,12 @@ class AppBuilderDatabase extends Dexie {
 			userTemplates: 'id, baseTemplateId, updatedAt',
 			userTemplateSnapshots: 'id, version, updatedAt'
 		});
+		// v5 adds the durable agent session-event log. Additive: unlisted tables
+		// carry their v4 schema forward. `++seq` is a monotonic global insert key;
+		// per-session order is ascending `seq` within a `sessionId`.
+		this.version(5).stores({
+			sessionEvents: '++seq, sessionId, turnId, ts, kind'
+		});
 	}
 }
 
@@ -82,6 +90,10 @@ export function getProjectsTable() {
 
 export function getUserTemplatesTable() {
 	return db.userTemplates;
+}
+
+export function getSessionEventsTable() {
+	return db.sessionEvents;
 }
 
 export async function getProjectSnapshotRecord(projectId: string): Promise<SnapshotRecord | null> {

@@ -15,10 +15,10 @@
  * warns once. Sniffing gets stale; a failed write does not. In practice the loop
  * only runs locally anyway — the model is Ollama on 127.0.0.1.
  */
-import { appendFile, mkdir } from 'node:fs/promises';
+import { appendFile, mkdir, readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { env } from '$env/dynamic/private';
-import { runToJsonl, type RunRecord } from '$lib/runEnvelope';
+import { parseManifestJsonl, runToJsonl, type RunRecord } from '$lib/runEnvelope';
 
 const DEFAULT_RUN_LOG_PATH = 'runs/manifest.jsonl';
 
@@ -76,4 +76,25 @@ export function flushRunLog(): Promise<void> {
 /** Where runs are being written, for diagnostics. */
 export function runLogLocation(): { path: string; disabled: boolean } {
 	return { path: runLogPath(), disabled };
+}
+
+/**
+ * Read the run manifest back, most-recent-first, capped at `limit`.
+ *
+ * The read is best-effort like the write: a missing file (nothing recorded yet)
+ * is an empty list, not an error. Reads pending appends without locking — the
+ * parser skips a torn tail line rather than failing the whole read.
+ */
+export async function readRuns(limit = 1000): Promise<RunRecord[]> {
+	try {
+		const body = await readFile(runLogPath(), 'utf8');
+		const runs = parseManifestJsonl(body);
+		// Newest first, then cap — the inspector wants recent activity.
+		return runs.slice(-limit).reverse();
+	} catch (error) {
+		const code = (error as NodeJS.ErrnoException).code;
+		if (code === 'ENOENT') return [];
+		console.warn('[runLog] read failed:', error);
+		return [];
+	}
 }

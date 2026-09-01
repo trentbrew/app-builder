@@ -48,40 +48,119 @@ const LEGACY_SETTINGS_PANEL_ID = 'panel:settings';
 
 const KNOWN_PANEL_IDS = new Set<string>(Object.values(PANEL_IDS));
 
+export function isTabGroupLocked(tabGroup: TabGroupConfig): boolean {
+	return tabGroup.locked === true;
+}
+
+/** Auxiliary panes (explorer, preview-only, logs, etc.) must not receive editor file tabs. */
+export function isAuxiliaryPanelGroup(tabGroup: TabGroupConfig): boolean {
+	if (tabGroup.tabs.includes(PANEL_IDS.files)) return true;
+	if (tabGroup.tabs.some(isTerminalViewId) && !tabGroup.tabs.some(isFileViewId)) return true;
+	if (tabGroup.tabs.some(isAgentViewId) && !tabGroup.tabs.some(isFileViewId)) return true;
+	return tabGroup.tabs.length > 0 && tabGroup.tabs.every((id) => KNOWN_PANEL_IDS.has(id));
+}
+
+export function canAcceptFileTab(tabGroup: TabGroupConfig): boolean {
+	if (isTabGroupLocked(tabGroup)) return false;
+	if (isAuxiliaryPanelGroup(tabGroup)) return false;
+	return true;
+}
+
+export function isViewInLockedGroup(config: LayoutConfig, viewId: string): boolean {
+	if (!config.root) return false;
+	const group = findTabGroupContaining(config.root, viewId);
+	return group ? isTabGroupLocked(group) : false;
+}
+
+export function toggleTabGroupLock(config: LayoutConfig, viewId: string): LayoutConfig {
+	const next = cloneConfig(config);
+	if (!next.root) return config;
+	const group = findTabGroupContaining(next.root, viewId);
+	if (!group) return config;
+	group.locked = !group.locked;
+	return next;
+}
+
+export function ensureDefaultLocks(config: LayoutConfig): LayoutConfig {
+	const next = cloneConfig(config);
+	if (!next.root) return next;
+
+	walkNodes(next.root, (tabGroup) => {
+		if (isAuxiliaryPanelGroup(tabGroup) && tabGroup.locked === undefined) {
+			tabGroup.locked = true;
+		}
+	});
+
+	return next;
+}
+
+function relocateMisplacedFileTabs(config: LayoutConfig): LayoutConfig {
+	if (!config.root) return config;
+
+	const paths: string[] = [];
+	walkNodes(config.root, (group) => {
+		if (!isAuxiliaryPanelGroup(group)) return;
+		for (const tabId of group.tabs) {
+			const path = pathFromFileViewId(tabId);
+			if (path) paths.push(path);
+		}
+	});
+
+	if (!paths.length) return config;
+
+	let next = config;
+	for (const path of paths) {
+		next = removeFileFromLayout(next, path);
+		next = addFileToLayout(next, path);
+	}
+	return next;
+}
+
+export type AddFileToLayoutOptions = {
+	/** Prefer opening in the tab group that currently contains this view id. */
+	hintViewId?: string | null;
+};
+
 export function fileViewId(path: string): string {
 	return `${FILE_VIEW_PREFIX}${path}`;
 }
 
-export function pathFromFileViewId(id: string): string | null {
-	return id.startsWith(FILE_VIEW_PREFIX) ? id.slice(FILE_VIEW_PREFIX.length) : null;
+export function pathFromFileViewId(id: string | null | undefined): string | null {
+	return typeof id === 'string' && id.startsWith(FILE_VIEW_PREFIX)
+		? id.slice(FILE_VIEW_PREFIX.length)
+		: null;
 }
 
-export function isFileViewId(id: string): boolean {
-	return id.startsWith(FILE_VIEW_PREFIX);
+export function isFileViewId(id: string | null | undefined): id is string {
+	return typeof id === 'string' && id.startsWith(FILE_VIEW_PREFIX);
 }
 
 export function terminalViewId(sessionId: string): string {
 	return `${TERMINAL_VIEW_PREFIX}${sessionId}`;
 }
 
-export function sessionIdFromTerminalViewId(id: string): string | null {
-	return id.startsWith(TERMINAL_VIEW_PREFIX) ? id.slice(TERMINAL_VIEW_PREFIX.length) : null;
+export function sessionIdFromTerminalViewId(id: string | null | undefined): string | null {
+	return typeof id === 'string' && id.startsWith(TERMINAL_VIEW_PREFIX)
+		? id.slice(TERMINAL_VIEW_PREFIX.length)
+		: null;
 }
 
-export function isTerminalViewId(id: string): boolean {
-	return id.startsWith(TERMINAL_VIEW_PREFIX);
+export function isTerminalViewId(id: string | null | undefined): id is string {
+	return typeof id === 'string' && id.startsWith(TERMINAL_VIEW_PREFIX);
 }
 
 export function agentViewId(sessionId: string): string {
 	return `${AGENT_VIEW_PREFIX}${sessionId}`;
 }
 
-export function sessionIdFromAgentViewId(id: string): string | null {
-	return id.startsWith(AGENT_VIEW_PREFIX) ? id.slice(AGENT_VIEW_PREFIX.length) : null;
+export function sessionIdFromAgentViewId(id: string | null | undefined): string | null {
+	return typeof id === 'string' && id.startsWith(AGENT_VIEW_PREFIX)
+		? id.slice(AGENT_VIEW_PREFIX.length)
+		: null;
 }
 
-export function isAgentViewId(id: string): boolean {
-	return id.startsWith(AGENT_VIEW_PREFIX);
+export function isAgentViewId(id: string | null | undefined): id is string {
+	return typeof id === 'string' && id.startsWith(AGENT_VIEW_PREFIX);
 }
 
 export function createAgentSessionId(): string {
@@ -142,12 +221,14 @@ export function createInitialLayout(
 	terminalSessionId = createTerminalSessionId(),
 	presetId: EditorLayoutPresetId = settings.editor.layoutPreset
 ): LayoutConfig {
-	return createLayoutFromPreset(presetId, {
-		filePaths: filePaths.length ? filePaths : ['/App.svelte'],
-		terminalSessionIds: [terminalSessionId],
-		includeConsole: true,
-		includeAgent: presetId === 'agent-focus'
-	});
+	return ensureDefaultLocks(
+		createLayoutFromPreset(presetId, {
+			filePaths: filePaths.length ? filePaths : ['/App.svelte'],
+			terminalSessionIds: [terminalSessionId],
+			includeConsole: true,
+			includeAgent: presetId === 'agent-focus'
+		})
+	);
 }
 
 function findTerminalTabGroup(node: NodeConfig): TabGroupConfig | null {
@@ -254,7 +335,179 @@ export function removeAgentFromLayout(config: LayoutConfig, sessionId: string): 
 	return next;
 }
 
-export function addFileToLayout(config: LayoutConfig, path: string): LayoutConfig {
+const SPLIT_MIN_WIDTH_RATIO = 0.1;
+const SPLIT_MIN_HEIGHT_RATIO = 0.2;
+const SPLIT_MAX_DEPTH = 6;
+
+type ParentEntry = {
+	parent: SplitConfig;
+	index: number;
+};
+
+function minRatioForDirection(direction: SplitConfig['direction']): number {
+	return direction === 'horizontal' ? SPLIT_MIN_WIDTH_RATIO : SPLIT_MIN_HEIGHT_RATIO;
+}
+
+function evenlySpacedSplitPoints(viewCount: number): number[] {
+	const needed = Math.max(0, viewCount - 1);
+	return Array.from({ length: needed }, (_, index) => (index + 1) / viewCount);
+}
+
+function splitPointsAreValid(splitPoints: number[], minRatio: number): boolean {
+	for (let i = 0; i < splitPoints.length; i++) {
+		const point = splitPoints[i];
+		const prev = splitPoints[i - 1] ?? 0;
+		if (point < prev + minRatio || point > 1 - minRatio) return false;
+	}
+	return true;
+}
+
+function defaultSplitPoints(viewCount: number, direction: SplitConfig['direction']): number[] {
+	const minRatio = minRatioForDirection(direction);
+	if (direction === 'horizontal') {
+		if (viewCount === 3) {
+			const preset = [0.18, 0.5];
+			if (splitPointsAreValid(preset, minRatio)) return preset;
+		}
+		if (viewCount === 4) {
+			const preset = [0.15, 0.42, 0.68];
+			if (splitPointsAreValid(preset, minRatio)) return preset;
+		}
+	}
+	return evenlySpacedSplitPoints(viewCount);
+}
+
+function normalizeSplitPoints(
+	direction: SplitConfig['direction'],
+	viewCount: number,
+	existing: number[] = []
+): number[] {
+	const needed = Math.max(0, viewCount - 1);
+	if (needed === 0) return [];
+
+	const minRatio = minRatioForDirection(direction);
+	let points =
+		existing.length === needed ? [...existing] : defaultSplitPoints(viewCount, direction);
+
+	if (!splitPointsAreValid(points, minRatio)) {
+		points = evenlySpacedSplitPoints(viewCount);
+	}
+
+	for (let i = 0; i < points.length; i++) {
+		const min = (points[i - 1] ?? 0) + minRatio;
+		const max = (points[i + 1] ?? 1) - minRatio;
+		if (min > max) return evenlySpacedSplitPoints(viewCount);
+		points[i] = Number(Math.min(Math.max(points[i], min), max).toFixed(4));
+	}
+
+	return points;
+}
+
+function repairSplitPoints(node: NodeConfig): void {
+	if (nodeConfigType(node) !== 'split') return;
+
+	const split = node as SplitConfig;
+	split.splitPoints = normalizeSplitPoints(split.direction, split.views.length, split.splitPoints);
+	for (const child of split.views) {
+		repairSplitPoints(child);
+	}
+}
+
+/** Clamp split points to horizon-layout minRatio constraints (0.1 width / 0.2 height). */
+export function repairLayoutConfig(config: LayoutConfig): LayoutConfig {
+	let next = cloneConfig(config);
+	if (!next.root) return next;
+	repairSplitPoints(next.root);
+	next = ensureDefaultLocks(next);
+	return relocateMisplacedFileTabs(next);
+}
+
+function clampInsertedSplitPoint(split: SplitConfig, insertIndex: number, ratio: number): number {
+	const minRatio = minRatioForDirection(split.direction);
+	const prev = split.splitPoints[insertIndex - 1] ?? 0;
+	const next = split.splitPoints[insertIndex] ?? 1;
+	const min = prev + minRatio;
+	const max = next - minRatio;
+	if (min > max) return min;
+	return Number(Math.min(Math.max(ratio, min), max).toFixed(4));
+}
+
+function paneMidpoint(parent: ParentEntry): number {
+	const mid =
+		((parent.parent.splitPoints[parent.index - 1] ?? 0) +
+			(parent.parent.splitPoints[parent.index] ?? 1)) /
+		2;
+	return clampInsertedSplitPoint(parent.parent, parent.index, mid);
+}
+
+export type PaneDropDirection = 'left' | 'right' | 'up' | 'down';
+export type PaneDropSide = PaneDropDirection | 'center';
+
+export function openFileAtPaneDrop(
+	config: LayoutConfig,
+	path: string,
+	anchorViewId: string,
+	side: PaneDropSide,
+	options: AddFileToLayoutOptions = {}
+): LayoutConfig {
+	const id = fileViewId(path);
+
+	if (side === 'center') {
+		return addFileToLayout(config, path, options);
+	}
+
+	let next = cloneConfig(config);
+	if (!next.root) return createInitialLayout([path]);
+
+	if (findTabGroupContaining(next.root, id)) {
+		next = removeViewFromLayout(next, id);
+	}
+
+	if (!next.root) return createInitialLayout([path]);
+
+	const anchorGroup =
+		findTabGroupContaining(next.root, anchorViewId) ?? findFirstEditorTabGroup(next.root);
+	if (!anchorGroup || !canAcceptFileTab(anchorGroup)) {
+		return addFileToLayout(next, path, options);
+	}
+
+	const splitDirection =
+		side === 'left' || side === 'right' ? 'horizontal' : 'vertical';
+	const isAfter = side === 'right' || side === 'down';
+	const newTabGroup: TabGroupConfig = { tabs: [id], activeTabIndex: 0 };
+	const nodeParentMap = buildNodeParentMap(next.root);
+	const parent = nodeParentMap.get(anchorGroup);
+
+	if (parent) {
+		if (parent.parent.direction === splitDirection) {
+			const insertIndex = parent.index + (isAfter ? 1 : 0);
+			parent.parent.views.splice(insertIndex, 0, newTabGroup);
+			parent.parent.splitPoints.splice(parent.index, 0, paneMidpoint(parent));
+		} else {
+			const newSplit: SplitConfig = {
+				direction: splitDirection,
+				views: isAfter ? [anchorGroup, newTabGroup] : [newTabGroup, anchorGroup],
+				splitPoints: [0.5]
+			};
+			parent.parent.views[parent.index] = newSplit;
+		}
+	} else {
+		next.root = {
+			direction: splitDirection,
+			views: isAfter ? [anchorGroup, newTabGroup] : [newTabGroup, anchorGroup],
+			splitPoints: [0.5]
+		};
+	}
+
+	if (next.root) repairSplitPoints(next.root);
+	return next;
+}
+
+export function addFileToLayout(
+	config: LayoutConfig,
+	path: string,
+	options: AddFileToLayoutOptions = {}
+): LayoutConfig {
 	const id = fileViewId(path);
 	const next = cloneConfig(config);
 
@@ -267,7 +520,9 @@ export function addFileToLayout(config: LayoutConfig, path: string): LayoutConfi
 		return next;
 	}
 
-	const target = findPreferredFileTabGroup(next.root, id) ?? findFirstTabGroup(next.root);
+	const target =
+		findPreferredFileTabGroup(next.root, id, options.hintViewId) ??
+		findFirstEditorTabGroup(next.root);
 	if (!target) return next;
 
 	const emptyIndex = target.tabs.indexOf(EMPTY_PANE_VIEW_ID);
@@ -399,14 +654,29 @@ function findTabGroupContaining(node: NodeConfig, tabId: string): TabGroupConfig
 	return null;
 }
 
+function findFirstEditorTabGroup(node: NodeConfig): TabGroupConfig | null {
+	let found: TabGroupConfig | null = null;
+
+	walkNodes(node, (tabGroup) => {
+		if (found || !canAcceptFileTab(tabGroup)) return;
+		found = tabGroup;
+	});
+
+	return found;
+}
+
 function findPreferredFileTabGroup(
 	node: NodeConfig,
-	activeId: string
+	activeId: string,
+	hintViewId?: string | null
 ): TabGroupConfig | null {
 	let preferred: TabGroupConfig | null = null;
 	let emptyPane: TabGroupConfig | null = null;
+	let hintGroup: TabGroupConfig | null = null;
 
 	walkNodes(node, (tabGroup) => {
+		if (!canAcceptFileTab(tabGroup)) return;
+
 		if (tabGroup.tabs.includes(EMPTY_PANE_VIEW_ID)) {
 			emptyPane = tabGroup;
 		}
@@ -416,8 +686,12 @@ function findPreferredFileTabGroup(
 		if (tabGroup.tabs.includes(activeId)) {
 			preferred = tabGroup;
 		}
+		if (hintViewId && tabGroup.tabs.includes(hintViewId)) {
+			hintGroup = tabGroup;
+		}
 	});
 
+	if (hintGroup) return hintGroup;
 	return emptyPane ?? preferred;
 }
 
@@ -562,28 +836,6 @@ function migrateLegacyTerminalPanel(config: LayoutConfig): LayoutConfig {
 	return next;
 }
 
-function normalizeSplitPoints(viewCount: number, existing: number[] = []): number[] {
-	const needed = Math.max(0, viewCount - 1);
-	if (needed === 0) return [];
-	if (existing.length === needed) return [...existing];
-
-	// Preserve the default editor band presets when resizing to common sizes.
-	if (viewCount === 3) return [0.18, 0.5];
-	if (viewCount === 4) return [0.15, 0.42, 0.68];
-
-	return Array.from({ length: needed }, (_, index) => (index + 1) / viewCount);
-}
-
-function repairSplitPoints(node: NodeConfig): void {
-	if (nodeConfigType(node) !== 'split') return;
-
-	const split = node as SplitConfig;
-	split.splitPoints = normalizeSplitPoints(split.views.length, split.splitPoints);
-	for (const child of split.views) {
-		repairSplitPoints(child);
-	}
-}
-
 function sanitizeNode(node: NodeConfig): NodeConfig | null {
 	if (nodeConfigType(node) === 'tabGroup') {
 		const tabs = node.tabs.filter(isAllowedTabId);
@@ -594,7 +846,8 @@ function sanitizeNode(node: NodeConfig): NodeConfig | null {
 
 		return {
 			tabs: tabs as [string, ...string[]],
-			activeTabIndex: activeTabIndex < 0 ? 0 : activeTabIndex
+			activeTabIndex: activeTabIndex < 0 ? 0 : activeTabIndex,
+			...(typeof node.locked === 'boolean' ? { locked: node.locked } : {})
 		};
 	}
 
@@ -609,7 +862,7 @@ function sanitizeNode(node: NodeConfig): NodeConfig | null {
 
 	return {
 		direction: node.direction,
-		splitPoints: normalizeSplitPoints(views.length, node.splitPoints),
+		splitPoints: normalizeSplitPoints(node.direction, views.length, node.splitPoints),
 		views: views as [NodeConfig, NodeConfig, ...NodeConfig[]]
 	};
 }
@@ -815,7 +1068,7 @@ function migrateAddAgentPanel(
 	const agentGroup: TabGroupConfig = { tabs: [id], activeTabIndex: 0 };
 	const views = [...mainBand.views, agentGroup] as typeof mainBand.views;
 	mainBand.views = views;
-	mainBand.splitPoints = normalizeSplitPoints(views.length, mainBand.splitPoints);
+	mainBand.splitPoints = normalizeSplitPoints(mainBand.direction, views.length, mainBand.splitPoints);
 	repairSplitPoints(next.root);
 
 	return next;
@@ -866,7 +1119,11 @@ function removeAgentPanel(config: LayoutConfig): LayoutConfig {
 		...NodeConfig[]
 	];
 	mainBand.views = remaining;
-	mainBand.splitPoints = normalizeSplitPoints(remaining.length, mainBand.splitPoints);
+	mainBand.splitPoints = normalizeSplitPoints(
+		mainBand.direction,
+		remaining.length,
+		mainBand.splitPoints
+	);
 	repairSplitPoints(next.root);
 
 	return next;
@@ -884,7 +1141,11 @@ function migrateAddConsolePanel(config: LayoutConfig): LayoutConfig {
 
 	const consoleGroup: TabGroupConfig = { tabs: [PANEL_IDS.console], activeTabIndex: 0 };
 	bottomBand.views = [...bottomBand.views, consoleGroup] as typeof bottomBand.views;
-	bottomBand.splitPoints = normalizeSplitPoints(bottomBand.views.length, bottomBand.splitPoints);
+	bottomBand.splitPoints = normalizeSplitPoints(
+		bottomBand.direction,
+		bottomBand.views.length,
+		bottomBand.splitPoints
+	);
 	return next;
 }
 
@@ -923,7 +1184,12 @@ function removeConsolePanel(config: LayoutConfig): LayoutConfig {
 		...NodeConfig[]
 	];
 	bottomBand.views = remaining;
-	bottomBand.splitPoints = normalizeSplitPoints(remaining.length, bottomBand.splitPoints);
+	bottomBand.splitPoints = normalizeSplitPoints(
+		bottomBand.direction,
+		remaining.length,
+		bottomBand.splitPoints
+	);
+	repairSplitPoints(next.root);
 
 	return next;
 }
@@ -940,7 +1206,7 @@ export function loadSavedLayout(): LayoutConfig | null {
 		);
 		const sanitized = sanitizeLayout(migrated);
 		if (!sanitized || !hasRequiredPanels(sanitized)) return null;
-		return sanitized;
+		return repairLayoutConfig(sanitized);
 	} catch {
 		return null;
 	}
@@ -965,23 +1231,6 @@ export function resolveEditorLayout(filePaths: string[]): LayoutConfig {
 export { applyLayoutPreset, inferLayoutPreset, type EditorLayoutPresetId } from '$lib/editorLayoutPresets';
 
 type SplitDirection = 'left' | 'right' | 'up' | 'down';
-
-type ParentEntry = {
-	parent: SplitConfig;
-	index: number;
-};
-
-const SPLIT_MIN_WIDTH_RATIO = 0.1;
-const SPLIT_MIN_HEIGHT_RATIO = 0.2;
-const SPLIT_MAX_DEPTH = 6;
-
-function paneMidpoint(parent: ParentEntry): number {
-	return (
-		((parent.parent.splitPoints[parent.index - 1] ?? 0) +
-			(parent.parent.splitPoints[parent.index] ?? 1)) /
-		2
-	);
-}
 
 function getNodeDepth(
 	node: NodeConfig,
@@ -1069,6 +1318,7 @@ export function splitViewInLayout(
 		parent.parent.splitPoints.splice(parent.index, 0, paneMidpoint(parent));
 	}
 
+	if (next.root) repairSplitPoints(next.root);
 	return next;
 }
 
@@ -1144,6 +1394,7 @@ function splitSingleTabGroupInLayout(
 		parent.parent.splitPoints.splice(parent.index, 0, paneMidpoint(parent));
 	}
 
+	if (config.root) repairSplitPoints(config.root);
 	return config;
 }
 

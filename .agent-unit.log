@@ -1,0 +1,46 @@
+
+> my-app@0.0.1 test:unit /Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder
+> node --test "src/**/*.test.ts"
+
+✔ auto-allow mode never prompts (1.011917ms)
+✔ a standing allow-all covers the same turn (0.107292ms)
+✔ allow-all from a previous turn does NOT carry over (0.062708ms)
+✔ a request while a prompt is already pending fails closed (0.059084ms)
+✔ the default path prompts and waits (0.061ms)
+✔ a null allow-all never matches, even against a request with no turn framing (0.04875ms)
+✔ decisionForResolution: only an explicit deny denies (0.177125ms)
+✔ summarizeWrite counts lines and pluralizes (0.194708ms)
+✔ selectToolLog projects only tool-plane events, in order (4.897959ms)
+✔ selectToolLog summarizes a call by its path arg (0.195292ms)
+✔ selectToolLog marks a denied result distinctly from an error (0.442708ms)
+✔ selectLastWrite returns the most recent write, not the first (0.867417ms)
+✔ selectLastWrite ignores denied calls (no fs/observed was emitted) (0.134834ms)
+✔ selectLastWrite is null when nothing was written (0.091917ms)
+✔ selectTranscript folds user and assistant messages in order, dropping tool events (1.3535ms)
+✔ selectTranscript is empty when the log has no messages yet (0.083292ms)
+✔ selectSessions groups rows by session, most-recently-active first (0.302708ms)
+✔ summarizeSessionEvent gives a label+detail per kind (0.188458ms)
+✔ selectUsageTotals folds usage across assistant messages (0.117542ms)
+✔ allows the guest-writable set (0.819875ms)
+✔ denies project configuration files (0.103208ms)
+✔ denies traversal that escapes the sandbox root (0.087667ms)
+✔ denies traversal that lands on a denied file inside the root (0.060333ms)
+✔ normalizes redundant segments without rejecting them (0.081167ms)
+✔ rejects the empty path (0.047583ms)
+✔ projectExplorerMainTree keeps shortcut paths in the main tree (1.837667ms)
+✔ projectExplorerMainTree removes only hidden paths from the main tree (0.327ms)
+✔ isPinnedTreeDuplicate matches pinned paths and their descendants in main tree (0.154375ms)
+✔ projectExplorerMainTree does not treat shortcuts as removals when hidden set is empty (1.047667ms)
+✔ aggregates tokens and counts distinct turns per session (5.050167ms)
+✔ cost stays null when no run reported a number (0.143708ms)
+✔ cost sums only the runs that reported one (0.126584ms)
+✔ counts error outcomes and orders sessions by most recent run (0.139416ms)
+✔ runs with no sessionId are ignored (0.085459ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1800.438791

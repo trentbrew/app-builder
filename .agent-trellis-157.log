@@ -1,0 +1,19 @@
+Running criteria for TRL-157...
+
+  ✗ FAILED  Build passes (pnpm run check)
+    $ cd Projects/Sandbox/svelte-wc/app-builder && pnpm run check
+    > my-app@0.0.1 check /Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder
+    > rm -rf .vercel/output && svelte-kit sync && vite build
+    
+    vite v6.3.2 building SSR bundle for production...
+    transforming...
+  ✓ PASSED  Design token parity
+    $ node Projects/Sandbox/svelte-wc/app-builder/docs/artifacts/verify-app-builder-multi-project-tokens.mjs
+  ✓ PASSED  Agent template guard
+    $ grep -q "kind: 'deny'" Projects/Sandbox/svelte-wc/app-builder/src/lib/agentHarness/editComponent.ts && grep -q template Projects/Sandbox/svelte-wc/app-builder/src/lib/agentHarness/editComponent.ts
+  ✓ PASSED  Multi-project modules present
+    $ test -f Projects/Sandbox/svelte-wc/app-builder/src/lib/projects/dexieProjectStore.ts && test -f Projects/Sandbox/svelte-wc/app-builder/src/routes/'(dashboard)'/dashboard/+page.svelte && test -f Projects/Sandbox/svelte-wc/app-builder/e2e/multi-project.spec.ts
+  ✓ PASSED  Multi-project modules present
+    $ test -f Projects/Sandbox/svelte-wc/app-builder/src/lib/projects/dexieProjectStore.ts && test -f Projects/Sandbox/svelte-wc/app-builder/src/routes/'(dashboard)'/dashboard/+page.svelte && test -f Projects/Sandbox/svelte-wc/app-builder/e2e/multi-project.spec.ts
+
+4/5 criteria passing.

@@ -21,6 +21,7 @@
   import { fileTreeState } from '$lib/fileTreeState.svelte'
   import type { ProjectRecord } from '$lib/projects/types'
   import { toast } from '$lib/notify'
+  import { hydrateEditorTextFiles } from '$lib/editorFileHydrate'
   import { registerEditorSaveHandler } from '$lib/editorSave'
   import RotateCcwIcon from '@lucide/svelte/icons/rotate-ccw'
 
@@ -225,7 +226,7 @@
     hasHydratedAfterBoot = true
     const paths = openFiles
     untrack(() => {
-      void hydrateOpenFiles(paths)
+      void applyHydrate(paths, false)
     })
   })
 
@@ -233,57 +234,24 @@
     if (!editorReady || !fsReady) return
     const paths = openFiles
     untrack(() => {
-      void hydrateMissingFiles(paths)
+      void applyHydrate(paths, true)
     })
   })
 
-  async function hydrateOpenFiles(paths: string[]) {
+  async function applyHydrate(paths: string[], onlyEmpty: boolean) {
     const fs = sandboxStore.getFs()
     if (!fs) return
 
-    const next = { ...fileContents }
-    let changed = false
-
-    for (const path of paths) {
-      if (isBinaryPreviewPath(path)) continue
-      try {
-        const content = await fs.readFile(normalizeFilePath(path), 'utf-8')
-        if (next[path] !== content) {
-          next[path] = content
-          changed = true
-        }
-      } catch {
-        // File may not exist in the mounted project yet.
-      }
-    }
-
-    if (changed) fileContents = next
-  }
-
-  async function hydrateMissingFiles(paths: string[]) {
-    const fs = sandboxStore.getFs()
-    if (!fs) return
-
-    const missing = paths.filter((path) => !isBinaryPreviewPath(path) && !(fileContents[path] ?? '').length)
-    if (!missing.length) return
-
-    const next = { ...fileContents }
-    let changed = false
-
-    for (const path of missing) {
-      try {
-        next[path] = await fs.readFile(normalizeFilePath(path), 'utf-8')
-        changed = true
-      } catch {
-        // File may not exist in the mounted project yet.
-      }
-    }
-
-    if (changed) fileContents = next
-  }
-
-  function normalizeFilePath(path: string) {
-    return path.startsWith('/') ? path : `/${path}`
+    const result = await hydrateEditorTextFiles(
+      fs,
+      paths,
+      { fileContents, openFiles, activeFile, entryPath },
+      onlyEmpty
+    )
+    if (!result.changed) return
+    fileContents = result.fileContents
+    openFiles = result.openFiles
+    activeFile = result.activeFile
   }
 </script>
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as MessageScroller from '$lib/components/ui/message-scroller/index.js'
   import ChatMessage from '$lib/components/chat-message.svelte'
-  import TextShine from '$lib/components/text-shine.svelte'
+  import ChatStatusMarker from '$lib/components/chat-status-marker.svelte'
   import { getAgentChat } from '$lib/agentChatSessions'
   import { createMessageMetadata, getChatStatusLabel, getMessageReasoning, getMessageText, type ChatMessageMetadata } from '$lib/ai/messages.js'
   import type { UIMessage } from 'ai'
@@ -51,7 +51,7 @@
     getMessageText(last)
     getMessageReasoning(last)
 
-    queueMicrotask(() => scroller.notifyLayoutChange())
+    queueMicrotask(() => scroller.followStreamingOutput())
   })
 </script>
 
@@ -62,9 +62,7 @@
         <ChatMessage {message} chatStatus={chat.status} scrollAnchor={message.role === 'user'} />
       {/each}
       {#if showStatusRow && statusLabel}
-        <div class="px-1 py-0.5" role="status" aria-live="polite">
-          <TextShine class="text-sm font-medium">{statusLabel}</TextShine>
-        </div>
+        <ChatStatusMarker label={statusLabel} />
       {/if}
     </MessageScroller.Content>
   </MessageScroller.Viewport>

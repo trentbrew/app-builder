@@ -1,5 +1,5 @@
 import type { Subprocess, Terminal } from 'bun'
-import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, readdir, rename, rm, stat, writeFile } from 'node:fs/promises'
 import { join, relative, resolve } from 'node:path'
 import { writeReplProject } from './writeReplProject'
 
@@ -56,11 +56,30 @@ function pushLog(session: SandboxSession, line: string) {
   for (const listener of session.logListeners) listener(line)
 }
 
-function allocatePort(): number {
+import { createServer as createNetServer } from 'node:net'
+
+async function isPortAvailable(port: number): Promise<boolean> {
+  return new Promise((resolve) => {
+    const server = createNetServer()
+    server.once('error', () => {
+      resolve(false)
+    })
+    server.once('listening', () => {
+      server.close(() => {
+        resolve(true)
+      })
+    })
+    server.listen(port, '127.0.0.1')
+  })
+}
+
+async function allocatePort(): Promise<number> {
   for (let port = BASE_PORT; port <= MAX_PORT; port++) {
     if (!usedPorts.has(port)) {
-      usedPorts.add(port)
-      return port
+      if (await isPortAvailable(port)) {
+        usedPorts.add(port)
+        return port
+      }
     }
   }
   throw new Error('No preview ports available')
@@ -141,11 +160,12 @@ async function pipeOutput(session: SandboxSession, stream: ReadableStream<Uint8A
   if (buffer.trim()) pushLog(session, `[${prefix}] ${buffer}`)
 }
 
-async function waitForPort(port: number, timeoutMs = 30_000): Promise<boolean> {
+async function waitForPort(port: number, previewBase: string, timeoutMs = 30_000): Promise<boolean> {
   const deadline = Date.now() + timeoutMs
+  const checkUrl = `http://127.0.0.1:${port}${previewBase}`
   while (Date.now() < deadline) {
     try {
-      const res = await fetch(`http://127.0.0.1:${port}/`, { signal: AbortSignal.timeout(800) })
+      const res = await fetch(checkUrl, { signal: AbortSignal.timeout(800) })
       if (res.ok || res.status < 500) return true
     } catch {
       // not ready yet
@@ -168,11 +188,16 @@ export async function bootSession(id: string, appContents: string): Promise<Sand
   session.phase = 'Mounting project files…'
   pushLog(session, session.phase)
 
-  const port = allocatePort()
+  const port = await allocatePort()
   session.port = port
+  const previewBase = `/preview/${id}/`
 
   try {
-    await writeReplProject(session.dir, { port, appContents })
+    await writeReplProject(session.dir, {
+      port,
+      appContents,
+      previewBase,
+    })
     session.phase = 'Installing dependencies…'
     pushLog(session, session.phase)
 
@@ -206,7 +231,7 @@ export async function bootSession(id: string, appContents: string): Promise<Sand
     void pipeOutput(session, dev.stdout!, 'dev')
     void pipeOutput(session, dev.stderr!, 'dev')
 
-    const ready = await waitForPort(port)
+    const ready = await waitForPort(port, previewBase)
     if (!ready) {
       throw new Error(`Dev server did not become ready on port ${port}`)
     }
@@ -365,12 +390,19 @@ export async function rebootSession(id: string, appContents: string): Promise<Sa
 }
 
 function resolvePath(session: SandboxSession, filePath: string): string {
-  const normalized = filePath.startsWith('/') ? filePath.slice(1) : filePath
-  const abs = resolve(session.dir, normalized)
+  const trimmed = filePath.replace(/\/+$/, '')
+  const normalized = trimmed.startsWith('/') ? trimmed.slice(1) : trimmed
+  const abs = resolve(session.dir, normalized || '.')
   if (!abs.startsWith(session.dir)) {
     throw new Error('Path escapes sandbox')
   }
   return abs
+}
+
+export async function sandboxStat(id: string, filePath: string) {
+  const session = sessions.get(id)
+  if (!session) throw new Error(`Sandbox ${id} not found`)
+  return stat(resolvePath(session, filePath === '/' ? '.' : filePath))
 }
 
 export async function readSandboxFile(id: string, filePath: string): Promise<string> {
@@ -414,6 +446,28 @@ export async function mkdirSandbox(id: string, dirPath: string, recursive = true
   const abs = resolvePath(session, dirPath)
   await mkdir(abs, { recursive })
   pushLog(session, `Created directory ${dirPath}`)
+}
+
+export async function renameSandbox(id: string, fromPath: string, toPath: string): Promise<void> {
+  const session = sessions.get(id)
+  if (!session) throw new Error(`Sandbox ${id} not found`)
+  const fromAbs = resolvePath(session, fromPath)
+  const toAbs = resolvePath(session, toPath)
+  await mkdir(resolve(toAbs, '..'), { recursive: true })
+  await rename(fromAbs, toAbs)
+  pushLog(session, `Renamed ${fromPath} → ${toPath}`)
+}
+
+export async function rmSandbox(
+  id: string,
+  filePath: string,
+  options: { recursive?: boolean; force?: boolean } = {},
+): Promise<void> {
+  const session = sessions.get(id)
+  if (!session) throw new Error(`Sandbox ${id} not found`)
+  const abs = resolvePath(session, filePath)
+  await rm(abs, { recursive: options.recursive ?? false, force: options.force ?? false })
+  pushLog(session, `Deleted ${filePath}`)
 }
 
 export interface SandboxDirEntry {
@@ -461,6 +515,18 @@ export function subscribeLogs(id: string, listener: (line: string) => void): () 
   return () => session.logListeners.delete(listener)
 }
 
+function rewritePreviewLocation(location: string, port: number): string {
+  try {
+    const parsed = new URL(location, `http://127.0.0.1:${port}`)
+    if (parsed.hostname === '127.0.0.1' && parsed.port === String(port)) {
+      return `${parsed.pathname}${parsed.search}${parsed.hash}`
+    }
+  } catch {
+    // fall through
+  }
+  return location
+}
+
 export async function proxyPreview(id: string, request: Request): Promise<Response> {
   const session = sessions.get(id)
   if (!session?.port) {
@@ -468,18 +534,34 @@ export async function proxyPreview(id: string, request: Request): Promise<Respon
   }
 
   const url = new URL(request.url)
-  const suffix = url.pathname.replace(`/preview/${id}`, '') || '/'
-  const target = `http://127.0.0.1:${session.port}${suffix}${url.search}`
+  // Guest Vite runs with `base: /preview/:id/` — forward the full path, not stripped suffix.
+  const target = `http://127.0.0.1:${session.port}${url.pathname}${url.search}`
 
   const headers = new Headers(request.headers)
   headers.delete('host')
 
-  return fetch(target, {
+  const response = await fetch(target, {
     method: request.method,
     headers,
     body: request.body,
     redirect: 'manual',
   })
+
+  const location = response.headers.get('location')
+  if (location && response.status >= 300 && response.status < 400) {
+    const rewritten = rewritePreviewLocation(location, session.port)
+    if (rewritten !== location) {
+      const nextHeaders = new Headers(response.headers)
+      nextHeaders.set('location', rewritten)
+      return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: nextHeaders,
+      })
+    }
+  }
+
+  return response
 }
 
 export async function cleanupAll() {

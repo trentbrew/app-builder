@@ -6,7 +6,7 @@ import { getActiveProjectId } from '$lib/projects/projectScope';
 import { dexieProjectStore } from '$lib/projects/dexieProjectStore';
 import { getTemplate } from '$lib/projects/templates';
 import { loadCachedSnapshot, cachedSnapshotSize, getSnapshotMetadata } from '$lib/webcontainerSnapshot';
-import { appendToolLog } from '$lib/agentHarness/harnessStore.svelte';
+import { appendToolLog, harnessStore } from '$lib/agentHarness/harnessStore.svelte';
 import { isGuestPathWritable, normalizeGuestPath } from '$lib/agentHarness/pathAllowlist';
 import type { HarnessEnvelope } from '$lib/agentHarness/types';
 
@@ -196,6 +196,8 @@ export function exposeHarnessDevHooks(editComponent: typeof import('./editCompon
 	if (!browser) return;
 	(window as Window & { __harnessEditComponent?: typeof editComponent }).__harnessEditComponent =
 		editComponent;
+	(window as Window & { __harnessLastWritePath?: () => string }).__harnessLastWritePath = () =>
+		harnessStore.lastWritePath;
 
 	(
 		window as Window & {

@@ -13,6 +13,12 @@ import {
 	type RunRecord,
 } from '$lib/runEnvelope';
 import { resolveVariantConfig } from '$lib/experiment/variants';
+import { agentTools } from '$lib/agent/tools/definitions';
+import {
+	parseStopSequences,
+	sanitizeInferenceParams,
+	thinkingToOllama,
+} from '$lib/agent/inference/params';
 
 const PROVIDER = 'ollama';
 
@@ -44,6 +50,8 @@ export async function POST({ request }: { request: Request }) {
 		sessionId?: string;
 		variant?: string;
 		taskId?: string;
+		turnId?: string;
+		inference?: unknown;
 	};
 
 	try {
@@ -75,12 +83,20 @@ export async function POST({ request }: { request: Request }) {
 	const startedAt = Date.now();
 	const variant = sanitizeVariant(body.variant);
 	const variantConfig = resolveVariantConfig(variant);
+
+	// Interactive sessions send `inference`; experiment drivers may not. When it's
+	// present it is authoritative (and overrides the variant's thinking); when
+	// absent, the variant arm still governs so a driven corpus is unaffected.
+	const inference = body.inference != null ? sanitizeInferenceParams(body.inference) : null;
+	const thinking = inference ? thinkingToOllama(inference.thinkingLevel) : variantConfig.thinking;
+	const stopSequences = inference ? parseStopSequences(inference.stopSequences) : [];
+
 	const config: RunRecord['config'] = {
 		model: modelId,
 		provider: PROVIDER,
 		// Reports what this run actually used, not what the default happens to be.
 		// A hardcoded value here would make every arm look identical in the log.
-		thinking: variantConfig.thinking,
+		thinking: inference ? inference.thinkingLevel !== 'off' : variantConfig.thinking,
 		systemPromptChars: CHAT_SYSTEM_PROMPT.length,
 		systemPromptHash: hashText(CHAT_SYSTEM_PROMPT),
 		messageCount: messages.length,
@@ -90,6 +106,11 @@ export async function POST({ request }: { request: Request }) {
 		sessionId: typeof body.sessionId === 'string' ? body.sessionId : '',
 		variant,
 		...(typeof body.taskId === 'string' && body.taskId ? { taskId: body.taskId } : {}),
+		// Tools execute on the client, so one turn spans several HTTP requests —
+		// each is its own run. `turnId` is minted once per user message by the
+		// client and groups them back together. Without it the manifest would
+		// silently count steps as runs (run-envelope doc, section 6).
+		...(typeof body.turnId === 'string' && body.turnId ? { turnId: body.turnId } : {}),
 		buildId: __APP_BUILDER_BUILD_ID__,
 		startedAt,
 		promptChars: lastUserPromptChars(messages),
@@ -138,9 +159,22 @@ export async function POST({ request }: { request: Request }) {
 
 	try {
 		const result = streamText({
-			model: createOllamaChatModel(modelId, { thinking: variantConfig.thinking }),
+			model: createOllamaChatModel(modelId, { thinking }),
 			system: CHAT_SYSTEM_PROMPT,
 			messages: await convertToModelMessages(messages),
+			// Sampling knobs apply only when the client sent them, so an experiment
+			// run with no `inference` keeps the model's own defaults.
+			...(inference
+				? {
+						temperature: inference.temperature,
+						topP: inference.topP,
+						maxOutputTokens: inference.maxTokens,
+						...(stopSequences.length ? { stopSequences } : {}),
+					}
+				: {}),
+			// No `execute` on any of these: the SDK forwards the call to the client,
+			// which is where the sandbox filesystem actually lives.
+			tools: agentTools,
 			onChunk: ({ chunk }) => {
 				// Only generated content counts. `onChunk` also fires for `start` and
 				// `start-step` control parts, which arrive as soon as the stream opens —
@@ -152,7 +186,16 @@ export async function POST({ request }: { request: Request }) {
 			},
 			onEnd: (event) => {
 				const usage = event.usage;
-				closeRun(event.text.trim() ? 'success' : 'empty', {
+				// A step that ends in a tool call is `continued`, not `empty` — it
+				// produced no text because it handed off to the client, and the turn
+				// resumes in the next run. Grouping is by `turnId`.
+				const outcome: RunOutcome =
+					event.toolCalls.length > 0 && event.finishReason === 'tool-calls'
+						? 'continued'
+						: event.text.trim()
+							? 'success'
+							: 'empty';
+				closeRun(outcome, {
 					steps: event.steps.length,
 					toolCalls: event.toolCalls.length,
 					finishReason: event.finishReason ?? null,

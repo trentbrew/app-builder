@@ -3,7 +3,7 @@
     "client": {
       "port": 9898,
       "type": "web",
-      "command": "pnpm dev"
+      "command": "npm run dev"
     }
   }
 }

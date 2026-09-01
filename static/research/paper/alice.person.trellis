@@ -1,0 +1,15 @@
+{
+  "@context": "https://filegraph.app/context.jsonld",
+  "@id": "person:alice-doe",
+  "@type": "Person",
+  "name": "Alice Doe",
+  "email": "alice@example.com",
+  "role": "Engineering Lead",
+  "team": "Core Platform",
+  "startDate": "2024-01-15",
+  "bio": "Engineering leader with 10+ years building developer tools and knowledge management systems.",
+  "skills": ["TypeScript", "Rust", "React", "System Design"],
+  "location": "San Francisco, CA",
+  "github": "https://github.com/alicedoe",
+  "worksOn": ["proj:trellis-system", "proj:entity-projections"]
+}

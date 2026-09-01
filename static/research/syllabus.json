@@ -1,0 +1,592 @@
+{
+  "@context": {
+    "@vocab": "https://schema.org/",
+    "trellis": "tag:trellis.app,2024:",
+    "syl": "tag:trellis.app,2024:syllabus/"
+  },
+  "workspace": {
+    "@id": "trellis:workspace/good-syllabus",
+    "@type": "trellis:Workspace",
+    "trellis:title": "Good Syllabus Design",
+    "trellis:description": "A syllabus ontology that encodes what separates working syllabi from drawer-fillers: contract plus map, checkable objectives, transparent grading, humane policies, and honest workload.",
+    "trellis:metadata": {
+      "createdTime": "2026-08-30T00:00:00Z",
+      "createdBy": { "@id": "user:trent" },
+      "version": "1.0.0",
+      "icon": "📋",
+      "tags": ["education", "syllabus", "course-design", "thesis-example"]
+    },
+
+    "kernel": {
+      "version": "2.0.0",
+      "features": ["formulas", "relations", "rollups"]
+    },
+
+    "ontologies": {
+      "syllabus-schema": {
+        "@id": "syl:schema/syllabus",
+        "@type": "trellis:Schema",
+        "version": "1.0.0",
+        "description": "The syllabus as contract and map — answers why before what, signals course character, and stays usable as a reference all term.",
+        "icon": "📋",
+        "fields": [
+          {
+            "name": "courseCode",
+            "valueType": "rich_text",
+            "required": true,
+            "description": "Short identifier (e.g. CS 301, DES-420)"
+          },
+          {
+            "name": "term",
+            "valueType": "rich_text",
+            "required": true,
+            "description": "When the course runs (e.g. Fall 2026)"
+          },
+          {
+            "name": "framing",
+            "valueType": "rich_text",
+            "required": true,
+            "description": "Why should I care? Big questions the course wrestles with — before policies and mechanics."
+          },
+          {
+            "name": "capabilities",
+            "valueType": "rich_text",
+            "required": true,
+            "description": "What you'll walk away able to do — concrete capability, not vague 'understanding'."
+          },
+          {
+            "name": "courseCharacter",
+            "valueType": "multi_select",
+            "required": true,
+            "description": "What this course values — if you deleted the title, could someone still tell what kind of course this is?",
+            "selectOptions": {
+              "options": [
+                { "id": "rigor", "name": "Rigor", "color": "blue" },
+                { "id": "creativity", "name": "Creativity", "color": "purple" },
+                { "id": "collaboration", "name": "Collaboration", "color": "green" },
+                { "id": "speed", "name": "Speed / Iteration", "color": "orange" },
+                { "id": "reflection", "name": "Reflection", "color": "yellow" },
+                { "id": "craft", "name": "Craft", "color": "pink" }
+              ]
+            }
+          },
+          {
+            "name": "weeklyHours",
+            "valueType": "number",
+            "required": true,
+            "description": "Honest expected hours per week (reading + assignments + class)"
+          },
+          {
+            "name": "objectives",
+            "valueType": "relation",
+            "relation": {
+              "targetSchema": "syl:schema/learning-objective",
+              "cardinality": "many",
+              "syncedProperty": "syllabus"
+            },
+            "description": "Concrete, checkable learning objectives"
+          },
+          {
+            "name": "modules",
+            "valueType": "relation",
+            "relation": {
+              "targetSchema": "syl:schema/course-module",
+              "cardinality": "many",
+              "syncedProperty": "syllabus"
+            },
+            "description": "Week-by-week or module structure showing sequencing logic"
+          },
+          {
+            "name": "gradingComponents",
+            "valueType": "relation",
+            "relation": {
+              "targetSchema": "syl:schema/grading-component",
+              "cardinality": "many",
+              "syncedProperty": "syllabus"
+            },
+            "description": "Transparent, effort-proportional grading breakdown"
+          },
+          {
+            "name": "policies",
+            "valueType": "relation",
+            "relation": {
+              "targetSchema": "syl:schema/course-policy",
+              "cardinality": "many",
+              "syncedProperty": "syllabus"
+            },
+            "description": "Humane policies that set expectations without copy-pasted legal armor"
+          },
+          {
+            "name": "totalGradingWeight",
+            "valueType": "rollup",
+            "rollup": {
+              "relationProperty": "gradingComponents",
+              "targetProperty": "weight",
+              "aggregation": "sum"
+            },
+            "format": "percent",
+            "description": "Should sum to 100% — sanity check for transparent grading"
+          }
+        ]
+      },
+
+      "learning-objective-schema": {
+        "@id": "syl:schema/learning-objective",
+        "@type": "trellis:Schema",
+        "version": "1.0.0",
+        "description": "A concrete, checkable learning objective — verifiable by instructor and student, not vibes.",
+        "icon": "🎯",
+        "fields": [
+          {
+            "name": "statement",
+            "valueType": "rich_text",
+            "required": true,
+            "description": "Observable outcome (e.g. 'Run and interpret a t-test on a real dataset')"
+          },
+          {
+            "name": "checkable",
+            "valueType": "checkbox",
+            "required": true,
+            "description": "Can progress be verified without relying on subjective judgment alone?"
+          },
+          {
+            "name": "verificationMethod",
+            "valueType": "rich_text",
+            "description": "How instructor and student confirm this objective was met"
+          },
+          {
+            "name": "module",
+            "valueType": "relation",
+            "relation": {
+              "targetSchema": "syl:schema/course-module",
+              "cardinality": "one",
+              "syncedProperty": "objectives"
+            }
+          },
+          {
+            "name": "syllabus",
+            "valueType": "relation",
+            "relation": {
+              "targetSchema": "syl:schema/syllabus",
+              "cardinality": "one",
+              "syncedProperty": "objectives"
+            }
+          }
+        ]
+      },
+
+      "course-module-schema": {
+        "@id": "syl:schema/course-module",
+        "@type": "trellis:Schema",
+        "version": "1.0.0",
+        "description": "A course unit whose placement reveals the logic of the course — why this comes before that.",
+        "icon": "📅",
+        "fields": [
+          {
+            "name": "sequenceNumber",
+            "valueType": "number",
+            "required": true,
+            "description": "Week or module order"
+          },
+          {
+            "name": "title",
+            "valueType": "title",
+            "required": true
+          },
+          {
+            "name": "buildsOn",
+            "valueType": "relation",
+            "relation": {
+              "targetSchema": "syl:schema/course-module",
+              "cardinality": "many"
+            },
+            "description": "Prior units this module depends on — makes sequencing logic explicit"
+          },
+          {
+            "name": "topics",
+            "valueType": "rich_text",
+            "required": true,
+            "description": "Scannable summary — usable as a reference mid-term"
+          },
+          {
+            "name": "readingLoad",
+            "valueType": "number",
+            "description": "Estimated reading hours this unit"
+          },
+          {
+            "name": "assignmentLoad",
+            "valueType": "number",
+            "description": "Estimated assignment hours this unit"
+          },
+          {
+            "name": "objectives",
+            "valueType": "relation",
+            "relation": {
+              "targetSchema": "syl:schema/learning-objective",
+              "cardinality": "many",
+              "syncedProperty": "module"
+            }
+          },
+          {
+            "name": "syllabus",
+            "valueType": "relation",
+            "relation": {
+              "targetSchema": "syl:schema/syllabus",
+              "cardinality": "one",
+              "syncedProperty": "modules"
+            }
+          }
+        ]
+      },
+
+      "grading-component-schema": {
+        "@id": "syl:schema/grading-component",
+        "@type": "trellis:Schema",
+        "version": "1.0.0",
+        "description": "A graded component with transparent weight proportional to effort and cognitive load.",
+        "icon": "⚖️",
+        "fields": [
+          {
+            "name": "name",
+            "valueType": "title",
+            "required": true
+          },
+          {
+            "name": "weight",
+            "valueType": "number",
+            "required": true,
+            "format": "percent",
+            "description": "Share of final grade — should track actual time and effort"
+          },
+          {
+            "name": "effortHours",
+            "valueType": "number",
+            "description": "Realistic hours expected for this component"
+          },
+          {
+            "name": "description",
+            "valueType": "rich_text",
+            "required": true,
+            "description": "What is being evaluated — no vague 'participation' without a rubric"
+          },
+          {
+            "name": "rubric",
+            "valueType": "relation",
+            "relation": {
+              "targetSchema": "rub:schema/rubric",
+              "cardinality": "one"
+            },
+            "description": "Optional link to a rubric when grading criteria need to be legible"
+          },
+          {
+            "name": "syllabus",
+            "valueType": "relation",
+            "relation": {
+              "targetSchema": "syl:schema/syllabus",
+              "cardinality": "one",
+              "syncedProperty": "gradingComponents"
+            }
+          }
+        ]
+      },
+
+      "course-policy-schema": {
+        "@id": "syl:schema/course-policy",
+        "@type": "trellis:Schema",
+        "version": "1.0.0",
+        "description": "A humane policy that sets expectations and acknowledges real edge cases.",
+        "icon": "📜",
+        "fields": [
+          {
+            "name": "policyType",
+            "valueType": "select",
+            "required": true,
+            "selectOptions": {
+              "options": [
+                { "id": "late-work", "name": "Late Work", "color": "orange" },
+                { "id": "attendance", "name": "Attendance", "color": "blue" },
+                { "id": "integrity", "name": "Academic Integrity", "color": "red" },
+                { "id": "communication", "name": "Communication", "color": "green" },
+                { "id": "accommodations", "name": "Accommodations", "color": "purple" },
+                { "id": "other", "name": "Other", "color": "gray" }
+              ]
+            }
+          },
+          {
+            "name": "summary",
+            "valueType": "rich_text",
+            "required": true,
+            "description": "One-line scannable rule — for 'what's the late policy again?' moments"
+          },
+          {
+            "name": "fullText",
+            "valueType": "rich_text",
+            "description": "Complete policy language"
+          },
+          {
+            "name": "edgeCases",
+            "valueType": "rich_text",
+            "description": "How illness, emergencies, and other real situations are handled"
+          },
+          {
+            "name": "syllabus",
+            "valueType": "relation",
+            "relation": {
+              "targetSchema": "syl:schema/syllabus",
+              "cardinality": "one",
+              "syncedProperty": "policies"
+            }
+          }
+        ]
+      }
+    },
+
+    "graph": {
+      "nodes": [
+        {
+          "@id": "trellis:node/syllabus-local-first-systems",
+          "@type": "Syllabus",
+          "trellis:title": "Local-First Systems Design",
+          "trellis:description": "Example syllabus demonstrating good syllabus design principles",
+          "trellis:metadata": {
+            "createdTime": "2026-08-30T00:00:00Z",
+            "createdBy": { "@id": "user:trent" },
+            "icon": "📋"
+          },
+          "courseCode": "TRELLIS 301",
+          "term": "Fall 2026",
+          "framing": "How do you build software that keeps working when the network doesn't? This course wrestles with local-first architecture, semantic data models, and the design choices that make systems feel owned rather than rented.",
+          "capabilities": "Design and prototype a local-first workspace with explicit ontology, typed queries, and offline-capable sync — and articulate tradeoffs against cloud-default patterns.",
+          "courseCharacter": ["rigor", "craft", "collaboration"],
+          "weeklyHours": 8
+        },
+
+        {
+          "@id": "trellis:node/objective-t-test",
+          "@type": "LearningObjective",
+          "trellis:title": "Interpret statistical tests on real data",
+          "statement": "Be able to run and interpret a t-test on a real dataset, including stating assumptions and limitations.",
+          "checkable": true,
+          "verificationMethod": "Lab submission with annotated output and written interpretation checked against a rubric."
+        },
+        {
+          "@id": "trellis:node/objective-ontology-design",
+          "@type": "LearningObjective",
+          "trellis:title": "Design a domain ontology",
+          "statement": "Define a Trellis schema for a novel domain with distinct entity types, relations, and at least one computed field.",
+          "checkable": true,
+          "verificationMethod": "Peer review against a checklist: non-overlapping types, checkable fields, explicit relations."
+        },
+        {
+          "@id": "trellis:node/objective-sync-tradeoffs",
+          "@type": "LearningObjective",
+          "trellis:title": "Articulate sync tradeoffs",
+          "statement": "Compare CRDT, op-log, and last-write-wins strategies for a given use case in a written memo.",
+          "checkable": true,
+          "verificationMethod": "Memo graded on named tradeoffs, not vague 'understanding'."
+        },
+
+        {
+          "@id": "trellis:node/module-01-foundations",
+          "@type": "CourseModule",
+          "trellis:title": "Foundations: Files, Graphs, and Ownership",
+          "sequenceNumber": 1,
+          "topics": "Filesystem vs graph models; EAV basics; why local-first matters",
+          "readingLoad": 3,
+          "assignmentLoad": 2
+        },
+        {
+          "@id": "trellis:node/module-02-ontology",
+          "@type": "CourseModule",
+          "trellis:title": "Ontology Design",
+          "sequenceNumber": 2,
+          "topics": "Schema design; relations and rollups; checkable objectives as schema fields",
+          "readingLoad": 2,
+          "assignmentLoad": 4
+        },
+        {
+          "@id": "trellis:node/module-03-sync",
+          "@type": "CourseModule",
+          "trellis:title": "Sync and Conflict",
+          "sequenceNumber": 3,
+          "topics": "Op-logs; peer sync; conflict semantics — builds on ontology from week 2",
+          "readingLoad": 3,
+          "assignmentLoad": 5
+        },
+
+        {
+          "@id": "trellis:node/grading-projects",
+          "@type": "GradingComponent",
+          "trellis:title": "Studio Projects",
+          "weight": 0.5,
+          "effortHours": 40,
+          "description": "Three iterative prototypes with peer critique. Weight reflects sustained design + implementation effort."
+        },
+        {
+          "@id": "trellis:node/grading-labs",
+          "@type": "GradingComponent",
+          "trellis:title": "Weekly Labs",
+          "weight": 0.25,
+          "effortHours": 20,
+          "description": "Checkable skill exercises with explicit verification criteria per lab."
+        },
+        {
+          "@id": "trellis:node/grading-participation",
+          "@type": "GradingComponent",
+          "trellis:title": "Studio Participation",
+          "weight": 0.15,
+          "effortHours": 12,
+          "description": "Prepared critique of peer work in at least 8 of 10 sessions. Rubric defines 'prepared' — not attendance alone."
+        },
+        {
+          "@id": "trellis:node/grading-reflection",
+          "@type": "GradingComponent",
+          "trellis:title": "Final Reflection Memo",
+          "weight": 0.1,
+          "effortHours": 4,
+          "description": "Synthesis of design choices across the term — what you'd do differently and why."
+        },
+
+        {
+          "@id": "trellis:node/policy-late",
+          "@type": "CoursePolicy",
+          "trellis:title": "Late Work Policy",
+          "policyType": "late-work",
+          "summary": "48-hour grace window, then 10% per day; extensions by request before deadline.",
+          "fullText": "Assignments submitted within 48 hours of the deadline receive full credit. After that, 10% deducted per calendar day. Request extensions before the deadline for illness or emergencies — no documentation required for first request.",
+          "edgeCases": "Illness and family emergencies: email before deadline, we'll find a path. Chronic situations: talk to me in week 1 so we can plan."
+        },
+        {
+          "@id": "trellis:node/policy-integrity",
+          "@type": "CoursePolicy",
+          "trellis:title": "Collaboration & Integrity",
+          "policyType": "integrity",
+          "summary": "Collaborate on ideas; submit your own work; cite AI assistance.",
+          "fullText": "Discuss concepts freely. Code and written submissions must be your own unless a group assignment says otherwise. If you use AI tools, note where and how in your submission.",
+          "edgeCases": "Unsure if something counts as collaboration? Ask before submitting — not after."
+        }
+      ],
+
+      "edges": [
+        {
+          "@id": "trellis:edge/syllabus-objectives",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/syllabus-local-first-systems" },
+          "target": { "@id": "trellis:node/objective-t-test" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/syllabus-objective-ontology",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/syllabus-local-first-systems" },
+          "target": { "@id": "trellis:node/objective-ontology-design" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/syllabus-objective-sync",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/syllabus-local-first-systems" },
+          "target": { "@id": "trellis:node/objective-sync-tradeoffs" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/syllabus-modules",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/syllabus-local-first-systems" },
+          "target": { "@id": "trellis:node/module-01-foundations" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/syllabus-module-02",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/syllabus-local-first-systems" },
+          "target": { "@id": "trellis:node/module-02-ontology" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/syllabus-module-03",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/syllabus-local-first-systems" },
+          "target": { "@id": "trellis:node/module-03-sync" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/module-02-builds-on-01",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/module-02-ontology" },
+          "target": { "@id": "trellis:node/module-01-foundations" },
+          "relationType": "buildsOn"
+        },
+        {
+          "@id": "trellis:edge/module-03-builds-on-02",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/module-03-sync" },
+          "target": { "@id": "trellis:node/module-02-ontology" },
+          "relationType": "buildsOn"
+        },
+        {
+          "@id": "trellis:edge/module-02-objective",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/module-02-ontology" },
+          "target": { "@id": "trellis:node/objective-ontology-design" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/syllabus-grading",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/syllabus-local-first-systems" },
+          "target": { "@id": "trellis:node/grading-projects" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/syllabus-grading-labs",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/syllabus-local-first-systems" },
+          "target": { "@id": "trellis:node/grading-labs" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/syllabus-grading-participation",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/syllabus-local-first-systems" },
+          "target": { "@id": "trellis:node/grading-participation" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/syllabus-grading-reflection",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/syllabus-local-first-systems" },
+          "target": { "@id": "trellis:node/grading-reflection" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/syllabus-policies-late",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/syllabus-local-first-systems" },
+          "target": { "@id": "trellis:node/policy-late" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/syllabus-policies-integrity",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/syllabus-local-first-systems" },
+          "target": { "@id": "trellis:node/policy-integrity" },
+          "relationType": "contains"
+        }
+      ]
+    },
+
+    "queries": {
+      "checkable-objectives": {
+        "@type": "trellis:Query",
+        "description": "Objectives that pass the checkable test",
+        "eqls": "FIND root AS ?r WHERE ?r.workspace.graph.nodes.@type = 'LearningObjective' AND ?r.workspace.graph.nodes.checkable = true RETURN ?r.workspace.graph.nodes.statement"
+      },
+      "grading-weight-check": {
+        "@type": "trellis:Query",
+        "description": "Verify grading components sum to 100%",
+        "natural_language": "Do all grading components for this syllabus sum to 100% weight?"
+      }
+    }
+  }
+}

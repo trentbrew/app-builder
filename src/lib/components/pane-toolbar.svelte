@@ -37,7 +37,7 @@
     min-height: var(--editor-chrome-height, 2rem);
     padding: 0 0.5rem;
     border-bottom: 1px solid var(--color-border);
-    background: color-mix(in oklch, var(--color-background) 92%, var(--color-muted));
+    background: var(--editor-pane-toolbar-background);
     box-sizing: border-box;
     font-family: var(--font-mono);
   }
@@ -132,7 +132,18 @@
 
   :global(.pane-toolbar__btn--active) {
     color: var(--color-foreground);
-    box-shadow: inset 0 -1px 0 0 var(--color-foreground);
+    background: color-mix(in oklch, var(--color-muted) 70%, transparent);
+    box-shadow: none;
+    outline: none;
+  }
+
+  :global(.pane-toolbar__btn--active:hover:not(:disabled)) {
+    background: color-mix(in oklch, var(--color-muted) 85%, transparent);
+  }
+
+  :global(.pane-toolbar__btn--active:focus-visible) {
+    outline: none;
+    box-shadow: none;
   }
 
   :global(.pane-toolbar__group .pane-toolbar__btn) {

@@ -10,6 +10,7 @@
   import ShellShortcuts from '$lib/components/shell-shortcuts.svelte'
   import PluginsDialog from '$lib/components/plugins-dialog.svelte'
   import SettingsDialog from '$lib/components/settings-dialog.svelte'
+  import PromptDialog from '$lib/components/prompt-dialog.svelte'
   import StatusBar from '$lib/components/status-bar.svelte'
   import { statusBar } from '$lib/statusBar.svelte'
 
@@ -46,6 +47,7 @@
     <ShellShortcuts />
     <PluginsDialog />
     <SettingsDialog />
+    <PromptDialog />
   </div>
 
   <Toaster

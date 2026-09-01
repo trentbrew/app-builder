@@ -39,27 +39,42 @@ function deriveChromeVars(mode: 'dark' | 'light'): string {
 		'  --editor-tab-active-accent: var(--color-primary);'
 	];
 
+	const sharedSurfaces = [
+		'  --color-agent-composer-surface: color-mix(in oklch, var(--color-foreground) 8%, var(--color-background));',
+		'  --color-code-surface: color-mix(in oklch, var(--color-muted) 70%, var(--color-background));',
+		'  --color-editor-gutter: color-mix(in oklch, var(--color-muted) 35%, var(--color-background));',
+		'  --color-active-line: color-mix(in oklch, var(--color-muted) 55%, transparent);',
+		'  --editor-pane-toolbar-background: color-mix(in oklch, var(--color-muted) 28%, var(--color-background));'
+	];
+
 	if (mode === 'dark') {
 		return [
 			...accentChrome,
+			...sharedSurfaces,
 			'  --status-bar-hover: color-mix(in oklch, var(--color-primary) 82%, black);',
 			'  --color-chrome-surface: color-mix(in oklch, var(--color-background) 86%, black);',
 			'  --color-agent-chat-surface: var(--color-card);',
-			'  --color-agent-composer-surface: color-mix(in oklch, var(--color-foreground) 10%, var(--color-background));',
 			'  --editor-pane-canvas: color-mix(in oklch, var(--color-background) 70%, black);',
+			'  --color-code-surface: color-mix(in oklch, var(--color-background) 72%, black);',
+			'  --color-editor-gutter: color-mix(in oklch, var(--color-background) 90%, var(--color-muted));',
+			'  --editor-pane-toolbar-background: color-mix(in oklch, var(--color-background) 92%, var(--color-muted));',
 			'  --scrollbar-thumb: oklch(1 0 0 / 10%);',
 			'  --scrollbar-thumb-hover: oklch(1 0 0 / 20%);'
 		].join('\n');
 	}
 	return [
 		...accentChrome,
+		...sharedSurfaces,
 		'  --status-bar-hover: color-mix(in oklch, var(--color-primary) 85%, white);',
-		'  --color-chrome-surface: var(--color-background);',
-		'  --color-agent-chat-surface: var(--color-card);',
-		'  --color-agent-composer-surface: color-mix(in oklch, var(--color-foreground) 10%, var(--color-background));',
-		'  --editor-pane-canvas: color-mix(in oklch, var(--color-background) 84%, black);',
-		'  --scrollbar-thumb: oklch(0 0 0 / 10%);',
-		'  --scrollbar-thumb-hover: oklch(0 0 0 / 20%);'
+		'  --color-chrome-surface: color-mix(in oklch, var(--color-muted) 42%, var(--color-background));',
+		'  --color-agent-chat-surface: var(--color-background);',
+		'  --editor-pane-canvas: color-mix(in oklch, var(--color-muted) 68%, var(--color-background));',
+		'  --color-code-surface: color-mix(in oklch, var(--color-muted) 82%, var(--color-background));',
+		'  --color-editor-gutter: color-mix(in oklch, var(--color-muted) 58%, var(--color-background));',
+		'  --color-active-line: color-mix(in oklch, var(--color-muted) 78%, var(--color-background));',
+		'  --editor-pane-toolbar-background: color-mix(in oklch, var(--color-muted) 40%, var(--color-background));',
+		'  --scrollbar-thumb: oklch(0 0 0 / 12%);',
+		'  --scrollbar-thumb-hover: oklch(0 0 0 / 22%);'
 	].join('\n');
 }
 
@@ -138,4 +153,9 @@ export function applyTheme(resolved: ResolvedTheme, colorScheme: ColorScheme) {
 export function clearAppliedTheme() {
 	document.getElementById(STYLE_ID)?.remove();
 	detachSystemListener();
+}
+
+export function isLightColorScheme(): boolean {
+	if (typeof document === 'undefined') return false;
+	return document.documentElement.classList.contains('light');
 }

@@ -1,0 +1,14 @@
+Running criteria for TRL-157...
+
+  ✓ PASSED  Build passes (pnpm run check)
+    $ cd Projects/Sandbox/svelte-wc/app-builder && pnpm run check
+  ✓ PASSED  Design token parity
+    $ node Projects/Sandbox/svelte-wc/app-builder/docs/artifacts/verify-app-builder-multi-project-tokens.mjs
+  ✓ PASSED  Agent template guard
+    $ grep -q "kind: 'deny'" Projects/Sandbox/svelte-wc/app-builder/src/lib/agentHarness/editComponent.ts && grep -q template Projects/Sandbox/svelte-wc/app-builder/src/lib/agentHarness/editComponent.ts
+  ✓ PASSED  Multi-project modules present
+    $ test -f Projects/Sandbox/svelte-wc/app-builder/src/lib/projects/dexieProjectStore.ts && test -f Projects/Sandbox/svelte-wc/app-builder/src/routes/'(dashboard)'/dashboard/+page.svelte && test -f Projects/Sandbox/svelte-wc/app-builder/e2e/multi-project.spec.ts
+  ✓ PASSED  Multi-project modules present
+    $ test -f Projects/Sandbox/svelte-wc/app-builder/src/lib/projects/dexieProjectStore.ts && test -f Projects/Sandbox/svelte-wc/app-builder/src/routes/'(dashboard)'/dashboard/+page.svelte && test -f Projects/Sandbox/svelte-wc/app-builder/e2e/multi-project.spec.ts
+
+All 5 criteria passed. Close with: trellis issue close TRL-157 --confirm

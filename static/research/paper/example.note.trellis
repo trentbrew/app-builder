@@ -1,0 +1,1179 @@
+{
+  "@context": {
+    "schema": "https://schema.org/"
+  },
+  "@type": "Note",
+  "@id": "note:example.trellis",
+  "title": "example.trellis",
+  "status": "draft",
+  "created_at": "2026-01-05T23:26:10.072Z",
+  "updated_at": "2026-01-05T23:26:12.259Z",
+  "blocks": [
+    {
+      "id": "b-ztbc9zp",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "{"
+        }
+      ]
+    },
+    {
+      "id": "b-ss38uk2",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "  \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "context\": \"https://filegraph.app/context.jsonld\","
+        }
+      ]
+    },
+    {
+      "id": "b-k03cmv7",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "  \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "type\": \"TrellisGraph\","
+        }
+      ]
+    },
+    {
+      "id": "b-kszo9dc",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "  \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "id\": \"trellis:example-note\","
+        }
+      ]
+    },
+    {
+      "id": "b-amq8b4z",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "  \"metadata\": {"
+        }
+      ]
+    },
+    {
+      "id": "b-jgswghz",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    \"created\": \"2025-01-05T21:54:00Z\","
+        }
+      ]
+    },
+    {
+      "id": "b-xk0qf6o",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    \"modified\": \"2025-01-05T21:54:00Z\","
+        }
+      ]
+    },
+    {
+      "id": "b-0zrr0m4",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    \"author\": \"user:trent\","
+        }
+      ]
+    },
+    {
+      "id": "b-qcl7012",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    \"baseType\": \"note\""
+        }
+      ]
+    },
+    {
+      "id": "b-hu8hqiz",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "  },"
+        }
+      ]
+    },
+    {
+      "id": "b-miecdql",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "  \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "graph\": "
+        },
+        {
+          "type": "text",
+          "text": "["
+        }
+      ]
+    },
+    {
+      "id": "b-2t3o1lh",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    {"
+        }
+      ]
+    },
+    {
+      "id": "b-gmzyrru",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "id\": \"block:heading-001\","
+        }
+      ]
+    },
+    {
+      "id": "b-6c838et",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "type\": \"HeadingBlock\","
+        }
+      ]
+    },
+    {
+      "id": "b-pa5nc3t",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"level\": 1,"
+        }
+      ]
+    },
+    {
+      "id": "b-fnc8fj7",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"content\": \"Trellis Architecture Overview\","
+        }
+      ]
+    },
+    {
+      "id": "b-25q303n",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"position\": 0"
+        }
+      ]
+    },
+    {
+      "id": "b-gvgt7ni",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    },"
+        }
+      ]
+    },
+    {
+      "id": "b-im26dke",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    {"
+        }
+      ]
+    },
+    {
+      "id": "b-qg2kfqb",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "id\": \"block:para-001\","
+        }
+      ]
+    },
+    {
+      "id": "b-4r77onc",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "type\": \"ParagraphBlock\","
+        }
+      ]
+    },
+    {
+      "id": "b-apj9zg6",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"content\": \"This document demonstrates how Trellis represents rich text notes as knowledge graphs.\","
+        }
+      ]
+    },
+    {
+      "id": "b-cq1a7k8",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"position\": 1"
+        }
+      ]
+    },
+    {
+      "id": "b-vbs2kmx",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    },"
+        }
+      ]
+    },
+    {
+      "id": "b-2hf0zgj",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    {"
+        }
+      ]
+    },
+    {
+      "id": "b-pi17hee",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "id\": \"block:heading-002\","
+        }
+      ]
+    },
+    {
+      "id": "b-s5lgyv4",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "type\": \"HeadingBlock\","
+        }
+      ]
+    },
+    {
+      "id": "b-crbd50g",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"level\": 2,"
+        }
+      ]
+    },
+    {
+      "id": "b-ph7bfp8",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"content\": \"Key Concepts\","
+        }
+      ]
+    },
+    {
+      "id": "b-p21sdil",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"position\": 2"
+        }
+      ]
+    },
+    {
+      "id": "b-bn6h9qm",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    },"
+        }
+      ]
+    },
+    {
+      "id": "b-rewvfxo",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    {"
+        }
+      ]
+    },
+    {
+      "id": "b-8a3kmzo",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "id\": \"block:list-001\","
+        }
+      ]
+    },
+    {
+      "id": "b-6pso31k",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "type\": \"ListBlock\","
+        }
+      ]
+    },
+    {
+      "id": "b-gn5m36z",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"listType\": \"bullet\","
+        }
+      ]
+    },
+    {
+      "id": "b-4nqbk9r",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"items\": "
+        },
+        {
+          "type": "text",
+          "text": "["
+        }
+      ]
+    },
+    {
+      "id": "b-8h7bivd",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "        {"
+        }
+      ]
+    },
+    {
+      "id": "b-1s0cpuu",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "          \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "id\": \"item:001\","
+        }
+      ]
+    },
+    {
+      "id": "b-tn6602u",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "          \"content\": \"Every block is a node in the graph\""
+        }
+      ]
+    },
+    {
+      "id": "b-mvi6zdj",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "        },"
+        }
+      ]
+    },
+    {
+      "id": "b-mj9fwvx",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "        {"
+        }
+      ]
+    },
+    {
+      "id": "b-1r1ugbh",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "          \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "id\": \"item:002\","
+        }
+      ]
+    },
+    {
+      "id": "b-c01rat1",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "          \"content\": \"Entity mentions create edges to other graphs\""
+        }
+      ]
+    },
+    {
+      "id": "b-qkuk0h4",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "        },"
+        }
+      ]
+    },
+    {
+      "id": "b-3f21u5h",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "        {"
+        }
+      ]
+    },
+    {
+      "id": "b-48hvshd",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "          \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "id\": \"item:003\","
+        }
+      ]
+    },
+    {
+      "id": "b-youkiw9",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "          \"content\": \"Blocks maintain sequential ordering via position\""
+        }
+      ]
+    },
+    {
+      "id": "b-ajvab7w",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "        }"
+        }
+      ]
+    },
+    {
+      "id": "b-jxqg5oj",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      ],"
+        }
+      ]
+    },
+    {
+      "id": "b-1fxcewl",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"position\": 3"
+        }
+      ]
+    },
+    {
+      "id": "b-nxot72q",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    },"
+        }
+      ]
+    },
+    {
+      "id": "b-0gxka52",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    {"
+        }
+      ]
+    },
+    {
+      "id": "b-5fqctkl",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "id\": \"block:para-002\","
+        }
+      ]
+    },
+    {
+      "id": "b-1pcdvl2",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "type\": \"ParagraphBlock\","
+        }
+      ]
+    },
+    {
+      "id": "b-yoj41ro",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"content\": \"This note references "
+        },
+        {
+          "type": "text",
+          "text": " who is working on "
+        },
+        {
+          "type": "text",
+          "text": ".\","
+        }
+      ]
+    },
+    {
+      "id": "b-omfgvi9",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"mentions\": "
+        },
+        {
+          "type": "text",
+          "text": "["
+        }
+      ]
+    },
+    {
+      "id": "b-wq20k7w",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "        \"person:sarah:001\","
+        }
+      ]
+    },
+    {
+      "id": "b-i0mk456",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "        \"proj:filegraph:001\""
+        }
+      ]
+    },
+    {
+      "id": "b-rwa2zj1",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      ],"
+        }
+      ]
+    },
+    {
+      "id": "b-auamnpb",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"position\": 4"
+        }
+      ]
+    },
+    {
+      "id": "b-iry45a5",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    },"
+        }
+      ]
+    },
+    {
+      "id": "b-gt17zj6",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    {"
+        }
+      ]
+    },
+    {
+      "id": "b-jgmpvg5",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "id\": \"block:code-001\","
+        }
+      ]
+    },
+    {
+      "id": "b-0xit70z",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "type\": \"CodeBlock\","
+        }
+      ]
+    },
+    {
+      "id": "b-sabi0yl",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"language\": \"typescript\","
+        }
+      ]
+    },
+    {
+      "id": "b-uiw1z7a",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"content\": \"// Example: Loading a trellis file\\nconst graph "
+        },
+        {
+          "type": "text",
+          "text": "="
+        },
+        {
+          "type": "text",
+          "text": " await loadTrellis('example.note.trellis')\\nconst blocks "
+        },
+        {
+          "type": "text",
+          "text": "="
+        },
+        {
+          "type": "text",
+          "text": " graph"
+        },
+        {
+          "type": "text",
+          "text": "["
+        },
+        {
+          "type": "text",
+          "text": "'"
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "graph'].sort((a, b) "
+        },
+        {
+          "type": "text",
+          "text": "="
+        },
+        {
+          "type": "text",
+          "text": "> a.position - b.position)\","
+        }
+      ]
+    },
+    {
+      "id": "b-wgjzpym",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"position\": 5"
+        }
+      ]
+    },
+    {
+      "id": "b-k6kgpbt",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    }"
+        }
+      ]
+    },
+    {
+      "id": "b-puy75li",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "  ],"
+        }
+      ]
+    },
+    {
+      "id": "b-f7xg1wd",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "  \"edges\": "
+        },
+        {
+          "type": "text",
+          "text": "["
+        }
+      ]
+    },
+    {
+      "id": "b-xvpxh5q",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    {"
+        }
+      ]
+    },
+    {
+      "id": "b-mba5mve",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "id\": \"edge:001\","
+        }
+      ]
+    },
+    {
+      "id": "b-jixs1fs",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"source\": \"block:para-002\","
+        }
+      ]
+    },
+    {
+      "id": "b-51y34jg",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"target\": \"person:sarah:001\","
+        }
+      ]
+    },
+    {
+      "id": "b-9bduva7",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"relation\": \"mentions\","
+        }
+      ]
+    },
+    {
+      "id": "b-yo3wndg",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"resolvedFile\": \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "entities/people.data\""
+        }
+      ]
+    },
+    {
+      "id": "b-k8fzh3o",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    },"
+        }
+      ]
+    },
+    {
+      "id": "b-br9w3hb",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    {"
+        }
+      ]
+    },
+    {
+      "id": "b-y507ht3",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "id\": \"edge:002\","
+        }
+      ]
+    },
+    {
+      "id": "b-1ni4nbg",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"source\": \"block:para-002\","
+        }
+      ]
+    },
+    {
+      "id": "b-y911vmw",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"target\": \"proj:filegraph:001\","
+        }
+      ]
+    },
+    {
+      "id": "b-m807m35",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"relation\": \"mentions\","
+        }
+      ]
+    },
+    {
+      "id": "b-agxarw1",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "      \"resolvedFile\": \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "entities/projects.data\""
+        }
+      ]
+    },
+    {
+      "id": "b-japm1ow",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    }"
+        }
+      ]
+    },
+    {
+      "id": "b-6ejfhln",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "  ],"
+        }
+      ]
+    },
+    {
+      "id": "b-jgn0g1n",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "  \"view\": {"
+        }
+      ]
+    },
+    {
+      "id": "b-xyqhp02",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    \""
+        },
+        {
+          "type": "text",
+          "text": "@"
+        },
+        {
+          "type": "text",
+          "text": "type\": \"NoteView\","
+        }
+      ]
+    },
+    {
+      "id": "b-wyjgwyo",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    \"renderMode\": \"blocks\","
+        }
+      ]
+    },
+    {
+      "id": "b-wmmvpw0",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "    \"theme\": \"default\""
+        }
+      ]
+    },
+    {
+      "id": "b-j8ha6am",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "  }"
+        }
+      ]
+    },
+    {
+      "id": "b-y5nelbz",
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "}"
+        }
+      ]
+    }
+  ]
+}

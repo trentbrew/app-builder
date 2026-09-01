@@ -243,6 +243,12 @@ export class MessageScrollerState {
 		this.followLiveOutput();
 	}
 
+	/** Follow streamed assistant output unless the user has scrolled away. */
+	followStreamingOutput() {
+		if (!this.autoScroll || this.userReleased) return;
+		this.scrollToEnd({ behavior: 'auto', releaseFollow: false });
+	}
+
 	private attachContentObserver() {
 		if (!this.content || typeof ResizeObserver === 'undefined') return;
 

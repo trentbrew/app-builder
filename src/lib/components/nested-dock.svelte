@@ -5,6 +5,7 @@
   import FilePane from '$lib/components/file-pane.svelte'
   import TerminalPane from '$lib/components/terminal-pane.svelte'
   import EmptyPane from '$lib/components/empty-pane.svelte'
+  import ExplorerWorkspaceDrop from '$lib/components/explorer-workspace-drop.svelte'
   import FileIcon from '$lib/components/file-icon.svelte'
   import XIcon from '@lucide/svelte/icons/x'
   import PlusIcon from '@lucide/svelte/icons/plus'
@@ -24,6 +25,7 @@
     createTerminalSessionId,
     fileViewId,
     insertFileIntoEmptyPane,
+    openFileAtPaneDrop,
     isFileViewId,
     isTerminalViewId,
     pathFromFileViewId,
@@ -36,11 +38,12 @@
     terminalViewId,
     toggleMaximizedView,
   } from '$lib/editorLayout'
-  import { createFileInDirectory } from '$lib/fileOps'
+  import { createFileInDirectory, openFileFromFs } from '$lib/fileOps'
   import { dirname } from '$lib/fileTreeOps'
   import { basename } from '$lib/fileIcons'
   import { getTabTitle, getTabName, setTabName, tabNames } from '$lib/tabNames.svelte'
   import { disposeTerminalSession, refitAllTerminalSessions } from '$lib/terminalSession'
+  import type { ExplorerPaneDropTarget } from '$lib/explorerDropTarget'
 
   let {
     containerId,
@@ -64,6 +67,7 @@
   let emptyPaneFsReady = $state(false)
   let dockContextTarget = $state<ActionTarget>({ kind: 'global' })
   let activePaneTabId = $state<string | null>(null)
+  let dockEl = $state<HTMLDivElement | undefined>()
 
   function trackActivePane(event: FocusEvent | PointerEvent) {
     const target = event.target
@@ -145,6 +149,25 @@
     const created = await createFileInDirectory(fs, parent)
     if (!created) return
     selectFileInContainer(created, '')
+  }
+
+  async function handleExplorerFileDrop(path: string, target: ExplorerPaneDropTarget) {
+    const fs = sandboxStore.getFs()
+    if (!fs) return
+
+    try {
+      const stat = await fs.stat(path)
+      if (stat.isDirectory) return
+    } catch {
+      return
+    }
+
+    config = openFileAtPaneDrop(config, path, target.anchorViewId, target.side)
+    if (!openFiles.includes(path)) openFiles = [...openFiles, path]
+    await openFileFromFs(fs, path, (filePath, content) => {
+      if ((fileContents[filePath] ?? '') !== content) onContentChange(filePath, content)
+      activeFile = filePath
+    })
   }
 
   function renameFileTab(viewId: string) {
@@ -511,6 +534,7 @@
 {/snippet}
 
 <div
+  bind:this={dockEl}
   class="nested-dock h-full min-h-0 overflow-hidden"
   data-dock-id={containerId}
   onpointerdown={(event) => {
@@ -520,6 +544,10 @@
   onfocusin={trackActivePane}
   oncontextmenucapture={handleDockContextMenu}
 >
+  <ExplorerWorkspaceDrop
+    dockEl={dockEl}
+    onFileDrop={(path, target) => void handleExplorerFileDrop(path, target)}
+  />
   <ContextMenuHost target={dockContextTarget} triggerClass="contents">
     <HorizonLayout bind:config {views} tabgroupControls={[newTerminalControl]} />
   </ContextMenuHost>

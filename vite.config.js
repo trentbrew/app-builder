@@ -47,6 +47,29 @@ const coepCoopPlugin = {
 
 const sandboxServer = process.env.SANDBOX_SERVER_URL ?? 'http://localhost:9899'
 
+/** Guest Vite often requests /main.js against the studio origin; send it to the preview proxy. */
+const previewRootAssetsPlugin = {
+  name: 'vite:preview-root-assets',
+  enforce: 'pre',
+  configureServer(server) {
+    server.middlewares.use((req, res, next) => {
+      const pathname = req.url?.split('?')[0]
+      if (pathname !== '/main.js') {
+        next()
+        return
+      }
+      const referer = req.headers.referer ?? ''
+      const match = referer.match(/\/preview\/([^/]+)/)
+      if (!match) {
+        next()
+        return
+      }
+      res.writeHead(302, { Location: `/preview/${match[1]}/main.js` })
+      res.end()
+    })
+  },
+}
+
 export default defineConfig({
   server: {
     port: 9898,
@@ -60,7 +83,7 @@ export default defineConfig({
   define: {
     __APP_BUILDER_BUILD_ID__: JSON.stringify(resolveBuildId()),
   },
-  plugins: [tailwindcss(), sveltekit(), coepCoopPlugin],
+  plugins: [previewRootAssetsPlugin, tailwindcss(), sveltekit(), coepCoopPlugin],
   optimizeDeps: {
     // Exclude @xterm/xterm from dependency optimization,
     // as it might interfere with the dynamic client-side import.

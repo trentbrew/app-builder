@@ -27,3 +27,11 @@ export async function openAgentPanel(page: Page) {
 export async function expectAgentPanelClosed(page: Page) {
 	await expect(agentPanel(page)).not.toBeVisible();
 }
+
+/** Dock agent pane (`agent-pane.svelte`) — tool log is under ⋯ → Agent logs. */
+export async function openAgentToolLog(page: Page) {
+	await openAgentPanel(page);
+	await page.getByRole('button', { name: 'Agent options' }).click();
+	await page.getByRole('menuitem', { name: 'Agent logs' }).click();
+	await expect(page.getByLabel('Agent tool log')).toBeVisible();
+}

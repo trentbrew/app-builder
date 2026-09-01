@@ -21,8 +21,9 @@
   } from '@codemirror/language'
   import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap } from '@codemirror/autocomplete'
   import { searchKeymap, highlightSelectionMatches } from '@codemirror/search'
-  import { oneDark } from '@codemirror/theme-one-dark'
   import { showMinimap } from '@replit/codemirror-minimap'
+  import { codeMirrorThemeExtension } from '$lib/codemirrorTheme'
+  import { THEME_CHANGE_EVENT } from '$lib/theme/apply'
   import { languageExtensionForPath } from '$lib/codemirrorLanguage'
   import { isLargeDoc, isLargeText, isMarkdownPath } from '$lib/fileTypes'
   import { browser } from '$app/environment'
@@ -47,6 +48,7 @@
   let view = $state<EditorView | undefined>()
   const languageCompartment = new Compartment()
   const extrasCompartment = new Compartment()
+  const themeCompartment = new Compartment()
   let lastEmitted = ''
   let changeTimer: ReturnType<typeof setTimeout> | undefined
 
@@ -86,33 +88,9 @@
   function buildExtensions(filePath: string, initialDoc: string) {
     const large = isLargeText(initialDoc)
     return [
-      oneDark,
+      themeCompartment.of(codeMirrorThemeExtension()),
       languageCompartment.of(large ? [] : languageExtensionForPath(filePath)),
       extrasCompartment.of(extrasForSize(large)),
-      EditorView.theme({
-        '&': {
-          backgroundColor: 'var(--color-background)',
-          fontFamily: 'var(--font-mono)',
-        },
-        '.cm-scroller': {
-          backgroundColor: 'var(--color-background)',
-          fontFamily: 'var(--font-mono)',
-        },
-        '.cm-content': {
-          backgroundColor: 'var(--color-background)',
-          fontFamily: 'var(--font-mono)',
-          fontSize: 'var(--editor-font-size)',
-        },
-        '.cm-gutters': {
-          backgroundColor: 'var(--color-background)',
-          color: 'var(--color-muted-foreground)',
-          borderRight: '1px solid var(--color-border)',
-          fontFamily: 'var(--font-mono)',
-          fontSize: 'var(--editor-font-size)',
-        },
-        '.cm-activeLine': { backgroundColor: 'var(--color-muted)' },
-        '.cm-activeLineGutter': { backgroundColor: 'var(--color-muted)' },
-      }),
       lineNumbers(),
       highlightSpecialChars(),
       history(),
@@ -159,6 +137,20 @@
       editorView.destroy()
       if (view === editorView) view = undefined
     }
+  })
+
+  $effect(() => {
+    const editorView = view
+    if (!editorView?.dom.isConnected) return
+
+    const syncTheme = () => {
+      editorView.dispatch({
+        effects: themeCompartment.reconfigure(codeMirrorThemeExtension()),
+      })
+    }
+
+    document.addEventListener(THEME_CHANGE_EVENT, syncTheme)
+    return () => document.removeEventListener(THEME_CHANGE_EVENT, syncTheme)
   })
 
   $effect(() => {
@@ -217,18 +209,18 @@
 
   .code-editor :global(.cm-content),
   .code-editor :global(.cm-gutters) {
-    background-color: var(--color-background) !important;
     font-size: var(--editor-font-size);
   }
 
   .code-editor :global(.cm-gutters) {
+    background-color: var(--color-editor-gutter) !important;
     border-right: 1px solid var(--color-border);
     color: var(--color-muted-foreground);
   }
 
   .code-editor :global(.cm-activeLine),
   .code-editor :global(.cm-activeLineGutter) {
-    background-color: var(--color-muted) !important;
+    background-color: var(--color-active-line) !important;
   }
 
   .code-editor :global(.cm-minimap) {

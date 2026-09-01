@@ -1,0 +1,443 @@
+{
+  "@context": {
+    "@vocab": "https://schema.org/",
+    "trellis": "tag:trellis.app,2024:",
+    "rub": "tag:trellis.app,2024:rubric/"
+  },
+  "workspace": {
+    "@id": "trellis:workspace/good-rubric",
+    "@type": "trellis:Workspace",
+    "trellis:title": "Good Rubric Design",
+    "trellis:description": "A rubric ontology that makes grading legible: distinct criteria, described performance levels, calibrated weighting, and feedback baked into the structure.",
+    "trellis:metadata": {
+      "createdTime": "2026-08-30T00:00:00Z",
+      "createdBy": { "@id": "user:trent" },
+      "version": "1.0.0",
+      "icon": "📊",
+      "tags": ["education", "rubric", "assessment", "thesis-example"]
+    },
+
+    "kernel": {
+      "version": "2.0.0",
+      "features": ["formulas", "relations", "rollups"]
+    },
+
+    "ontologies": {
+      "rubric-schema": {
+        "@id": "rub:schema/rubric",
+        "@type": "trellis:Schema",
+        "version": "1.0.0",
+        "description": "A rubric that makes the same work score roughly the same no matter who's holding the pen — usable before and after the work is done.",
+        "icon": "📊",
+        "fields": [
+          {
+            "name": "assignmentTitle",
+            "valueType": "title",
+            "required": true,
+            "description": "What this rubric grades"
+          },
+          {
+            "name": "purpose",
+            "valueType": "rich_text",
+            "required": true,
+            "description": "What 'good' looks like at a glance — the sanity-check paragraph for someone who didn't design the assignment"
+          },
+          {
+            "name": "calibrated",
+            "valueType": "checkbox",
+            "description": "Have two graders scored the same sample work and landed within acceptable range?"
+          },
+          {
+            "name": "calibrationNotes",
+            "valueType": "rich_text",
+            "description": "What changed after calibration — where descriptions were too vague or subjective"
+          },
+          {
+            "name": "criteria",
+            "valueType": "relation",
+            "relation": {
+              "targetSchema": "rub:schema/criterion",
+              "cardinality": "many",
+              "syncedProperty": "rubric"
+            },
+            "description": "Distinct, non-overlapping criteria — each measures something the others don't"
+          },
+          {
+            "name": "totalPoints",
+            "valueType": "rollup",
+            "rollup": {
+              "relationProperty": "criteria",
+              "targetProperty": "maxPoints",
+              "aggregation": "sum"
+            },
+            "description": "Point allocation should mirror real priorities of the task"
+          }
+        ]
+      },
+
+      "criterion-schema": {
+        "@id": "rub:schema/criterion",
+        "@type": "trellis:Schema",
+        "version": "1.0.0",
+        "description": "One row of the rubric — measures a distinct quality with described performance levels.",
+        "icon": "📏",
+        "fields": [
+          {
+            "name": "name",
+            "valueType": "title",
+            "required": true,
+            "description": "Criterion label (e.g. 'Argument', 'Evidence', 'Clarity')"
+          },
+          {
+            "name": "measures",
+            "valueType": "rich_text",
+            "required": true,
+            "description": "What this criterion alone evaluates — must not overlap with sibling criteria"
+          },
+          {
+            "name": "distinctFrom",
+            "valueType": "rich_text",
+            "description": "Explicit note on what this criterion does NOT score (prevents double-penalizing)"
+          },
+          {
+            "name": "maxPoints",
+            "valueType": "number",
+            "required": true,
+            "description": "Weight within the rubric — should reflect how much this quality matters for the assignment"
+          },
+          {
+            "name": "levels",
+            "valueType": "relation",
+            "relation": {
+              "targetSchema": "rub:schema/performance-level",
+              "cardinality": "many",
+              "syncedProperty": "criterion"
+            },
+            "description": "Described performance levels — not just Excellent/Good/Fair/Poor labels"
+          },
+          {
+            "name": "rubric",
+            "valueType": "relation",
+            "relation": {
+              "targetSchema": "rub:schema/rubric",
+              "cardinality": "one",
+              "syncedProperty": "criteria"
+            }
+          }
+        ]
+      },
+
+      "performance-level-schema": {
+        "@id": "rub:schema/performance-level",
+        "@type": "trellis:Schema",
+        "version": "1.0.0",
+        "description": "An observable description of work at a given level — the score comes with a reason attached.",
+        "icon": "🎚️",
+        "fields": [
+          {
+            "name": "label",
+            "valueType": "select",
+            "required": true,
+            "selectOptions": {
+              "options": [
+                { "id": "exemplary", "name": "Exemplary", "color": "green" },
+                { "id": "proficient", "name": "Proficient", "color": "blue" },
+                { "id": "developing", "name": "Developing", "color": "yellow" },
+                { "id": "beginning", "name": "Beginning", "color": "orange" },
+                { "id": "missing", "name": "Missing / Not Present", "color": "red" }
+              ]
+            }
+          },
+          {
+            "name": "points",
+            "valueType": "number",
+            "required": true,
+            "description": "Points awarded at this level for this criterion"
+          },
+          {
+            "name": "observableDescription",
+            "valueType": "rich_text",
+            "required": true,
+            "description": "What work at this level looks like in concrete, observable terms — not 'shows strong understanding'"
+          },
+          {
+            "name": "feedbackPrompt",
+            "valueType": "rich_text",
+            "description": "Suggested annotation language when circling this level — bakes feedback into the structure"
+          },
+          {
+            "name": "criterion",
+            "valueType": "relation",
+            "relation": {
+              "targetSchema": "rub:schema/criterion",
+              "cardinality": "one",
+              "syncedProperty": "levels"
+            }
+          }
+        ]
+      }
+    },
+
+    "graph": {
+      "nodes": [
+        {
+          "@id": "trellis:node/rubric-ontology-prototype",
+          "@type": "Rubric",
+          "trellis:title": "Ontology Prototype Rubric",
+          "trellis:description": "Grades the studio project where students design a domain ontology",
+          "trellis:metadata": {
+            "createdTime": "2026-08-30T00:00:00Z",
+            "createdBy": { "@id": "user:trent" },
+            "icon": "📊"
+          },
+          "assignmentTitle": "Domain Ontology Prototype",
+          "purpose": "Good work defines distinct entity types with non-overlapping fields, at least one relation with explicit cardinality, and one computed field whose formula is inspectable. It should be readable by someone who didn't design the domain.",
+          "calibrated": true,
+          "calibrationNotes": "Initial 'Design Quality' criterion overlapped with 'Clarity' — split into 'Schema Distinctness' vs 'Documentation Clarity'. Two sample prototypes rescored; graders now within 5 points."
+        },
+
+        {
+          "@id": "trellis:node/criterion-distinctness",
+          "@type": "Criterion",
+          "trellis:title": "Schema Distinctness",
+          "measures": "Whether each entity type and field measures something the others don't — no double-penalizing the same flaw.",
+          "distinctFrom": "Does NOT evaluate prose quality, completeness of sample data, or implementation correctness.",
+          "maxPoints": 30
+        },
+        {
+          "@id": "trellis:node/criterion-relations",
+          "@type": "Criterion",
+          "trellis:title": "Relations & Structure",
+          "measures": "Explicit relations with cardinality, synced properties where appropriate, and sequencing logic that a reader can follow.",
+          "distinctFrom": "Does NOT evaluate naming aesthetics or number of entity types — a small, coherent ontology beats a sprawling one.",
+          "maxPoints": 25
+        },
+        {
+          "@id": "trellis:node/criterion-checkability",
+          "@type": "Criterion",
+          "trellis:title": "Checkability",
+          "measures": "Fields and objectives that allow verifying progress without relying on vibes — checkbox fields, verification methods, observable descriptions.",
+          "distinctFrom": "Does NOT evaluate visual design of projections or code quality.",
+          "maxPoints": 25
+        },
+        {
+          "@id": "trellis:node/criterion-documentation",
+          "@type": "Criterion",
+          "trellis:title": "Documentation Clarity",
+          "measures": "Field descriptions that let someone plan work before doing it — readable as a reference, not just legible in hindsight.",
+          "distinctFrom": "Does NOT evaluate schema correctness or relation wiring — those are Schema Distinctness and Relations.",
+          "maxPoints": 20
+        },
+
+        {
+          "@id": "trellis:node/level-distinct-exemplary",
+          "@type": "PerformanceLevel",
+          "trellis:title": "Distinctness — Exemplary",
+          "label": "exemplary",
+          "points": 30,
+          "observableDescription": "Every entity type has a one-sentence 'measures' statement; no two fields score the same quality; distinctFrom notes on overlapping criteria.",
+          "feedbackPrompt": "Schema types are cleanly separated — each field earns its place."
+        },
+        {
+          "@id": "trellis:node/level-distinct-proficient",
+          "@type": "PerformanceLevel",
+          "trellis:title": "Distinctness — Proficient",
+          "label": "proficient",
+          "points": 24,
+          "observableDescription": "Types are mostly distinct; one or two fields could merge without losing information.",
+          "feedbackPrompt": "Solid separation — consider merging [X] and [Y] which both track similar qualities."
+        },
+        {
+          "@id": "trellis:node/level-distinct-developing",
+          "@type": "PerformanceLevel",
+          "trellis:title": "Distinctness — Developing",
+          "label": "developing",
+          "points": 18,
+          "observableDescription": "Multiple fields or types overlap in practice; a grader would double-count the same flaw or strength.",
+          "feedbackPrompt": "Overlap between [fields/types] — define what each one alone measures."
+        },
+        {
+          "@id": "trellis:node/level-distinct-beginning",
+          "@type": "PerformanceLevel",
+          "trellis:title": "Distinctness — Beginning",
+          "label": "beginning",
+          "points": 10,
+          "observableDescription": "Generic field names (notes, description, status) with no distinct measurement role.",
+          "feedbackPrompt": "Fields need sharper roles — what does each one alone evaluate?"
+        },
+
+        {
+          "@id": "trellis:node/level-relations-exemplary",
+          "@type": "PerformanceLevel",
+          "trellis:title": "Relations — Exemplary",
+          "label": "exemplary",
+          "points": 25,
+          "observableDescription": "At least two relations with explicit cardinality and syncedProperty; buildsOn or equivalent makes sequencing logic readable.",
+          "feedbackPrompt": "Relations carry the structure — sequencing is explicit."
+        },
+        {
+          "@id": "trellis:node/level-relations-proficient",
+          "@type": "PerformanceLevel",
+          "trellis:title": "Relations — Proficient",
+          "label": "proficient",
+          "points": 20,
+          "observableDescription": "Relations present with cardinality; sequencing implied but not fully documented.",
+          "feedbackPrompt": "Good relation wiring — make the 'why this order' logic explicit in module or buildsOn fields."
+        },
+
+        {
+          "@id": "trellis:node/level-checkability-exemplary",
+          "@type": "PerformanceLevel",
+          "trellis:title": "Checkability — Exemplary",
+          "label": "exemplary",
+          "points": 25,
+          "observableDescription": "Major outcomes have checkable flags, verification methods, or observable level descriptions — grader and student can agree on progress.",
+          "feedbackPrompt": "Objectives and key fields are verifiable — not vibe-based."
+        },
+        {
+          "@id": "trellis:node/level-checkability-developing",
+          "@type": "PerformanceLevel",
+          "trellis:title": "Checkability — Developing",
+          "label": "developing",
+          "points": 15,
+          "observableDescription": "Outcomes use vague language ('understand', 'demonstrate knowledge') without verification path.",
+          "feedbackPrompt": "Replace vague outcomes with observable verbs and a verification method."
+        },
+
+        {
+          "@id": "trellis:node/level-docs-exemplary",
+          "@type": "PerformanceLevel",
+          "trellis:title": "Documentation — Exemplary",
+          "label": "exemplary",
+          "points": 20,
+          "observableDescription": "A reader who didn't design the assignment can describe what good work looks like from field descriptions alone.",
+          "feedbackPrompt": "Descriptions work as a planning guide — usable before submission."
+        },
+        {
+          "@id": "trellis:node/level-docs-beginning",
+          "@type": "PerformanceLevel",
+          "trellis:title": "Documentation — Beginning",
+          "label": "beginning",
+          "points": 8,
+          "observableDescription": "Descriptions empty or generic; rubric/ontology only makes sense after seeing an example.",
+          "feedbackPrompt": "Descriptions function as excuse generators — rewrite for someone planning work, not grading it."
+        }
+      ],
+
+      "edges": [
+        {
+          "@id": "trellis:edge/rubric-criteria-distinctness",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/rubric-ontology-prototype" },
+          "target": { "@id": "trellis:node/criterion-distinctness" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/rubric-criteria-relations",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/rubric-ontology-prototype" },
+          "target": { "@id": "trellis:node/criterion-relations" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/rubric-criteria-checkability",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/rubric-ontology-prototype" },
+          "target": { "@id": "trellis:node/criterion-checkability" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/rubric-criteria-docs",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/rubric-ontology-prototype" },
+          "target": { "@id": "trellis:node/criterion-documentation" },
+          "relationType": "contains"
+        },
+
+        {
+          "@id": "trellis:edge/criterion-distinct-levels-exemplary",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/criterion-distinctness" },
+          "target": { "@id": "trellis:node/level-distinct-exemplary" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/criterion-distinct-levels-proficient",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/criterion-distinctness" },
+          "target": { "@id": "trellis:node/level-distinct-proficient" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/criterion-distinct-levels-developing",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/criterion-distinctness" },
+          "target": { "@id": "trellis:node/level-distinct-developing" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/criterion-distinct-levels-beginning",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/criterion-distinctness" },
+          "target": { "@id": "trellis:node/level-distinct-beginning" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/criterion-relations-levels-exemplary",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/criterion-relations" },
+          "target": { "@id": "trellis:node/level-relations-exemplary" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/criterion-relations-levels-proficient",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/criterion-relations" },
+          "target": { "@id": "trellis:node/level-relations-proficient" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/criterion-checkability-levels-exemplary",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/criterion-checkability" },
+          "target": { "@id": "trellis:node/level-checkability-exemplary" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/criterion-checkability-levels-developing",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/criterion-checkability" },
+          "target": { "@id": "trellis:node/level-checkability-developing" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/criterion-docs-levels-exemplary",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/criterion-documentation" },
+          "target": { "@id": "trellis:node/level-docs-exemplary" },
+          "relationType": "contains"
+        },
+        {
+          "@id": "trellis:edge/criterion-docs-levels-beginning",
+          "@type": "trellis:Relation",
+          "source": { "@id": "trellis:node/criterion-documentation" },
+          "target": { "@id": "trellis:node/level-docs-beginning" },
+          "relationType": "contains"
+        }
+      ]
+    },
+
+    "queries": {
+      "calibrated-rubrics": {
+        "@type": "trellis:Query",
+        "description": "Rubrics that passed the two-grader calibration test",
+        "eqls": "FIND root AS ?r WHERE ?r.workspace.graph.nodes.@type = 'Rubric' AND ?r.workspace.graph.nodes.calibrated = true RETURN ?r.workspace.graph.nodes.assignmentTitle"
+      },
+      "criteria-with-distinctFrom": {
+        "@type": "trellis:Query",
+        "description": "Criteria that document non-overlap explicitly",
+        "eqls": "FIND root AS ?r WHERE ?r.workspace.graph.nodes.@type = 'Criterion' AND ?r.workspace.graph.nodes.distinctFrom != null RETURN ?r.workspace.graph.nodes.name, ?r.workspace.graph.nodes.distinctFrom"
+      }
+    }
+  }
+}

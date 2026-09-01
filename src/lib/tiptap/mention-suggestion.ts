@@ -2,6 +2,7 @@ import { Extension } from '@tiptap/core';
 import Suggestion from '@tiptap/suggestion';
 import type { SuggestionKeyDownProps, SuggestionProps } from '@tiptap/suggestion';
 import { PluginKey } from '@tiptap/pm/state';
+import { positionSuggestionAbove } from '$lib/tiptap/suggestion-position';
 
 export interface MentionItem {
 	type: 'file';
@@ -18,19 +19,7 @@ export interface MentionSuggestionOptions {
 const FILE_ICON = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`;
 
 function position(el: HTMLDivElement, rect: DOMRect) {
-	const gap = 4;
-	const height = el.offsetHeight || 300;
-	const below = window.innerHeight - rect.bottom - gap;
-	const above = rect.top - gap;
-	el.style.position = 'fixed';
-	el.style.left = `${Math.min(rect.left, window.innerWidth - 300)}px`;
-	if (below >= height || below >= above) {
-		el.style.top = `${rect.bottom + gap}px`;
-		el.style.bottom = '';
-	} else {
-		el.style.bottom = `${window.innerHeight - rect.top + gap}px`;
-		el.style.top = '';
-	}
+	positionSuggestionAbove(el, rect);
 }
 
 function popup() {

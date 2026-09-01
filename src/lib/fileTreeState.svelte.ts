@@ -4,6 +4,7 @@ import { fileTreeStorageKey, getActiveEditorScopeId } from '$lib/projects/projec
 export type TreeExpandMode = 'default' | 'expanded' | 'collapsed';
 
 const LEGACY_STORAGE_KEY = 'app-builder:file-tree-ui:v1';
+const EXPLORER_UI_KEY = 'app-builder:explorer-ui:v1';
 
 function storageKey(): string {
 	const projectId = getActiveEditorScopeId();
@@ -13,26 +14,57 @@ function storageKey(): string {
 type Persisted = {
 	pinned: string[];
 	hidden: string[];
+	expanded: string[];
 	showDotfiles: boolean;
 	terminalTitles: Record<string, string>;
 };
 
+type ExplorerUi = {
+	shortcutsPanelOpen: boolean;
+	mainPanelOpen: boolean;
+};
+
+function loadExplorerUi(): ExplorerUi {
+	if (!browser) return { shortcutsPanelOpen: true, mainPanelOpen: true };
+	try {
+		const raw = localStorage.getItem(EXPLORER_UI_KEY);
+		if (!raw) return { shortcutsPanelOpen: true, mainPanelOpen: true };
+		const parsed = JSON.parse(raw) as Partial<ExplorerUi>;
+		return {
+			shortcutsPanelOpen: parsed.shortcutsPanelOpen ?? true,
+			mainPanelOpen: parsed.mainPanelOpen ?? true
+		};
+	} catch {
+		return { shortcutsPanelOpen: true, mainPanelOpen: true };
+	}
+}
+
+function saveExplorerUi(state: ExplorerUi) {
+	if (!browser) return;
+	try {
+		localStorage.setItem(EXPLORER_UI_KEY, JSON.stringify(state));
+	} catch {
+		// ignore storage failures
+	}
+}
+
 function loadPersisted(): Persisted {
 	if (!browser) {
-		return { pinned: [], hidden: [], showDotfiles: false, terminalTitles: {} };
+		return { pinned: [], hidden: [], expanded: [], showDotfiles: false, terminalTitles: {} };
 	}
 	try {
 		const raw = localStorage.getItem(storageKey());
-		if (!raw) return { pinned: [], hidden: [], showDotfiles: false, terminalTitles: {} };
+		if (!raw) return { pinned: [], hidden: [], expanded: [], showDotfiles: false, terminalTitles: {} };
 		const parsed = JSON.parse(raw) as Partial<Persisted>;
 		return {
 			pinned: parsed.pinned ?? [],
 			hidden: parsed.hidden ?? [],
+			expanded: parsed.expanded ?? [],
 			showDotfiles: parsed.showDotfiles ?? false,
 			terminalTitles: parsed.terminalTitles ?? {}
 		};
 	} catch {
-		return { pinned: [], hidden: [], showDotfiles: false, terminalTitles: {} };
+		return { pinned: [], hidden: [], expanded: [], showDotfiles: false, terminalTitles: {} };
 	}
 }
 
@@ -46,6 +78,7 @@ function savePersisted(state: Persisted) {
 }
 
 const persisted = loadPersisted();
+const explorerUi = loadExplorerUi();
 
 class FileTreeState {
 	mode = $state<TreeExpandMode>('default');
@@ -53,7 +86,9 @@ class FileTreeState {
 	hiddenPaths = $state<Set<string>>(new Set(persisted.hidden));
 	showDotfiles = $state(persisted.showDotfiles);
 	terminalTitles = $state<Record<string, string>>({ ...persisted.terminalTitles });
-	expandedPaths = $state<Set<string>>(new Set());
+	expandedPaths = $state<Set<string>>(new Set(persisted.expanded));
+	shortcutsPanelOpen = $state(explorerUi.shortcutsPanelOpen);
+	mainPanelOpen = $state(explorerUi.mainPanelOpen);
 	focusedPath = $state<string | null>(null);
 	dropTargetPath = $state<string | null>(null);
 
@@ -61,8 +96,25 @@ class FileTreeState {
 		savePersisted({
 			pinned: [...this.pinnedPaths],
 			hidden: [...this.hiddenPaths],
+			expanded: [...this.expandedPaths],
 			showDotfiles: this.showDotfiles,
 			terminalTitles: { ...this.terminalTitles }
+		});
+	}
+
+	setShortcutsPanelOpen(open: boolean) {
+		this.shortcutsPanelOpen = open;
+		saveExplorerUi({
+			shortcutsPanelOpen: open,
+			mainPanelOpen: this.mainPanelOpen
+		});
+	}
+
+	setMainPanelOpen(open: boolean) {
+		this.mainPanelOpen = open;
+		saveExplorerUi({
+			shortcutsPanelOpen: this.shortcutsPanelOpen,
+			mainPanelOpen: open
 		});
 	}
 
@@ -98,6 +150,7 @@ class FileTreeState {
 		else next.delete(path);
 		this.expandedPaths = next;
 		if (this.mode !== 'default') this.reset();
+		this.persist();
 	}
 
 	toggleExpanded(path: string) {
@@ -182,7 +235,7 @@ class FileTreeState {
 		this.hiddenPaths = new Set(next.hidden);
 		this.showDotfiles = next.showDotfiles;
 		this.terminalTitles = { ...next.terminalTitles };
-		this.expandedPaths = new Set();
+		this.expandedPaths = new Set(next.expanded);
 		this.focusedPath = null;
 		this.dropTargetPath = null;
 		this.mode = 'default';

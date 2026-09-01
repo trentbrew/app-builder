@@ -34,6 +34,7 @@ const sharedExtensions = (options: MarkdownExtensionOptions) => [
 		codeBlock: false,
 		link: false,
 	}),
+	Mermaid,
 	MarkdownCodeBlock,
 	MarkdownLink.configure({
 		onNavigateFile: options.onNavigateFile,
@@ -51,7 +52,6 @@ const sharedExtensions = (options: MarkdownExtensionOptions) => [
 		HTMLAttributes: { class: 'markdown-image' },
 	}),
 	Callout,
-	Mermaid,
 	Mention.configure({
 		onNavigate: ({ id }) => options.onNavigateFile?.(id),
 	}),

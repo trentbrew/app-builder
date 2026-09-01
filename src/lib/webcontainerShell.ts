@@ -6,6 +6,7 @@ import type { WebContainer } from '@webcontainer/api';
  * Loaded from ~/.jshrc when jsh starts — see StackBlitz WebContainer docs.
  */
 export const DEFAULT_JSHRC = `# App Builder — WebContainer shell defaults
+export PATH="$PWD/node_modules/.bin:$PATH"
 alias l ls -al
 alias ll ls -l
 alias la ls -A

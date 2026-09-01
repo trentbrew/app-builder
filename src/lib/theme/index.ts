@@ -1,4 +1,4 @@
-export { applyTheme, clearAppliedTheme } from '$lib/theme/apply';
+export { applyTheme, clearAppliedTheme, isLightColorScheme, THEME_CHANGE_EVENT } from '$lib/theme/apply';
 export { parseTweakcnImport, parseTweakcnRegistry, resolveRegistryItem } from '$lib/theme/parse';
 export {
 	THEME_PRESETS,

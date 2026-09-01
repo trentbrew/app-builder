@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "description": "Trellis Research thesis samples → EAV seed for pi-sprite WC",
+  "files": [
+    "syllabus.json",
+    "rubric.json",
+    "paper/alice.person.trellis",
+    "paper/trellis-system.proj.trellis",
+    "paper/entity-projection-routing.task.trellis",
+    "paper/example.note.trellis"
+  ],
+  "workspaces": [
+    "syllabus.json",
+    "rubric.json"
+  ],
+  "projections": [
+    "paper/alice.person.trellis",
+    "paper/trellis-system.proj.trellis",
+    "paper/entity-projection-routing.task.trellis",
+    "paper/example.note.trellis"
+  ]
+}

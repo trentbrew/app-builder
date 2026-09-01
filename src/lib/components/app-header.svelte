@@ -43,14 +43,14 @@
   <div class="flex min-w-0 justify-center px-2">
     {#if appHeader.breadcrumb.length}
       <Breadcrumb.Root class="min-w-0 max-w-full">
-        <Breadcrumb.List class="flex-nowrap justify-center">
+        <Breadcrumb.List class="flex-nowrap justify-center text-muted-foreground">
           {#each appHeader.breadcrumb as part, index (index)}
             {#if index > 0}
               <Breadcrumb.Separator class="hidden md:block" />
             {/if}
             <Breadcrumb.Item class={index < appHeader.breadcrumb.length - 1 ? 'hidden md:block' : ''}>
               {#if index === appHeader.breadcrumb.length - 1}
-                <Breadcrumb.Page class="flex min-w-0 items-center">
+                <Breadcrumb.Page class="text-foreground flex min-w-0 items-center">
                   <HeaderBreadcrumbLabel {part} />
                 </Breadcrumb.Page>
               {:else if part.href}
@@ -67,7 +67,7 @@
                   <HeaderBreadcrumbLabel {part} />
                 </Breadcrumb.Link>
               {:else}
-                <Breadcrumb.Page class="flex min-w-0 items-center">
+                <Breadcrumb.Page class="text-foreground flex min-w-0 items-center">
                   <HeaderBreadcrumbLabel {part} />
                 </Breadcrumb.Page>
               {/if}

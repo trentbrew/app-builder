@@ -1,0 +1,13 @@
+
+Running 5 tests using 1 worker
+
+(node:98548) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/5] [chromium] › e2e/multi-project.spec.ts:17:2 › multi-project dashboard › dashboard shows Projects heading and New project button
+[2/5] [chromium] › e2e/multi-project.spec.ts:23:2 › multi-project dashboard › create Svelte project via dialog lands on editor route
+[3/5] [chromium] › e2e/multi-project.spec.ts:32:2 › multi-project dashboard › navigate dashboard via icon rail shows project card
+[4/5] [chromium] › e2e/multi-project.spec.ts:46:2 › multi-project dashboard › header back button returns to dashboard
+[5/5] [chromium] › e2e/multi-project.spec.ts:60:2 › multi-project dashboard › open Svelte project shows AgentRail
+  5 passed (23.9s)

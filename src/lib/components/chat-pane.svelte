@@ -4,6 +4,7 @@
   import PaneMaximizeButton from '$lib/components/pane-maximize-button.svelte'
   import PaneToolbar from '$lib/components/pane-toolbar.svelte'
   import ChatTranscript from '$lib/components/chat-transcript.svelte'
+  import AgentLiveEdgeFollower from '$lib/components/agent-live-edge-follower.svelte'
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js'
   import * as Empty from '$lib/components/ui/empty/index.js'
   import * as InputGroup from '$lib/components/ui/input-group/index.js'
@@ -160,28 +161,40 @@
   {/snippet}
 
   {#snippet children()}
-    <div class="chat-pane">
-      <MessageScroller.Provider autoScroll defaultScrollPosition="last-anchor" scrollPreviousItemPeek={32}>
-        <div class="chat-pane__transcript">
-          {#if messages.length === 0}
-            <Empty.Root class="h-full min-h-0 border-0 bg-transparent">
-              <Empty.Header>
-                <Empty.Media variant="icon">
-                  <MessageCircleDashedIcon />
-                </Empty.Media>
-                <Empty.Title>How can I help?</Empty.Title>
-                <Empty.Description>
-                  Ask about your project or attach files for context. Replies stream from local Ollama ({chatSettings.model})
-                  and render with the same markdown formatter as your notes.
-                </Empty.Description>
-              </Empty.Header>
-            </Empty.Root>
-          {:else}
-            <ChatTranscript busy={streaming} />
-          {/if}
-        </div>
+    <div class="chat-pane" class:chat-pane--maximized={maximized} class:chat-pane--empty={messages.length === 0}>
+      <MessageScroller.Provider autoScroll defaultScrollPosition="end" scrollPreviousItemPeek={32}>
+        <AgentLiveEdgeFollower busy={streaming} />
+        <div class="chat-pane__main">
+          <div class="chat-pane__transcript">
+            {#if messages.length === 0}
+              {#if maximized}
+                <div class="chat-pane__hero" aria-hidden="true">
+                  <MessageCircleDashedIcon class="chat-pane__hero-icon" />
+                  <p class="chat-pane__hero-title">How can I help?</p>
+                  <p class="chat-pane__hero-subtitle">
+                    Ask about your project or attach files for context. Replies stream from local Ollama ({chatSettings.model}).
+                  </p>
+                </div>
+              {:else}
+                <Empty.Root class="h-full min-h-0 border-0 bg-transparent">
+                  <Empty.Header>
+                    <Empty.Media variant="icon">
+                      <MessageCircleDashedIcon />
+                    </Empty.Media>
+                    <Empty.Title>How can I help?</Empty.Title>
+                    <Empty.Description>
+                      Ask about your project or attach files for context. Replies stream from local Ollama ({chatSettings.model})
+                      and render with the same markdown formatter as your notes.
+                    </Empty.Description>
+                  </Empty.Header>
+                </Empty.Root>
+              {/if}
+            {:else}
+              <ChatTranscript busy={streaming} />
+            {/if}
+          </div>
 
-        <form class="chat-composer" onsubmit={handleSubmit}>
+          <form class="chat-composer" onsubmit={handleSubmit}>
           <InputGroup.Root class="rounded-xl border-border/80 bg-background shadow-none">
             {#if pendingFiles.length > 0}
               <div class="flex flex-wrap gap-1.5 px-2.5 pt-2.5">
@@ -285,6 +298,7 @@
             </DropdownMenu.Root>
           </div>
         </form>
+        </div>
       </MessageScroller.Provider>
     </div>
   {/snippet}
@@ -292,11 +306,20 @@
 
 <style>
   .chat-pane {
+    --chat-thread-max-width: 48rem;
     display: flex;
     height: 100%;
     min-height: 0;
     flex-direction: column;
     overflow: hidden;
+  }
+
+  .chat-pane__main {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
   }
 
   .chat-pane__transcript {
@@ -305,6 +328,71 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+  }
+
+  .chat-pane__hero {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    max-width: 28rem;
+    margin-inline: auto;
+    padding: 1.5rem;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .chat-pane__hero-icon {
+    width: 2rem;
+    height: 2rem;
+    color: var(--color-primary);
+    opacity: 0.85;
+  }
+
+  .chat-pane__hero-title {
+    margin: 0;
+    font-family: var(--font-serif, ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif);
+    font-size: 1.75rem;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--color-foreground);
+  }
+
+  .chat-pane__hero-subtitle {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: color-mix(in oklch, var(--color-muted-foreground) 88%, var(--color-foreground));
+  }
+
+  .chat-pane--maximized .chat-pane__main {
+    width: min(100%, var(--chat-thread-max-width));
+    margin-inline: auto;
+  }
+
+  .chat-pane--maximized :global([data-slot='message-scroller-content']) {
+    width: 100%;
+    padding-inline: 0.5rem;
+  }
+
+  .chat-pane--maximized.chat-pane--empty .chat-pane__main {
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 1.5rem 1rem 2rem;
+  }
+
+  .chat-pane--maximized.chat-pane--empty .chat-pane__transcript {
+    flex: 0 0 auto;
+    overflow: visible;
+  }
+
+  .chat-pane--maximized.chat-pane--empty :global(.chat-composer) {
+    width: 100%;
+    padding-inline: 0;
+    background: transparent;
   }
 
   :global(.chat-composer) {

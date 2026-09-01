@@ -95,7 +95,7 @@
 <style>
   .agent-context-chips-scroll {
     position: relative;
-    margin-bottom: 0.375rem;
+    margin-top: 0.375rem;
   }
 
   .agent-context-chips-scroll::before,

@@ -1,0 +1,1115 @@
+
+> my-app@0.0.1 check /Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder
+> rm -rf .vercel/output && svelte-kit sync && vite build
+
+vite v6.3.2 building SSR bundle for production...
+transforming...
+7:41:53 PM [vite-plugin-svelte] src/routes/+layout.svelte:31:2 Using `<slot>` to render parent content is deprecated. Use `{@render ...}` tags instead
+https://svelte.dev/e/slot_element_deprecated
+29: 
+30: {#if isConnectRoute}
+31:   <slot />
+              ^
+32: {:else}
+33:   <div class="app-frame flex h-svh w-screen flex-col overflow-hidden">
+7:41:53 PM [vite-plugin-svelte] src/routes/+layout.svelte:41:6 Using `<slot>` to render parent content is deprecated. Use `{@render ...}` tags instead
+https://svelte.dev/e/slot_element_deprecated
+39:     {/if}
+40:     <main class="app-main flex flex-col" class:app-main--projects={isDashboardShell}>
+41:       <slot />
+                  ^
+42:     </main>
+43:     {#if !isDashboardShell}
+7:41:53 PM [vite-plugin-svelte] src/routes/(app)/+layout.svelte:11:21 This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+ 9:   let { data, children }: { data: { sandboxBackend: 'bun' | 'webcontainer' }; children: Snippet } = $props()
+10: 
+11:   initSandboxBackend(data.sandboxBackend)
+                             ^
+12: 
+13:   onMount(() => {
+7:41:53 PM [vite-plugin-svelte] src/routes/(dashboard)/+layout.svelte:44:2 Unused CSS selector ".dashboard-shell__main"
+https://svelte.dev/e/css_unused_selector
+42:   }
+43: 
+44:   .dashboard-shell__main {
+                            ^
+45:     min-height: 0;
+46:   }
+7:41:53 PM [vite-plugin-svelte] src/routes/(dashboard)/+layout.svelte:49:4 Unused CSS selector ".dashboard-shell__main"
+https://svelte.dev/e/css_unused_selector
+47: 
+48:   @media (min-width: 768px) {
+49:     .dashboard-shell__main {
+                              ^
+50:       margin-left: 0;
+51:       min-height: calc(100% - 1rem);
+7:41:55 PM [vite-plugin-svelte] src/routes/code-canvas/+page.svelte:439:2 Unused CSS selector "button"
+https://svelte.dev/e/css_unused_selector
+437: 
+438:   :global(.svelte-flow__controls) {
+439:     button {
+               ^
+440:       background-color: var(--color-background);
+441:       border: 1px solid var(--color-border);
+7:41:55 PM [vite-plugin-svelte] src/routes/code-canvas/+page.svelte:445:2 Unused CSS selector "button:hover"
+https://svelte.dev/e/css_unused_selector
+443:     }
+444: 
+445:     button:hover {
+                     ^
+446:       background-color: var(--color-muted);
+447:     }
+7:41:55 PM [vite-plugin-svelte] src/routes/component-editor/+page.svelte:299:1 Unused CSS selector ".terminal-panel .terminal-container"
+https://svelte.dev/e/css_unused_selector
+297:     overflow-y: auto;
+298:   }
+299:   .terminal-panel .terminal-container {
+                                          ^
+300:     width: 100%;
+301:     height: 100%;
+7:41:56 PM [vite-plugin-svelte] src/routes/live-editor/+page.svelte:299:1 Unused CSS selector ".terminal-panel .terminal-container"
+https://svelte.dev/e/css_unused_selector
+297:     overflow-y: auto;
+298:   }
+299:   .terminal-panel .terminal-container {
+                                          ^
+300:     width: 100%;
+301:     height: 100%;
+7:41:58 PM [vite-plugin-svelte] src/lib/components/status-bar.svelte:177:2 Unused CSS selector ".status-bar__item--save"
+https://svelte.dev/e/css_unused_selector
+175:   }
+176: 
+177:   .status-bar__item--save {
+                              ^
+178:     gap: 0.3rem;
+179:     opacity: 0.92;
+7:41:58 PM [vite-plugin-svelte] src/lib/components/status-bar.svelte:182:2 Unused CSS selector ".status-bar__item--save-pending"
+https://svelte.dev/e/css_unused_selector
+180:   }
+181: 
+182:   .status-bar__item--save-pending {
+                                      ^
+183:     opacity: 0.78;
+184:   }
+7:41:58 PM [vite-plugin-svelte] src/lib/components/status-bar.svelte:186:2 Unused CSS selector ".status-bar__item--save-active"
+https://svelte.dev/e/css_unused_selector
+184:   }
+185: 
+186:   .status-bar__item--save-active {
+                                     ^
+187:     opacity: 1;
+188:   }
+7:41:58 PM [vite-plugin-svelte] src/lib/components/status-bar.svelte:190:2 Unused CSS selector ".status-bar__item--save-done"
+https://svelte.dev/e/css_unused_selector
+188:   }
+189: 
+190:   .status-bar__item--save-done {
+                                   ^
+191:     opacity: 0.95;
+192:   }
+7:41:58 PM [vite-plugin-svelte] src/lib/components/status-bar.svelte:194:2 Unused CSS selector ".status-bar__item--save-error"
+https://svelte.dev/e/css_unused_selector
+192:   }
+193: 
+194:   .status-bar__item--save-error {
+                                    ^
+195:     opacity: 1;
+196:     color: color-mix(in oklch, var(--status-bar-foreground) 70%, #f87171);
+7:42:00 PM [vite-plugin-svelte] src/lib/components/editor-dock.svelte:124:30 This reference only captures the initial value of `entryPath`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+122:   } = $props()
+123: 
+124:   const normalizedEntryPath = entryPath.startsWith('/') ? entryPath : `/${entryPath}`
+                                            ^
+125:   const initialTerminalId = createTerminalSessionId()
+126:   const baseLayout = repairLayoutConfig(
+7:42:00 PM [vite-plugin-svelte] src/lib/components/editor-dock.svelte:124:58 This reference only captures the initial value of `entryPath`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+122:   } = $props()
+123: 
+124:   const normalizedEntryPath = entryPath.startsWith('/') ? entryPath : `/${entryPath}`
+                                                                        ^
+125:   const initialTerminalId = createTerminalSessionId()
+126:   const baseLayout = repairLayoutConfig(
+7:42:00 PM [vite-plugin-svelte] src/lib/components/editor-dock.svelte:124:74 This reference only captures the initial value of `entryPath`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+122:   } = $props()
+123: 
+124:   const normalizedEntryPath = entryPath.startsWith('/') ? entryPath : `/${entryPath}`
+                                                                                        ^
+125:   const initialTerminalId = createTerminalSessionId()
+126:   const baseLayout = repairLayoutConfig(
+7:42:00 PM [vite-plugin-svelte] src/lib/components/editor-dock.svelte:427:72 This reference only captures the initial value of `openTerminals`. Did you mean to reference it inside a derived instead?
+https://svelte.dev/e/state_referenced_locally
+425:   }
+426: 
+427:   let views = $state(buildInitialViews(collectFilePaths(initialLayout), openTerminals, openAgentSessions))
+                                                                                          ^
+428: 
+429:   $effect(() => {
+7:42:00 PM [vite-plugin-svelte] src/lib/components/editor-dock.svelte:427:87 This reference only captures the initial value of `openAgentSessions`. Did you mean to reference it inside a derived instead?
+https://svelte.dev/e/state_referenced_locally
+425:   }
+426: 
+427:   let views = $state(buildInitialViews(collectFilePaths(initialLayout), openTerminals, openAgentSessions))
+                                                                                                             ^
+428: 
+429:   $effect(() => {
+7:42:00 PM [vite-plugin-svelte] src/lib/components/editor-dock.svelte:1150:0 `<div>` with a pointerdown handler must have an ARIA role
+https://svelte.dev/e/a11y_no_static_element_interactions
+1148: {/snippet}
+1149: 
+1150: <div
+          ^
+1151:   bind:this={dockEl}
+1152:   class="editor-dock h-full min-h-0 overflow-hidden"
+Browserslist: browsers data (caniuse-lite) is 16 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+7:42:02 PM [vite-plugin-svelte] src/lib/components/project-card.svelte:27:30 This reference only captures the initial value of `project`. Did you mean to reference it inside a derived instead?
+https://svelte.dev/e/state_referenced_locally
+25: 
+26:   let thumbnailUrl = $state('')
+27:   let pinned = $state(Boolean(project.pinned))
+                                         ^
+28: 
+29:   const templateLabel = $derived(getTemplate(project.templateId).label)
+7:42:02 PM [vite-plugin-svelte] src/lib/components/nodes/terminal-node.svelte:22:5 `terminalContainer` is updated, but is not declared with `$state(...)`. Changing its value will not correctly trigger updates
+https://svelte.dev/e/non_reactive_update
+20:   } = $props();
+21: 
+22:   let terminalContainer: HTMLDivElement;
+                                           ^
+23:   let terminal: any;
+24:   let shellProcess: any = null;
+7:42:02 PM [vite-plugin-svelte] src/lib/components/nodes/terminal-node.svelte:23:5 `terminal` is updated, but is not declared with `$state(...)`. Changing its value will not correctly trigger updates
+https://svelte.dev/e/non_reactive_update
+21: 
+22:   let terminalContainer: HTMLDivElement;
+23:   let terminal: any;
+                       ^
+24:   let shellProcess: any = null;
+25:   let fitAddon: any;
+7:42:02 PM [vite-plugin-svelte] src/lib/components/nodes/terminal-node.svelte:412:1 Unused CSS selector ".terminal-control-bar"
+https://svelte.dev/e/css_unused_selector
+410: 
+411: <style>
+412:   .terminal-control-bar {
+                            ^
+413:     display: flex;
+414:     align-items: center;
+7:42:02 PM [vite-plugin-svelte] src/lib/components/nodes/terminal-node.svelte:424:1 Unused CSS selector ".terminal-title"
+https://svelte.dev/e/css_unused_selector
+422:     user-select: none;
+423:   }
+424:   .terminal-title {
+                      ^
+425:     font-weight: 500;
+426:     letter-spacing: 0.5px;
+7:42:02 PM [vite-plugin-svelte] src/lib/components/nodes/terminal-node.svelte:428:1 Unused CSS selector ".terminal-controls"
+https://svelte.dev/e/css_unused_selector
+426:     letter-spacing: 0.5px;
+427:   }
+428:   .terminal-controls {
+                         ^
+429:     display: flex;
+430:     gap: 4px;
+7:42:02 PM [vite-plugin-svelte] src/lib/components/nodes/terminal-node.svelte:432:1 Unused CSS selector ".terminal-btn"
+https://svelte.dev/e/css_unused_selector
+430:     gap: 4px;
+431:   }
+432:   .terminal-btn {
+                    ^
+433:     background: none;
+434:     border: none;
+7:42:02 PM [vite-plugin-svelte] src/lib/components/nodes/terminal-node.svelte:444:1 Unused CSS selector ".terminal-btn:hover"
+https://svelte.dev/e/css_unused_selector
+442:       color 0.15s;
+443:   }
+444:   .terminal-btn:hover {
+                          ^
+445:     background: #333;
+446:     color: #fff;
+7:42:02 PM [vite-plugin-svelte] src/lib/components/nodes/file-explorer-node.svelte:605:7 Redundant role 'button'
+https://svelte.dev/e/a11y_no_redundant_roles
+603:                 }
+604:               }}
+605:               role="button"
+                                ^
+606:               tabindex="0"
+607:               aria-label={`Navigate to ${item.name}`}
+7:42:04 PM [vite-plugin-svelte] src/lib/components/status-bar-notifications.svelte:95:14 `<svelte:component>` is deprecated in runes mode — components are dynamic by default
+https://svelte.dev/e/svelte_component_deprecated
+93:           >
+94:             <Item.Media variant="icon" class={notificationIconClass(item.type)}>
+95:               <svelte:component this={notificationIcon(item.type)} class="size-3.5" />
+                                                                                          ^
+96:             </Item.Media>
+97:             <Item.Content class="gap-0.5 min-w-0">
+7:42:04 PM [vite-plugin-svelte] src/lib/components/status-bar-notifications.svelte:191:2 Unused CSS selector ".status-bar__notifications-list"
+https://svelte.dev/e/css_unused_selector
+189:   }
+190: 
+191:   .status-bar__notifications-list {
+                                      ^
+192:     overflow-y: auto;
+193:   }
+7:42:05 PM [vite-plugin-svelte] src/lib/components/nested-dock.svelte:536:0 `<div>` with a pointerdown handler must have an ARIA role
+https://svelte.dev/e/a11y_no_static_element_interactions
+534: {/snippet}
+535: 
+536: <div
+         ^
+537:   bind:this={dockEl}
+538:   class="nested-dock h-full min-h-0 overflow-hidden"
+7:42:05 PM [vite-plugin-svelte] src/lib/components/node-loading-overlay.svelte:31:2 The attribute 'aria-valuenow' is not supported by the role 'status'
+https://svelte.dev/e/a11y_role_supports_aria_props
+29:   aria-live="polite"
+30:   aria-busy="true"
+31:   aria-valuenow={progress}
+                              ^
+32: >
+33:   {#if progressAtTop && showProgress}
+7:42:05 PM [vite-plugin-svelte] src/lib/components/node-loading-overlay.svelte:97:2 Unused CSS selector ".node-loading-overlay__icon"
+https://svelte.dev/e/css_unused_selector
+ 95:   }
+ 96: 
+ 97:   .node-loading-overlay__icon {
+                                  ^
+ 98:     width: 1.25rem;
+ 99:     height: 1.25rem;
+7:42:05 PM [vite-plugin-svelte] src/lib/components/node-loading-overlay.svelte:157:4 Unused CSS selector ".node-loading-overlay__icon"
+https://svelte.dev/e/css_unused_selector
+155: 
+156:   @media (prefers-reduced-motion: reduce) {
+157:     .node-loading-overlay__icon {
+                                    ^
+158:       animation: none;
+159:     }
+7:42:05 PM [vite-plugin-svelte] src/lib/components/editor-save-indicator.svelte:59:2 Unused CSS selector ".editor-save-indicator__icon"
+https://svelte.dev/e/css_unused_selector
+57:   }
+58: 
+59:   .editor-save-indicator__icon {
+                                  ^
+60:     width: 0.75rem;
+61:     height: 0.75rem;
+7:42:05 PM [vite-plugin-svelte] src/lib/components/agent-composer-editor.svelte:27:38 This reference only captures the initial value of `mentionSearch`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+25:   let editor = $state<Editor | undefined>()
+26: 
+27:   const mentionSearchRef = { current: mentionSearch }
+                                                       ^
+28: 
+29:   $effect(() => {
+7:42:05 PM [vite-plugin-svelte] src/lib/components/tool-log.svelte:128:2 Unused CSS selector ".tool-log__marker"
+https://svelte.dev/e/css_unused_selector
+126:   }
+127: 
+128:   .tool-log__marker {
+                        ^
+129:     border-color: color-mix(in oklch, var(--border) 70%, transparent);
+130:   }
+7:42:05 PM [vite-plugin-svelte] src/lib/components/tool-log.svelte:132:2 Unused CSS selector ".tool-log__summary"
+https://svelte.dev/e/css_unused_selector
+130:   }
+131: 
+132:   .tool-log__summary {
+                         ^
+133:     display: grid;
+134:     grid-template-columns: auto 1fr;
+7:42:05 PM [vite-plugin-svelte] src/lib/components/tool-log.svelte:142:2 Unused CSS selector ".tool-log__summary[data-denied='true'] .tool-log__text"
+https://svelte.dev/e/css_unused_selector
+140:   }
+141: 
+142:   .tool-log__summary[data-denied='true'] .tool-log__text {
+                                                             ^
+143:     color: var(--destructive);
+144:   }
+7:42:06 PM [vite-plugin-svelte] src/lib/components/ui/message-scroller/message-scroller-viewport.svelte:34:0 noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex
+32: </script>
+33: 
+34: <div
+        ^
+35:   bind:this={ref}
+36:   data-slot="message-scroller-viewport"
+7:42:06 PM [vite-plugin-svelte] src/lib/components/file-tree-folder.svelte:37:20 This reference only captures the initial value of `initiallyOpen`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+35:   } = $props()
+36: 
+37:   let open = $state(initiallyOpen)
+                                     ^
+38: 
+39:   $effect(() => {
+7:42:06 PM [vite-plugin-svelte] src/lib/components/markdown-editor.svelte:68:38 This reference only captures the initial value of `mentionSearch`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+66:   let sent = untrack(() => value)
+67: 
+68:   const mentionSearchRef = { current: mentionSearch }
+                                                       ^
+69:   const onNavigateRef = { current: onNavigateFile }
+70:   const currentFilePathRef = { current: currentFilePath }
+7:42:06 PM [vite-plugin-svelte] src/lib/components/markdown-editor.svelte:69:35 This reference only captures the initial value of `onNavigateFile`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+67: 
+68:   const mentionSearchRef = { current: mentionSearch }
+69:   const onNavigateRef = { current: onNavigateFile }
+                                                     ^
+70:   const currentFilePathRef = { current: currentFilePath }
+71:   const updateListeners = new Set<() => void>()
+7:42:06 PM [vite-plugin-svelte] src/lib/components/markdown-editor.svelte:70:40 This reference only captures the initial value of `currentFilePath`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+68:   const mentionSearchRef = { current: mentionSearch }
+69:   const onNavigateRef = { current: onNavigateFile }
+70:   const currentFilePathRef = { current: currentFilePath }
+                                                           ^
+71:   const updateListeners = new Set<() => void>()
+72: 
+"rectangularSelection" and "crosshairCursor" are imported from external module "@codemirror/view" but never used in "src/routes/live-editor/+page.svelte", "src/lib/components/nodes/editor-node.svelte", "src/lib/components/code-editor.svelte", "src/routes/code-canvas/+page.svelte" and "src/routes/component-editor/+page.svelte".
+"language" is imported from external module "@codemirror/language" but never used in "src/routes/live-editor/+page.svelte", "src/lib/components/nodes/editor-node.svelte", "src/lib/components/code-editor.svelte" and "src/routes/component-editor/+page.svelte".
+✓ 1850 modules transformed.
+rendering chunks...
+[esbuild css minify]
+▲ [WARNING] Unexpected ")" [css-syntax-error]
+
+    <stdin>:2:218136:
+      2 │ ...olor-mix(in lab, red, red)){:is(){background:color-mix(in oklch,...
+        ╵                                    ^
+
+
+vite v6.3.2 building for production...
+transforming...
+7:42:12 PM [vite-plugin-svelte] src/routes/(app)/+layout.svelte:11:21 This reference only captures the initial value of `data`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+ 9:   let { data, children }: { data: { sandboxBackend: 'bun' | 'webcontainer' }; children: Snippet } = $props()
+10: 
+11:   initSandboxBackend(data.sandboxBackend)
+                             ^
+12: 
+13:   onMount(() => {
+7:42:12 PM [vite-plugin-svelte] src/routes/(dashboard)/+layout.svelte:44:2 Unused CSS selector ".dashboard-shell__main"
+https://svelte.dev/e/css_unused_selector
+42:   }
+43: 
+44:   .dashboard-shell__main {
+                            ^
+45:     min-height: 0;
+46:   }
+7:42:12 PM [vite-plugin-svelte] src/routes/(dashboard)/+layout.svelte:49:4 Unused CSS selector ".dashboard-shell__main"
+https://svelte.dev/e/css_unused_selector
+47: 
+48:   @media (min-width: 768px) {
+49:     .dashboard-shell__main {
+                              ^
+50:       margin-left: 0;
+51:       min-height: calc(100% - 1rem);
+7:42:12 PM [vite-plugin-svelte] src/routes/+layout.svelte:31:2 Using `<slot>` to render parent content is deprecated. Use `{@render ...}` tags instead
+https://svelte.dev/e/slot_element_deprecated
+29: 
+30: {#if isConnectRoute}
+31:   <slot />
+              ^
+32: {:else}
+33:   <div class="app-frame flex h-svh w-screen flex-col overflow-hidden">
+7:42:12 PM [vite-plugin-svelte] src/routes/+layout.svelte:41:6 Using `<slot>` to render parent content is deprecated. Use `{@render ...}` tags instead
+https://svelte.dev/e/slot_element_deprecated
+39:     {/if}
+40:     <main class="app-main flex flex-col" class:app-main--projects={isDashboardShell}>
+41:       <slot />
+                  ^
+42:     </main>
+43:     {#if !isDashboardShell}
+7:42:12 PM [vite-plugin-svelte] src/routes/code-canvas/+page.svelte:439:2 Unused CSS selector "button"
+https://svelte.dev/e/css_unused_selector
+437: 
+438:   :global(.svelte-flow__controls) {
+439:     button {
+               ^
+440:       background-color: var(--color-background);
+441:       border: 1px solid var(--color-border);
+7:42:12 PM [vite-plugin-svelte] src/routes/code-canvas/+page.svelte:445:2 Unused CSS selector "button:hover"
+https://svelte.dev/e/css_unused_selector
+443:     }
+444: 
+445:     button:hover {
+                     ^
+446:       background-color: var(--color-muted);
+447:     }
+7:42:12 PM [vite-plugin-svelte] src/routes/live-editor/+page.svelte:299:1 Unused CSS selector ".terminal-panel .terminal-container"
+https://svelte.dev/e/css_unused_selector
+297:     overflow-y: auto;
+298:   }
+299:   .terminal-panel .terminal-container {
+                                          ^
+300:     width: 100%;
+301:     height: 100%;
+7:42:12 PM [vite-plugin-svelte] src/routes/component-editor/+page.svelte:299:1 Unused CSS selector ".terminal-panel .terminal-container"
+https://svelte.dev/e/css_unused_selector
+297:     overflow-y: auto;
+298:   }
+299:   .terminal-panel .terminal-container {
+                                          ^
+300:     width: 100%;
+301:     height: 100%;
+7:42:12 PM [vite-plugin-svelte] src/lib/components/editor-dock.svelte:124:30 This reference only captures the initial value of `entryPath`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+122:   } = $props()
+123: 
+124:   const normalizedEntryPath = entryPath.startsWith('/') ? entryPath : `/${entryPath}`
+                                            ^
+125:   const initialTerminalId = createTerminalSessionId()
+126:   const baseLayout = repairLayoutConfig(
+7:42:12 PM [vite-plugin-svelte] src/lib/components/editor-dock.svelte:124:58 This reference only captures the initial value of `entryPath`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+122:   } = $props()
+123: 
+124:   const normalizedEntryPath = entryPath.startsWith('/') ? entryPath : `/${entryPath}`
+                                                                        ^
+125:   const initialTerminalId = createTerminalSessionId()
+126:   const baseLayout = repairLayoutConfig(
+7:42:12 PM [vite-plugin-svelte] src/lib/components/editor-dock.svelte:124:74 This reference only captures the initial value of `entryPath`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+122:   } = $props()
+123: 
+124:   const normalizedEntryPath = entryPath.startsWith('/') ? entryPath : `/${entryPath}`
+                                                                                        ^
+125:   const initialTerminalId = createTerminalSessionId()
+126:   const baseLayout = repairLayoutConfig(
+7:42:12 PM [vite-plugin-svelte] src/lib/components/editor-dock.svelte:427:72 This reference only captures the initial value of `openTerminals`. Did you mean to reference it inside a derived instead?
+https://svelte.dev/e/state_referenced_locally
+425:   }
+426: 
+427:   let views = $state(buildInitialViews(collectFilePaths(initialLayout), openTerminals, openAgentSessions))
+                                                                                          ^
+428: 
+429:   $effect(() => {
+7:42:12 PM [vite-plugin-svelte] src/lib/components/editor-dock.svelte:427:87 This reference only captures the initial value of `openAgentSessions`. Did you mean to reference it inside a derived instead?
+https://svelte.dev/e/state_referenced_locally
+425:   }
+426: 
+427:   let views = $state(buildInitialViews(collectFilePaths(initialLayout), openTerminals, openAgentSessions))
+                                                                                                             ^
+428: 
+429:   $effect(() => {
+7:42:12 PM [vite-plugin-svelte] src/lib/components/editor-dock.svelte:1150:0 `<div>` with a pointerdown handler must have an ARIA role
+https://svelte.dev/e/a11y_no_static_element_interactions
+1148: {/snippet}
+1149: 
+1150: <div
+          ^
+1151:   bind:this={dockEl}
+1152:   class="editor-dock h-full min-h-0 overflow-hidden"
+7:42:13 PM [vite-plugin-svelte] src/lib/components/project-card.svelte:27:30 This reference only captures the initial value of `project`. Did you mean to reference it inside a derived instead?
+https://svelte.dev/e/state_referenced_locally
+25: 
+26:   let thumbnailUrl = $state('')
+27:   let pinned = $state(Boolean(project.pinned))
+                                         ^
+28: 
+29:   const templateLabel = $derived(getTemplate(project.templateId).label)
+7:42:13 PM [vite-plugin-svelte] src/lib/components/status-bar.svelte:177:2 Unused CSS selector ".status-bar__item--save"
+https://svelte.dev/e/css_unused_selector
+175:   }
+176: 
+177:   .status-bar__item--save {
+                              ^
+178:     gap: 0.3rem;
+179:     opacity: 0.92;
+7:42:13 PM [vite-plugin-svelte] src/lib/components/status-bar.svelte:182:2 Unused CSS selector ".status-bar__item--save-pending"
+https://svelte.dev/e/css_unused_selector
+180:   }
+181: 
+182:   .status-bar__item--save-pending {
+                                      ^
+183:     opacity: 0.78;
+184:   }
+7:42:13 PM [vite-plugin-svelte] src/lib/components/status-bar.svelte:186:2 Unused CSS selector ".status-bar__item--save-active"
+https://svelte.dev/e/css_unused_selector
+184:   }
+185: 
+186:   .status-bar__item--save-active {
+                                     ^
+187:     opacity: 1;
+188:   }
+7:42:13 PM [vite-plugin-svelte] src/lib/components/status-bar.svelte:190:2 Unused CSS selector ".status-bar__item--save-done"
+https://svelte.dev/e/css_unused_selector
+188:   }
+189: 
+190:   .status-bar__item--save-done {
+                                   ^
+191:     opacity: 0.95;
+192:   }
+7:42:13 PM [vite-plugin-svelte] src/lib/components/status-bar.svelte:194:2 Unused CSS selector ".status-bar__item--save-error"
+https://svelte.dev/e/css_unused_selector
+192:   }
+193: 
+194:   .status-bar__item--save-error {
+                                    ^
+195:     opacity: 1;
+196:     color: color-mix(in oklch, var(--status-bar-foreground) 70%, #f87171);
+7:42:13 PM [vite-plugin-svelte] src/lib/components/nodes/terminal-node.svelte:22:5 `terminalContainer` is updated, but is not declared with `$state(...)`. Changing its value will not correctly trigger updates
+https://svelte.dev/e/non_reactive_update
+20:   } = $props();
+21: 
+22:   let terminalContainer: HTMLDivElement;
+                                           ^
+23:   let terminal: any;
+24:   let shellProcess: any = null;
+7:42:13 PM [vite-plugin-svelte] src/lib/components/nodes/terminal-node.svelte:23:5 `terminal` is updated, but is not declared with `$state(...)`. Changing its value will not correctly trigger updates
+https://svelte.dev/e/non_reactive_update
+21: 
+22:   let terminalContainer: HTMLDivElement;
+23:   let terminal: any;
+                       ^
+24:   let shellProcess: any = null;
+25:   let fitAddon: any;
+7:42:13 PM [vite-plugin-svelte] src/lib/components/nodes/terminal-node.svelte:412:1 Unused CSS selector ".terminal-control-bar"
+https://svelte.dev/e/css_unused_selector
+410: 
+411: <style>
+412:   .terminal-control-bar {
+                            ^
+413:     display: flex;
+414:     align-items: center;
+7:42:13 PM [vite-plugin-svelte] src/lib/components/nodes/terminal-node.svelte:424:1 Unused CSS selector ".terminal-title"
+https://svelte.dev/e/css_unused_selector
+422:     user-select: none;
+423:   }
+424:   .terminal-title {
+                      ^
+425:     font-weight: 500;
+426:     letter-spacing: 0.5px;
+7:42:13 PM [vite-plugin-svelte] src/lib/components/nodes/terminal-node.svelte:428:1 Unused CSS selector ".terminal-controls"
+https://svelte.dev/e/css_unused_selector
+426:     letter-spacing: 0.5px;
+427:   }
+428:   .terminal-controls {
+                         ^
+429:     display: flex;
+430:     gap: 4px;
+7:42:13 PM [vite-plugin-svelte] src/lib/components/nodes/terminal-node.svelte:432:1 Unused CSS selector ".terminal-btn"
+https://svelte.dev/e/css_unused_selector
+430:     gap: 4px;
+431:   }
+432:   .terminal-btn {
+                    ^
+433:     background: none;
+434:     border: none;
+7:42:13 PM [vite-plugin-svelte] src/lib/components/nodes/terminal-node.svelte:444:1 Unused CSS selector ".terminal-btn:hover"
+https://svelte.dev/e/css_unused_selector
+442:       color 0.15s;
+443:   }
+444:   .terminal-btn:hover {
+                          ^
+445:     background: #333;
+446:     color: #fff;
+7:42:13 PM [vite-plugin-svelte] src/lib/components/nodes/file-explorer-node.svelte:605:7 Redundant role 'button'
+https://svelte.dev/e/a11y_no_redundant_roles
+603:                 }
+604:               }}
+605:               role="button"
+                                ^
+606:               tabindex="0"
+607:               aria-label={`Navigate to ${item.name}`}
+src/routes/code-canvas/state.svelte.ts (146:41): A comment
+
+"/* @__PURE__ */"
+
+in "src/routes/code-canvas/state.svelte.ts" contains an annotation that Rollup cannot interpret due to the position of the comment. The comment will be removed to avoid issues.
+7:42:14 PM [vite-plugin-svelte] src/lib/components/nested-dock.svelte:536:0 `<div>` with a pointerdown handler must have an ARIA role
+https://svelte.dev/e/a11y_no_static_element_interactions
+534: {/snippet}
+535: 
+536: <div
+         ^
+537:   bind:this={dockEl}
+538:   class="nested-dock h-full min-h-0 overflow-hidden"
+7:42:14 PM [vite-plugin-svelte] src/lib/components/status-bar-notifications.svelte:95:14 `<svelte:component>` is deprecated in runes mode — components are dynamic by default
+https://svelte.dev/e/svelte_component_deprecated
+93:           >
+94:             <Item.Media variant="icon" class={notificationIconClass(item.type)}>
+95:               <svelte:component this={notificationIcon(item.type)} class="size-3.5" />
+                                                                                          ^
+96:             </Item.Media>
+97:             <Item.Content class="gap-0.5 min-w-0">
+7:42:14 PM [vite-plugin-svelte] src/lib/components/status-bar-notifications.svelte:191:2 Unused CSS selector ".status-bar__notifications-list"
+https://svelte.dev/e/css_unused_selector
+189:   }
+190: 
+191:   .status-bar__notifications-list {
+                                      ^
+192:     overflow-y: auto;
+193:   }
+7:42:15 PM [vite-plugin-svelte] src/lib/components/node-loading-overlay.svelte:31:2 The attribute 'aria-valuenow' is not supported by the role 'status'
+https://svelte.dev/e/a11y_role_supports_aria_props
+29:   aria-live="polite"
+30:   aria-busy="true"
+31:   aria-valuenow={progress}
+                              ^
+32: >
+33:   {#if progressAtTop && showProgress}
+7:42:15 PM [vite-plugin-svelte] src/lib/components/node-loading-overlay.svelte:97:2 Unused CSS selector ".node-loading-overlay__icon"
+https://svelte.dev/e/css_unused_selector
+ 95:   }
+ 96: 
+ 97:   .node-loading-overlay__icon {
+                                  ^
+ 98:     width: 1.25rem;
+ 99:     height: 1.25rem;
+7:42:15 PM [vite-plugin-svelte] src/lib/components/node-loading-overlay.svelte:157:4 Unused CSS selector ".node-loading-overlay__icon"
+https://svelte.dev/e/css_unused_selector
+155: 
+156:   @media (prefers-reduced-motion: reduce) {
+157:     .node-loading-overlay__icon {
+                                    ^
+158:       animation: none;
+159:     }
+7:42:15 PM [vite-plugin-svelte] src/lib/components/editor-save-indicator.svelte:59:2 Unused CSS selector ".editor-save-indicator__icon"
+https://svelte.dev/e/css_unused_selector
+57:   }
+58: 
+59:   .editor-save-indicator__icon {
+                                  ^
+60:     width: 0.75rem;
+61:     height: 0.75rem;
+7:42:15 PM [vite-plugin-svelte] src/lib/components/agent-composer-editor.svelte:27:38 This reference only captures the initial value of `mentionSearch`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+25:   let editor = $state<Editor | undefined>()
+26: 
+27:   const mentionSearchRef = { current: mentionSearch }
+                                                       ^
+28: 
+29:   $effect(() => {
+7:42:15 PM [vite-plugin-svelte] src/lib/components/tool-log.svelte:128:2 Unused CSS selector ".tool-log__marker"
+https://svelte.dev/e/css_unused_selector
+126:   }
+127: 
+128:   .tool-log__marker {
+                        ^
+129:     border-color: color-mix(in oklch, var(--border) 70%, transparent);
+130:   }
+7:42:15 PM [vite-plugin-svelte] src/lib/components/tool-log.svelte:132:2 Unused CSS selector ".tool-log__summary"
+https://svelte.dev/e/css_unused_selector
+130:   }
+131: 
+132:   .tool-log__summary {
+                         ^
+133:     display: grid;
+134:     grid-template-columns: auto 1fr;
+7:42:15 PM [vite-plugin-svelte] src/lib/components/tool-log.svelte:142:2 Unused CSS selector ".tool-log__summary[data-denied='true'] .tool-log__text"
+https://svelte.dev/e/css_unused_selector
+140:   }
+141: 
+142:   .tool-log__summary[data-denied='true'] .tool-log__text {
+                                                             ^
+143:     color: var(--destructive);
+144:   }
+7:42:16 PM [vite-plugin-svelte] src/lib/components/ui/message-scroller/message-scroller-viewport.svelte:34:0 noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex
+32: </script>
+33: 
+34: <div
+        ^
+35:   bind:this={ref}
+36:   data-slot="message-scroller-viewport"
+7:42:17 PM [vite-plugin-svelte] src/lib/components/file-tree-folder.svelte:37:20 This reference only captures the initial value of `initiallyOpen`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+35:   } = $props()
+36: 
+37:   let open = $state(initiallyOpen)
+                                     ^
+38: 
+39:   $effect(() => {
+7:42:17 PM [vite-plugin-svelte] src/lib/components/markdown-editor.svelte:68:38 This reference only captures the initial value of `mentionSearch`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+66:   let sent = untrack(() => value)
+67: 
+68:   const mentionSearchRef = { current: mentionSearch }
+                                                       ^
+69:   const onNavigateRef = { current: onNavigateFile }
+70:   const currentFilePathRef = { current: currentFilePath }
+7:42:17 PM [vite-plugin-svelte] src/lib/components/markdown-editor.svelte:69:35 This reference only captures the initial value of `onNavigateFile`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+67: 
+68:   const mentionSearchRef = { current: mentionSearch }
+69:   const onNavigateRef = { current: onNavigateFile }
+                                                     ^
+70:   const currentFilePathRef = { current: currentFilePath }
+71:   const updateListeners = new Set<() => void>()
+7:42:17 PM [vite-plugin-svelte] src/lib/components/markdown-editor.svelte:70:40 This reference only captures the initial value of `currentFilePath`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally
+68:   const mentionSearchRef = { current: mentionSearch }
+69:   const onNavigateRef = { current: onNavigateFile }
+70:   const currentFilePathRef = { current: currentFilePath }
+                                                           ^
+71:   const updateListeners = new Set<() => void>()
+72: 
+✓ 4764 modules transformed.
+rendering chunks...
+[plugin vite:reporter] 
+(!) /Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/src/lib/projects/dexieProjectStore.ts is dynamically imported by /Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/src/lib/projects/userTemplateStore.ts but also statically imported by /Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/src/lib/agentHarness/bridge.ts, /Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/src/lib/components/new-project-dialog.svelte, /Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/src/lib/components/project-card.svelte, /Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/src/lib/webcontainerStore.ts, /Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/src/routes/(app)/editor/[projectId]/+page.svelte, /Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/src/routes/(dashboard)/dashboard/+page.svelte, dynamic import will not move module into another chunk.
+
+[esbuild css minify]
+▲ [WARNING] Unexpected ")" [css-syntax-error]
+
+    <stdin>:2:218136:
+      2 │ ...olor-mix(in lab, red, red)){:is(){background:color-mix(in oklch,...
+        ╵                                    ^
+
+
+computing gzip size...
+.svelte-kit/output/client/_app/version.json                                                             0.03 kB │ gzip:   0.05 kB
+.svelte-kit/output/client/_app/immutable/assets/jetbrains-mono-greek-400-normal.C190GLew.woff2          4.23 kB
+.svelte-kit/output/client/_app/immutable/assets/jetbrains-mono-greek-500-normal.JpySY46c.woff2          4.28 kB
+.svelte-kit/output/client/_app/immutable/assets/jetbrains-mono-cyrillic-400-normal.BEIGL1Tu.woff2       5.33 kB
+.svelte-kit/output/client/_app/immutable/assets/jetbrains-mono-cyrillic-500-normal.DmUKJPL_.woff2       5.36 kB
+.svelte-kit/output/client/_app/immutable/assets/jetbrains-mono-vietnamese-400-normal.CqNFfHCs.woff      5.37 kB
+.svelte-kit/output/client/_app/immutable/assets/jetbrains-mono-vietnamese-500-normal.DNRqzVM1.woff      5.48 kB
+.svelte-kit/output/client/_app/immutable/assets/jetbrains-mono-greek-400-normal.B9oWc5Lo.woff           5.66 kB
+.svelte-kit/output/client/_app/immutable/assets/jetbrains-mono-greek-500-normal.D7SFKleX.woff           5.72 kB
+.svelte-kit/output/client/_app/immutable/assets/jetbrains-mono-cyrillic-400-normal.ugxPyKxw.woff        6.98 kB
+.svelte-kit/output/client/_app/immutable/assets/jetbrains-mono-cyrillic-500-normal.DJqRU3vO.woff        7.02 kB
+.svelte-kit/output/client/_app/immutable/assets/jetbrains-mono-latin-ext-400-normal.Bc8Ftmh3.woff2      7.34 kB
+.svelte-kit/output/client/_app/immutable/assets/geist-cyrillic-ext-wght-normal.DjL33-gN.woff2           7.42 kB
+.svelte-kit/output/client/_app/immutable/assets/jetbrains-mono-latin-ext-500-normal.Cut-4mMH.woff2      7.53 kB
+.svelte-kit/output/client/_app/immutable/assets/geist-cyrillic-ext-wght-italic.BYAq_K0C.woff2           7.80 kB
+.svelte-kit/output/client/_app/immutable/assets/geist-vietnamese-wght-normal.6IgcOCM7.woff2             8.00 kB
+.svelte-kit/output/client/_app/immutable/assets/geist-vietnamese-wght-italic.0fly6zkB.woff2             8.70 kB
+.svelte-kit/output/client/_app/immutable/assets/jetbrains-mono-latin-ext-400-normal.fXTG6kC5.woff      10.13 kB
+.svelte-kit/output/client/_app/immutable/assets/jetbrains-mono-latin-ext-500-normal.ckzbgY84.woff      10.34 kB
+.svelte-kit/output/client/_app/immutable/assets/geist-cyrillic-wght-normal.BEAKL7Jp.woff2              15.08 kB
+.svelte-kit/output/client/_app/immutable/assets/geist-cyrillic-wght-italic.Da0gXVk3.woff2              15.96 kB
+.svelte-kit/output/client/_app/immutable/assets/geist-latin-ext-wght-normal.DC-KSUi6.woff2             16.51 kB
+.svelte-kit/output/client/_app/immutable/assets/geist-latin-ext-wght-italic.XgKbg5n7.woff2             17.89 kB
+.svelte-kit/output/client/_app/immutable/assets/jetbrains-mono-latin-400-normal.V6pRDFza.woff2         21.17 kB
+.svelte-kit/output/client/_app/immutable/assets/jetbrains-mono-latin-500-normal.BWZEU5yA.woff2         21.83 kB
+.svelte-kit/output/client/_app/immutable/assets/jetbrains-mono-latin-400-normal.6-qcROiO.woff          27.50 kB
+.svelte-kit/output/client/_app/immutable/assets/jetbrains-mono-latin-500-normal.CJOVTJB7.woff          28.21 kB
+.svelte-kit/output/client/_app/immutable/assets/geist-latin-wght-normal.BgDaEnEv.woff2                 29.40 kB
+.svelte-kit/output/client/_app/immutable/assets/geist-latin-wght-italic.dTnRTFFJ.woff2                 31.01 kB
+.svelte-kit/output/client/.vite/manifest.json                                                          67.37 kB │ gzip:   7.73 kB
+.svelte-kit/output/client/_app/immutable/assets/file-icon.BPIUFr5W.css                                  0.10 kB │ gzip:   0.09 kB
+.svelte-kit/output/client/_app/immutable/assets/13.C1szClrJ.css                                         0.22 kB │ gzip:   0.16 kB
+.svelte-kit/output/client/_app/immutable/assets/10.B2bWK9WG.css                                         0.22 kB │ gzip:   0.16 kB
+.svelte-kit/output/client/_app/immutable/assets/8.hMcJmyQ2.css                                          0.31 kB │ gzip:   0.15 kB
+.svelte-kit/output/client/_app/immutable/assets/18.8sa2G08L.css                                         0.38 kB │ gzip:   0.23 kB
+.svelte-kit/output/client/_app/immutable/assets/app-logo-mark.BfZxZD1c.css                              0.42 kB │ gzip:   0.24 kB
+.svelte-kit/output/client/_app/immutable/assets/Terminal.-F-SCBeE.css                                   0.64 kB │ gzip:   0.29 kB
+.svelte-kit/output/client/_app/immutable/assets/popover-trigger.CrFxQ1y-.css                            0.83 kB │ gzip:   0.27 kB
+.svelte-kit/output/client/_app/immutable/assets/3.DOuaVET5.css                                          0.84 kB │ gzip:   0.34 kB
+.svelte-kit/output/client/_app/immutable/assets/15.CrVKvwth.css                                         1.40 kB │ gzip:   0.50 kB
+.svelte-kit/output/client/_app/immutable/assets/19.BPnWIHap.css                                         1.53 kB │ gzip:   0.57 kB
+.svelte-kit/output/client/_app/immutable/assets/20.C3jKne5N.css                                         1.53 kB │ gzip:   0.57 kB
+.svelte-kit/output/client/_app/immutable/assets/2.4L1Kkw7r.css                                          2.39 kB │ gzip:   0.74 kB
+.svelte-kit/output/client/_app/immutable/assets/file-explorer.B7wsXMZy.css                              4.61 kB │ gzip:   1.12 kB
+.svelte-kit/output/client/_app/immutable/assets/xterm.9CEnUXvW.css                                      5.75 kB │ gzip:   1.98 kB
+.svelte-kit/output/client/_app/immutable/assets/17.oj9XuHbP.css                                        13.94 kB │ gzip:   2.69 kB
+.svelte-kit/output/client/_app/immutable/assets/style.D9k6t2tD.css                                     16.93 kB │ gzip:   2.88 kB
+.svelte-kit/output/client/_app/immutable/assets/rotate-ccw.m3fJxwLi.css                                29.74 kB │ gzip:   5.14 kB
+.svelte-kit/output/client/_app/immutable/assets/0.Cn1KcDfg.css                                        256.24 kB │ gzip:  49.68 kB
+.svelte-kit/output/client/_app/immutable/chunks/LpeYdSYX.js                                             0.04 kB │ gzip:   0.06 kB
+.svelte-kit/output/client/_app/immutable/entry/start.BLtDY9hE.js                                        0.08 kB │ gzip:   0.09 kB
+.svelte-kit/output/client/_app/immutable/chunks/C7lkA33U.js                                             0.09 kB │ gzip:   0.10 kB
+.svelte-kit/output/client/_app/immutable/chunks/gULlE0tz.js                                             0.09 kB │ gzip:   0.11 kB
+.svelte-kit/output/client/_app/immutable/chunks/DxZJ0cj2.js                                             0.10 kB │ gzip:   0.11 kB
+.svelte-kit/output/client/_app/immutable/chunks/CWj6FrbW.js                                             0.11 kB │ gzip:   0.11 kB
+.svelte-kit/output/client/_app/immutable/chunks/Gi6I4Gst.js                                             0.15 kB │ gzip:   0.13 kB
+.svelte-kit/output/client/_app/immutable/nodes/9.3RBLvbst.js                                            0.17 kB │ gzip:   0.14 kB
+.svelte-kit/output/client/_app/immutable/chunks/DeWfrqtl.js                                             0.18 kB │ gzip:   0.15 kB
+.svelte-kit/output/client/_app/immutable/chunks/Ba9TLew5.js                                             0.21 kB │ gzip:   0.15 kB
+.svelte-kit/output/client/_app/immutable/chunks/Cwykuybh.js                                             0.22 kB │ gzip:   0.20 kB
+.svelte-kit/output/client/_app/immutable/nodes/14.yO2dOCIk.js                                           0.22 kB │ gzip:   0.18 kB
+.svelte-kit/output/client/_app/immutable/nodes/12.7mznLImi.js                                           0.22 kB │ gzip:   0.18 kB
+.svelte-kit/output/client/_app/immutable/nodes/11.D_pCsG9Y.js                                           0.23 kB │ gzip:   0.18 kB
+.svelte-kit/output/client/_app/immutable/chunks/Cpj98o6Y.js                                             0.24 kB │ gzip:   0.18 kB
+.svelte-kit/output/client/_app/immutable/chunks/CPe8HXNs.js                                             0.26 kB │ gzip:   0.21 kB
+.svelte-kit/output/client/_app/immutable/chunks/DZImfIqZ.js                                             0.26 kB │ gzip:   0.21 kB
+.svelte-kit/output/client/_app/immutable/chunks/BG039xiF.js                                             0.27 kB │ gzip:   0.21 kB
+.svelte-kit/output/client/_app/immutable/chunks/D69JOAKF.js                                             0.28 kB │ gzip:   0.20 kB
+.svelte-kit/output/client/_app/immutable/chunks/CsSfNjOH.js                                             0.29 kB │ gzip:   0.22 kB
+.svelte-kit/output/client/_app/immutable/chunks/DKjmCh4l.js                                             0.31 kB │ gzip:   0.24 kB
+.svelte-kit/output/client/_app/immutable/chunks/Cu6WuqmP.js                                             0.35 kB │ gzip:   0.26 kB
+.svelte-kit/output/client/_app/immutable/chunks/Dw74o9zD.js                                             0.37 kB │ gzip:   0.26 kB
+.svelte-kit/output/client/_app/immutable/chunks/CYFpMjqz.js                                             0.40 kB │ gzip:   0.29 kB
+.svelte-kit/output/client/_app/immutable/nodes/1.BoLC5eQe.js                                            0.43 kB │ gzip:   0.29 kB
+.svelte-kit/output/client/_app/immutable/chunks/DR6o7wyN.js                                             0.45 kB │ gzip:   0.31 kB
+.svelte-kit/output/client/_app/immutable/chunks/BuvhisR0.js                                             0.46 kB │ gzip:   0.30 kB
+.svelte-kit/output/client/_app/immutable/chunks/DGejTY9W.js                                             0.48 kB │ gzip:   0.34 kB
+.svelte-kit/output/client/_app/immutable/chunks/CUMGR-kZ.js                                             0.52 kB │ gzip:   0.33 kB
+.svelte-kit/output/client/_app/immutable/chunks/C-TXdqA3.js                                             0.52 kB │ gzip:   0.37 kB
+.svelte-kit/output/client/_app/immutable/chunks/dAY-nP61.js                                             0.53 kB │ gzip:   0.36 kB
+.svelte-kit/output/client/_app/immutable/nodes/5.CjEkfSMc.js                                            0.56 kB │ gzip:   0.39 kB
+.svelte-kit/output/client/_app/immutable/chunks/OA8UcISh.js                                             0.64 kB │ gzip:   0.39 kB
+.svelte-kit/output/client/_app/immutable/nodes/4.DvRrToS3.js                                            0.67 kB │ gzip:   0.44 kB
+.svelte-kit/output/client/_app/immutable/chunks/DIzMCS2p.js                                             0.72 kB │ gzip:   0.32 kB
+.svelte-kit/output/client/_app/immutable/chunks/QyS5AsWN.js                                             0.76 kB │ gzip:   0.42 kB
+.svelte-kit/output/client/_app/immutable/nodes/22.CEy1h7ld.js                                           0.78 kB │ gzip:   0.48 kB
+.svelte-kit/output/client/_app/immutable/chunks/ClfsYgPN.js                                             0.81 kB │ gzip:   0.50 kB
+.svelte-kit/output/client/_app/immutable/nodes/16.BAq8Cnjw.js                                           0.88 kB │ gzip:   0.48 kB
+.svelte-kit/output/client/_app/immutable/chunks/CYMDRmQE.js                                             0.91 kB │ gzip:   0.49 kB
+.svelte-kit/output/client/_app/immutable/chunks/BhYIMCvi.js                                             0.96 kB │ gzip:   0.53 kB
+.svelte-kit/output/client/_app/immutable/chunks/BSvDGFod.js                                             0.96 kB │ gzip:   0.55 kB
+.svelte-kit/output/client/_app/immutable/chunks/CmKTTxBW.js                                             1.18 kB │ gzip:   0.57 kB
+.svelte-kit/output/client/_app/immutable/chunks/Dp1pzeXC.js                                             1.27 kB │ gzip:   0.73 kB
+.svelte-kit/output/client/_app/immutable/chunks/4nuND024.js                                             1.52 kB │ gzip:   0.69 kB
+.svelte-kit/output/client/_app/immutable/chunks/BFm-AW7C.js                                             1.56 kB │ gzip:   0.86 kB
+.svelte-kit/output/client/_app/immutable/chunks/BfnaDhuL.js                                             1.71 kB │ gzip:   0.78 kB
+.svelte-kit/output/client/_app/immutable/chunks/D3y4qSiB.js                                             1.72 kB │ gzip:   0.83 kB
+.svelte-kit/output/client/_app/immutable/chunks/Ci4eAHzJ.js                                             1.79 kB │ gzip:   0.82 kB
+.svelte-kit/output/client/_app/immutable/chunks/B3Q7whWX.js                                             1.87 kB │ gzip:   0.82 kB
+.svelte-kit/output/client/_app/immutable/chunks/BcUowb4Z.js                                             1.87 kB │ gzip:   0.86 kB
+.svelte-kit/output/client/_app/immutable/chunks/Dt226Pze.js                                             1.92 kB │ gzip:   0.82 kB
+.svelte-kit/output/client/_app/immutable/chunks/RsWP3-hG.js                                             1.99 kB │ gzip:   0.90 kB
+.svelte-kit/output/client/_app/immutable/chunks/BE0bJipc.js                                             2.17 kB │ gzip:   0.93 kB
+.svelte-kit/output/client/_app/immutable/chunks/D27FUhvH.js                                             2.22 kB │ gzip:   1.08 kB
+.svelte-kit/output/client/_app/immutable/chunks/2dCbeHxH.js                                             2.24 kB │ gzip:   0.77 kB
+.svelte-kit/output/client/_app/immutable/chunks/D5cAjNwS.js                                             2.25 kB │ gzip:   1.06 kB
+.svelte-kit/output/client/_app/immutable/chunks/RuGeYBS3.js                                             2.54 kB │ gzip:   0.99 kB
+.svelte-kit/output/client/_app/immutable/chunks/C3oDrm5o.js                                             2.61 kB │ gzip:   1.18 kB
+.svelte-kit/output/client/_app/immutable/chunks/CVfwX-OC.js                                             2.67 kB │ gzip:   1.37 kB
+.svelte-kit/output/client/_app/immutable/chunks/D7GLZbvb.js                                             2.73 kB │ gzip:   1.41 kB
+.svelte-kit/output/client/_app/immutable/chunks/DYBzKdW8.js                                             2.77 kB │ gzip:   1.44 kB
+.svelte-kit/output/client/_app/immutable/chunks/Bg5iur8s.js                                             2.92 kB │ gzip:   1.35 kB
+.svelte-kit/output/client/_app/immutable/chunks/CkOiNGkn.js                                             3.41 kB │ gzip:   1.46 kB
+.svelte-kit/output/client/_app/immutable/nodes/19.C4XhYJl6.js                                           3.66 kB │ gzip:   1.74 kB
+.svelte-kit/output/client/_app/immutable/nodes/20.DRlqd0Ef.js                                           3.66 kB │ gzip:   1.74 kB
+.svelte-kit/output/client/_app/immutable/chunks/RZ16Dij1.js                                             4.17 kB │ gzip:   1.81 kB
+.svelte-kit/output/client/_app/immutable/nodes/7.CYKp_a4Z.js                                            4.23 kB │ gzip:   2.06 kB
+.svelte-kit/output/client/_app/immutable/nodes/6.czX_6ohq.js                                            4.24 kB │ gzip:   2.06 kB
+.svelte-kit/output/client/_app/immutable/chunks/YIxg6vjn.js                                             4.56 kB │ gzip:   1.78 kB
+.svelte-kit/output/client/_app/immutable/nodes/21.Ch85jBu2.js                                           4.56 kB │ gzip:   1.75 kB
+.svelte-kit/output/client/_app/immutable/chunks/S4h5MAGD.js                                             4.61 kB │ gzip:   1.73 kB
+.svelte-kit/output/client/_app/immutable/chunks/DX6XiGOO.js                                             4.69 kB │ gzip:   2.18 kB
+.svelte-kit/output/client/_app/immutable/chunks/CpmB3eaY.js                                             4.77 kB │ gzip:   2.07 kB
+.svelte-kit/output/client/_app/immutable/chunks/Bcq32eTy.js                                             4.84 kB │ gzip:   2.41 kB
+.svelte-kit/output/client/_app/immutable/chunks/NWa3Wsif.js                                             4.96 kB │ gzip:   1.75 kB
+.svelte-kit/output/client/_app/immutable/chunks/DF3-dimo.js                                             5.15 kB │ gzip:   1.89 kB
+.svelte-kit/output/client/_app/immutable/chunks/CAQbpsSB.js                                             5.59 kB │ gzip:   1.61 kB
+.svelte-kit/output/client/_app/immutable/chunks/OdAfLjFz.js                                             5.63 kB │ gzip:   2.29 kB
+.svelte-kit/output/client/_app/immutable/chunks/DZuV4dq2.js                                             6.15 kB │ gzip:   2.63 kB
+.svelte-kit/output/client/_app/immutable/chunks/CXUAzydJ.js                                             6.24 kB │ gzip:   2.58 kB
+.svelte-kit/output/client/_app/immutable/chunks/BAt94MDI.js                                             6.31 kB │ gzip:   2.22 kB
+.svelte-kit/output/client/_app/immutable/chunks/D5gHr9l8.js                                             8.27 kB │ gzip:   3.66 kB
+.svelte-kit/output/client/_app/immutable/nodes/15.DewWtanu.js                                           8.50 kB │ gzip:   2.87 kB
+.svelte-kit/output/client/_app/immutable/chunks/jPfYOSv1.js                                             9.08 kB │ gzip:   3.46 kB
+.svelte-kit/output/client/_app/immutable/chunks/BP3xtDsO.js                                             9.17 kB │ gzip:   3.61 kB
+.svelte-kit/output/client/_app/immutable/nodes/13.BGfYV21c.js                                           9.26 kB │ gzip:   3.71 kB
+.svelte-kit/output/client/_app/immutable/nodes/2.BQ4OXs1a.js                                            9.35 kB │ gzip:   4.08 kB
+.svelte-kit/output/client/_app/immutable/chunks/7G7hTK32.js                                             9.54 kB │ gzip:   4.05 kB
+.svelte-kit/output/client/_app/immutable/nodes/18.DV0WDT0h.js                                           9.58 kB │ gzip:   3.36 kB
+.svelte-kit/output/client/_app/immutable/chunks/CyIAiQiU.js                                            10.02 kB │ gzip:   3.58 kB
+.svelte-kit/output/client/_app/immutable/chunks/BIPkvxak.js                                            10.09 kB │ gzip:   3.75 kB
+.svelte-kit/output/client/_app/immutable/chunks/Mgnedojy.js                                            10.19 kB │ gzip:   3.53 kB
+.svelte-kit/output/client/_app/immutable/nodes/10.DAFoOe0H.js                                          10.37 kB │ gzip:   4.58 kB
+.svelte-kit/output/client/_app/immutable/chunks/CD2EMAFS.js                                            10.75 kB │ gzip:   4.12 kB
+.svelte-kit/output/client/_app/immutable/nodes/8.CREHmF4x.js                                           11.00 kB │ gzip:   4.54 kB
+.svelte-kit/output/client/_app/immutable/chunks/A4pbrJzN.js                                            11.09 kB │ gzip:   4.15 kB
+.svelte-kit/output/client/_app/immutable/entry/app.D2gko0Ja.js                                         11.31 kB │ gzip:   4.04 kB
+.svelte-kit/output/client/_app/immutable/chunks/CEueGHUG.js                                            11.68 kB │ gzip:   4.73 kB
+.svelte-kit/output/client/_app/immutable/chunks/5pMyNDTb.js                                            11.70 kB │ gzip:   5.23 kB
+.svelte-kit/output/client/_app/immutable/chunks/I2f3tdeJ.js                                            12.27 kB │ gzip:   4.06 kB
+.svelte-kit/output/client/_app/immutable/chunks/srtG3K0B.js                                            12.41 kB │ gzip:   3.53 kB
+.svelte-kit/output/client/_app/immutable/chunks/DJ3-dF3z.js                                            15.74 kB │ gzip:   4.41 kB
+.svelte-kit/output/client/_app/immutable/chunks/J0nhN7CW.js                                            15.94 kB │ gzip:   5.64 kB
+.svelte-kit/output/client/_app/immutable/chunks/CmbBpc-D.js                                            17.52 kB │ gzip:   6.65 kB
+.svelte-kit/output/client/_app/immutable/nodes/3.6GfTJC4z.js                                           18.01 kB │ gzip:   3.55 kB
+.svelte-kit/output/client/_app/immutable/chunks/DHU88YZO.js                                            20.64 kB │ gzip:   7.25 kB
+.svelte-kit/output/client/_app/immutable/chunks/k0FUe851.js                                            23.29 kB │ gzip:   7.84 kB
+.svelte-kit/output/client/_app/immutable/chunks/B7fZrrBF.js                                            23.31 kB │ gzip:   8.54 kB
+.svelte-kit/output/client/_app/immutable/chunks/D9dfJV3S.js                                            23.51 kB │ gzip:   8.30 kB
+.svelte-kit/output/client/_app/immutable/chunks/CAPxfZXc.js                                            25.75 kB │ gzip:  10.12 kB
+.svelte-kit/output/client/_app/immutable/chunks/B1RULnMK.js                                            26.03 kB │ gzip:   6.89 kB
+.svelte-kit/output/client/_app/immutable/chunks/DxpmN_rG.js                                            26.46 kB │ gzip:   8.46 kB
+.svelte-kit/output/client/_app/immutable/chunks/CfQybHzD.js                                            27.54 kB │ gzip:   8.52 kB
+.svelte-kit/output/client/_app/immutable/chunks/CfG_XiAS.js                                            29.85 kB │ gzip:   8.81 kB
+.svelte-kit/output/client/_app/immutable/chunks/9DQz0UEf.js                                            30.85 kB │ gzip:  10.57 kB
+.svelte-kit/output/client/_app/immutable/chunks/6jYM15WD.js                                            31.13 kB │ gzip:   9.76 kB
+.svelte-kit/output/client/_app/immutable/chunks/D8wP4wnv.js                                            31.31 kB │ gzip:  10.40 kB
+.svelte-kit/output/client/_app/immutable/chunks/DXuO_uS5.js                                            32.44 kB │ gzip:  12.36 kB
+.svelte-kit/output/client/_app/immutable/chunks/C77bdu7C.js                                            34.38 kB │ gzip:  10.07 kB
+.svelte-kit/output/client/_app/immutable/chunks/YYtiR_Fa.js                                            35.42 kB │ gzip:  12.73 kB
+.svelte-kit/output/client/_app/immutable/chunks/CODJAxOh.js                                            35.61 kB │ gzip:  13.58 kB
+.svelte-kit/output/client/_app/immutable/chunks/DB58pvpF.js                                            38.03 kB │ gzip:  10.63 kB
+.svelte-kit/output/client/_app/immutable/chunks/eX3jVVyD.js                                            38.52 kB │ gzip:  12.61 kB
+.svelte-kit/output/client/_app/immutable/chunks/D93pgS00.js                                            42.33 kB │ gzip:  15.77 kB
+.svelte-kit/output/client/_app/immutable/chunks/DmPybhNw.js                                            43.09 kB │ gzip:  13.87 kB
+.svelte-kit/output/client/_app/immutable/chunks/9TTTR9R9.js                                            44.41 kB │ gzip:  12.55 kB
+.svelte-kit/output/client/_app/immutable/chunks/Ch1rnUFX.js                                            49.23 kB │ gzip:  15.73 kB
+.svelte-kit/output/client/_app/immutable/nodes/17.RrMp1t52.js                                          55.70 kB │ gzip:  17.09 kB
+.svelte-kit/output/client/_app/immutable/chunks/Cb-wN4G3.js                                            62.53 kB │ gzip:  19.99 kB
+.svelte-kit/output/client/_app/immutable/chunks/BtiPBVT1.js                                            65.49 kB │ gzip:  18.79 kB
+.svelte-kit/output/client/_app/immutable/chunks/MVb22NjV.js                                            67.62 kB │ gzip:  12.15 kB
+.svelte-kit/output/client/_app/immutable/chunks/CY9mRz-j.js                                            69.59 kB │ gzip:  23.51 kB
+.svelte-kit/output/client/_app/immutable/chunks/C96COZVM.js                                            81.59 kB │ gzip:  22.45 kB
+.svelte-kit/output/client/_app/immutable/chunks/DWEuZ-Nz.js                                            99.44 kB │ gzip:  32.84 kB
+.svelte-kit/output/client/_app/immutable/chunks/WIh53pXe.js                                           117.08 kB │ gzip:  42.80 kB
+.svelte-kit/output/client/_app/immutable/chunks/5rvv-cOr.js                                           117.29 kB │ gzip:  18.56 kB
+.svelte-kit/output/client/_app/immutable/chunks/BkaAkr9N.js                                           117.38 kB │ gzip:  31.23 kB
+.svelte-kit/output/client/_app/immutable/chunks/BSbPK9_G.js                                           140.70 kB │ gzip:  43.51 kB
+.svelte-kit/output/client/_app/immutable/chunks/BWXRU_Vc.js                                           151.82 kB │ gzip:  43.15 kB
+.svelte-kit/output/client/_app/immutable/chunks/VuT-bUHI.js                                           161.51 kB │ gzip:  52.69 kB
+.svelte-kit/output/client/_app/immutable/chunks/B_0rd9h3.js                                           163.42 kB │ gzip:  52.68 kB
+.svelte-kit/output/client/_app/immutable/nodes/0.jTXCkELJ.js                                          202.28 kB │ gzip:  52.84 kB
+.svelte-kit/output/client/_app/immutable/chunks/C5jXJg4s.js                                           261.33 kB │ gzip:  77.57 kB
+.svelte-kit/output/client/_app/immutable/chunks/BeRKOee5.js                                           294.79 kB │ gzip:  48.13 kB
+.svelte-kit/output/client/_app/immutable/chunks/BxxZj11E.js                                           328.00 kB │ gzip:  83.13 kB
+.svelte-kit/output/client/_app/immutable/chunks/DfSrFbyz.js                                           443.81 kB │ gzip: 142.40 kB
+.svelte-kit/output/client/_app/immutable/chunks/DRosZPLA.js                                           532.24 kB │ gzip: 182.36 kB
+.svelte-kit/output/client/_app/immutable/chunks/DGL7Epx8.js                                           690.89 kB │ gzip: 155.11 kB
+.svelte-kit/output/client/_app/immutable/chunks/Q95ShY34.js                                         1,072.46 kB │ gzip: 299.95 kB
+.svelte-kit/output/client/_app/immutable/chunks/BJ6KPkde.js                                         2,288.59 kB │ gzip: 646.52 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 23.00s
+.svelte-kit/output/server/_app/immutable/assets/jetbrains-mono-greek-400-normal.C190GLew.woff2        4.23 kB
+.svelte-kit/output/server/_app/immutable/assets/jetbrains-mono-greek-500-normal.JpySY46c.woff2        4.28 kB
+.svelte-kit/output/server/_app/immutable/assets/jetbrains-mono-cyrillic-400-normal.BEIGL1Tu.woff2     5.33 kB
+.svelte-kit/output/server/_app/immutable/assets/jetbrains-mono-cyrillic-500-normal.DmUKJPL_.woff2     5.36 kB
+.svelte-kit/output/server/_app/immutable/assets/jetbrains-mono-vietnamese-400-normal.CqNFfHCs.woff    5.37 kB
+.svelte-kit/output/server/_app/immutable/assets/jetbrains-mono-vietnamese-500-normal.DNRqzVM1.woff    5.48 kB
+.svelte-kit/output/server/_app/immutable/assets/jetbrains-mono-greek-400-normal.B9oWc5Lo.woff         5.66 kB
+.svelte-kit/output/server/_app/immutable/assets/jetbrains-mono-greek-500-normal.D7SFKleX.woff         5.72 kB
+.svelte-kit/output/server/_app/immutable/assets/jetbrains-mono-cyrillic-400-normal.ugxPyKxw.woff      6.98 kB
+.svelte-kit/output/server/_app/immutable/assets/jetbrains-mono-cyrillic-500-normal.DJqRU3vO.woff      7.02 kB
+.svelte-kit/output/server/_app/immutable/assets/jetbrains-mono-latin-ext-400-normal.Bc8Ftmh3.woff2    7.34 kB
+.svelte-kit/output/server/_app/immutable/assets/geist-cyrillic-ext-wght-normal.DjL33-gN.woff2         7.42 kB
+.svelte-kit/output/server/_app/immutable/assets/jetbrains-mono-latin-ext-500-normal.Cut-4mMH.woff2    7.53 kB
+.svelte-kit/output/server/_app/immutable/assets/geist-cyrillic-ext-wght-italic.BYAq_K0C.woff2         7.80 kB
+.svelte-kit/output/server/_app/immutable/assets/geist-vietnamese-wght-normal.6IgcOCM7.woff2           8.00 kB
+.svelte-kit/output/server/_app/immutable/assets/geist-vietnamese-wght-italic.0fly6zkB.woff2           8.70 kB
+.svelte-kit/output/server/_app/immutable/assets/jetbrains-mono-latin-ext-400-normal.fXTG6kC5.woff    10.13 kB
+.svelte-kit/output/server/_app/immutable/assets/jetbrains-mono-latin-ext-500-normal.ckzbgY84.woff    10.34 kB
+.svelte-kit/output/server/_app/immutable/assets/geist-cyrillic-wght-normal.BEAKL7Jp.woff2            15.08 kB
+.svelte-kit/output/server/_app/immutable/assets/geist-cyrillic-wght-italic.Da0gXVk3.woff2            15.96 kB
+.svelte-kit/output/server/_app/immutable/assets/geist-latin-ext-wght-normal.DC-KSUi6.woff2           16.51 kB
+.svelte-kit/output/server/_app/immutable/assets/geist-latin-ext-wght-italic.XgKbg5n7.woff2           17.89 kB
+.svelte-kit/output/server/_app/immutable/assets/jetbrains-mono-latin-400-normal.V6pRDFza.woff2       21.17 kB
+.svelte-kit/output/server/_app/immutable/assets/jetbrains-mono-latin-500-normal.BWZEU5yA.woff2       21.83 kB
+.svelte-kit/output/server/_app/immutable/assets/jetbrains-mono-latin-400-normal.6-qcROiO.woff        27.50 kB
+.svelte-kit/output/server/_app/immutable/assets/jetbrains-mono-latin-500-normal.CJOVTJB7.woff        28.21 kB
+.svelte-kit/output/server/_app/immutable/assets/geist-latin-wght-normal.BgDaEnEv.woff2               29.40 kB
+.svelte-kit/output/server/_app/immutable/assets/geist-latin-wght-italic.dTnRTFFJ.woff2               31.01 kB
+.svelte-kit/output/server/.vite/manifest.json                                                        40.48 kB
+.svelte-kit/output/server/_app/immutable/assets/file-icon.BPIUFr5W.css                                0.10 kB
+.svelte-kit/output/server/_app/immutable/assets/_page.hMcJmyQ2.css                                    0.31 kB
+.svelte-kit/output/server/_app/immutable/assets/_page.8sa2G08L.css                                    0.38 kB
+.svelte-kit/output/server/_app/immutable/assets/app-logo-mark.BfZxZD1c.css                            0.42 kB
+.svelte-kit/output/server/_app/immutable/assets/Terminal.B3-bqNw9.css                                 0.62 kB
+.svelte-kit/output/server/_app/immutable/assets/_layout.DOuaVET5.css                                  0.84 kB
+.svelte-kit/output/server/_app/immutable/assets/_page.CrVKvwth.css                                    1.40 kB
+.svelte-kit/output/server/_app/immutable/assets/_page.BPnWIHap.css                                    1.53 kB
+.svelte-kit/output/server/_app/immutable/assets/_page.C3jKne5N.css                                    1.53 kB
+.svelte-kit/output/server/_app/immutable/assets/_layout.4L1Kkw7r.css                                  2.39 kB
+.svelte-kit/output/server/_app/immutable/assets/file-explorer.B7wsXMZy.css                            4.61 kB
+.svelte-kit/output/server/_app/immutable/assets/editor-dock.KLUSYgkr.css                             12.94 kB
+.svelte-kit/output/server/_app/immutable/assets/_page.oj9XuHbP.css                                   13.94 kB
+.svelte-kit/output/server/_app/immutable/assets/style.D9k6t2tD.css                                   16.93 kB
+.svelte-kit/output/server/_app/immutable/assets/_layout.DSD4TnEj.css                                255.97 kB
+.svelte-kit/output/server/entries/pages/(app)/editor/_projectId_/_page.ts.js                          0.04 kB
+.svelte-kit/output/server/entries/pages/(app)/editor/template/_templateId_/_page.ts.js                0.04 kB
+.svelte-kit/output/server/entries/pages/(dashboard)/dashboard/_page.ts.js                             0.04 kB
+.svelte-kit/output/server/entries/pages/webcontainer/connect/_...path_/_page.ts.js                    0.04 kB
+.svelte-kit/output/server/chunks/client2.js                                                           0.08 kB
+.svelte-kit/output/server/entries/pages/_page.ts.js                                                   0.12 kB
+.svelte-kit/output/server/entries/pages/(app)/editor/_page.svelte.js                                  0.14 kB
+.svelte-kit/output/server/chunks/utils2.js                                                            0.15 kB
+.svelte-kit/output/server/entries/pages/(dashboard)/community/_page.svelte.js                         0.24 kB
+.svelte-kit/output/server/entries/pages/webcontainer/connect/_...path_/_page.svelte.js                0.25 kB
+.svelte-kit/output/server/chunks/shared-server.js                                                     0.28 kB
+.svelte-kit/output/server/entries/pages/_page.svelte.js                                               0.29 kB
+.svelte-kit/output/server/entries/pages/(dashboard)/usage/_page.svelte.js                             0.31 kB
+.svelte-kit/output/server/entries/pages/(dashboard)/settings/_page.svelte.js                          0.31 kB
+.svelte-kit/output/server/chunks/settings.svelte.js                                                   0.32 kB
+.svelte-kit/output/server/entries/pages/(dashboard)/profile/_page.svelte.js                           0.32 kB
+.svelte-kit/output/server/chunks/equality.js                                                          0.33 kB
+.svelte-kit/output/server/chunks/index-server.js                                                      0.34 kB
+.svelte-kit/output/server/entries/fallbacks/error.svelte.js                                           0.35 kB
+.svelte-kit/output/server/chunks/index3.js                                                            0.37 kB
+.svelte-kit/output/server/entries/pages/(app)/editor/_page.ts.js                                      0.38 kB
+.svelte-kit/output/server/chunks/index-server2.js                                                     0.42 kB
+.svelte-kit/output/server/internal.js                                                                 0.43 kB
+.svelte-kit/output/server/chunks/dashboard-placeholder-page.js                                        0.44 kB
+.svelte-kit/output/server/entries/endpoints/sandbox-health/_server.ts.js                              0.51 kB
+.svelte-kit/output/server/chunks/config.js                                                            0.52 kB
+.svelte-kit/output/server/chunks/escaping.js                                                          0.53 kB
+.svelte-kit/output/server/entries/pages/(app)/_layout.server.ts.js                                    0.54 kB
+.svelte-kit/output/server/chunks/ollama.js                                                            0.54 kB
+.svelte-kit/output/server/entries/endpoints/api/claude-auth/seed/_server.ts.js                        0.55 kB
+.svelte-kit/output/server/entries/endpoints/api/nvidia/_...path_/_server.ts.js                        0.58 kB
+.svelte-kit/output/server/chunks/projectScope.js                                                      0.62 kB
+.svelte-kit/output/server/chunks/internal.js                                                          0.62 kB
+.svelte-kit/output/server/entries/hooks.server.js                                                     0.63 kB
+.svelte-kit/output/server/entries/endpoints/api/openrouter/_...path_/_server.ts.js                    0.69 kB
+.svelte-kit/output/server/entries/endpoints/api/agent/runs/_server.ts.js                              0.73 kB
+.svelte-kit/output/server/entries/endpoints/api/anthropic/_...path_/_server.ts.js                     0.75 kB
+.svelte-kit/output/server/entries/endpoints/api/chat/models/_server.ts.js                             0.77 kB
+.svelte-kit/output/server/chunks/client.js                                                            0.99 kB
+.svelte-kit/output/server/chunks/utils.js                                                             1.09 kB
+.svelte-kit/output/server/chunks/definitions.js                                                       1.09 kB
+.svelte-kit/output/server/chunks/index.js                                                             1.44 kB
+.svelte-kit/output/server/entries/pages/canvas/_page.svelte.js                                        1.83 kB
+.svelte-kit/output/server/chunks/code-editor.svelte_svelte_type_style_lang.js                         2.04 kB
+.svelte-kit/output/server/entries/pages/(dashboard)/dashboard/_page.svelte.js                         2.19 kB
+.svelte-kit/output/server/entries/pages/(app)/editor/_projectId_/_page.svelte.js                      2.23 kB
+.svelte-kit/output/server/entries/pages/(app)/editor/template/_templateId_/_page.svelte.js            2.28 kB
+.svelte-kit/output/server/entries/pages/component-editor/_page.svelte.js                              2.33 kB
+.svelte-kit/output/server/entries/pages/live-editor/_page.svelte.js                                   2.33 kB
+.svelte-kit/output/server/chunks/clone.js                                                             2.33 kB
+.svelte-kit/output/server/chunks/app-logo-mark.js                                                     2.50 kB
+.svelte-kit/output/server/chunks/proxy.js                                                             2.50 kB
+.svelte-kit/output/server/chunks/dexieProjectStore.js                                                 3.17 kB
+.svelte-kit/output/server/entries/endpoints/api/fetch/_server.ts.js                                   3.37 kB
+.svelte-kit/output/server/chunks/anthropicAuth.js                                                     3.40 kB
+.svelte-kit/output/server/chunks/Background.js                                                        3.41 kB
+.svelte-kit/output/server/chunks/runLog.js                                                            3.53 kB
+.svelte-kit/output/server/chunks/internal2.js                                                         3.54 kB
+.svelte-kit/output/server/chunks/plus.js                                                              3.82 kB
+.svelte-kit/output/server/chunks/button.js                                                            3.95 kB
+.svelte-kit/output/server/chunks/FileExplorer.js                                                      4.03 kB
+.svelte-kit/output/server/chunks/panels-top-left.js                                                   4.06 kB
+.svelte-kit/output/server/chunks/exports.js                                                           5.54 kB
+.svelte-kit/output/server/entries/endpoints/api/chat/_server.ts.js                                    5.82 kB
+.svelte-kit/output/server/chunks/activity.js                                                          5.90 kB
+.svelte-kit/output/server/chunks/webcontainerSnapshot.js                                              6.15 kB
+.svelte-kit/output/server/chunks/Icon.js                                                              6.15 kB
+.svelte-kit/output/server/chunks/notify.js                                                            6.79 kB
+.svelte-kit/output/server/chunks/separator.js                                                         7.45 kB
+.svelte-kit/output/server/entries/pages/(app)/_layout.svelte.js                                       7.87 kB
+.svelte-kit/output/server/chunks/webcontainerStore.js                                                 9.86 kB
+.svelte-kit/output/server/chunks/new-project-dialog.js                                                9.96 kB
+.svelte-kit/output/server/entries/pages/sidebar-11/_page.svelte.js                                    9.99 kB
+.svelte-kit/output/server/entries/pages/(dashboard)/templates/_page.svelte.js                        10.08 kB
+.svelte-kit/output/server/chunks/svelte.js                                                           10.34 kB
+.svelte-kit/output/server/chunks/safe-polygon.svelte.js                                              11.37 kB
+.svelte-kit/output/server/entries/pages/(dashboard)/workspace/_page.svelte.js                        11.59 kB
+.svelte-kit/output/server/entries/pages/code-flow/_page.svelte.js                                    13.62 kB
+.svelte-kit/output/server/chunks/input.js                                                            15.21 kB
+.svelte-kit/output/server/chunks/dialog-content.js                                                   17.46 kB
+.svelte-kit/output/server/entries/pages/(dashboard)/agents/_page.svelte.js                           17.82 kB
+.svelte-kit/output/server/chunks/statusBar.svelte.js                                                 21.37 kB
+.svelte-kit/output/server/entries/pages/(dashboard)/_layout.svelte.js                                29.06 kB
+.svelte-kit/output/server/chunks/shared.js                                                           33.53 kB
+.svelte-kit/output/server/remote-entry.js                                                            36.63 kB
+.svelte-kit/output/server/chunks/popper-layer-force-mount.js                                         37.97 kB
+.svelte-kit/output/server/chunks/editor-dock.svelte_svelte_type_style_lang.js                        42.12 kB
+.svelte-kit/output/server/chunks/index2.js                                                           43.01 kB
+.svelte-kit/output/server/entries/pages/code-canvas/_page.svelte.js                                  48.35 kB
+.svelte-kit/output/server/chunks/sidebar.js                                                          63.84 kB
+.svelte-kit/output/server/chunks/root.js                                                             88.47 kB
+.svelte-kit/output/server/chunks/style.js                                                            93.07 kB
+.svelte-kit/output/server/chunks/scroll-lock.js                                                     107.78 kB
+.svelte-kit/output/server/index.js                                                                  130.60 kB
+.svelte-kit/output/server/chunks/context-menu-host.js                                               174.24 kB
+.svelte-kit/output/server/chunks/userTemplateStore.js                                               296.55 kB
+.svelte-kit/output/server/entries/pages/_layout.svelte.js                                           408.89 kB
+✓ built in 45.25s
+
+Run npm run preview to preview your production build locally.
+
+> Using @sveltejs/adapter-vercel
+  ✔ done

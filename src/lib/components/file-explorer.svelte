@@ -1,30 +1,35 @@
 <script lang="ts">
   import FileTree from '$lib/components/file-tree.svelte'
   import ContextMenuHost from '$lib/components/context-menu-host.svelte'
-  import * as Accordion from '$lib/components/ui/accordion/index.js'
   import { loadProjectTree, type TreeNode } from '$lib/fileTree'
   import { dirname, joinPath } from '$lib/fileTreeOps'
   import {
     collectNodesByPaths,
     filterDotfiles,
+    filterTreeByQuery,
     flattenVisibleTree,
     isDotfile,
     parentFolderPath,
-    removePathsFromTree,
+    projectExplorerMainTree,
   } from '$lib/fileTreeView'
   import { fileTreeState } from '$lib/fileTreeState.svelte'
   import { movePath, writeExternalFile } from '$lib/fileOps'
   import { actionRunner } from '$lib/actionRunner.svelte'
   import { sandboxStore } from '$lib/sandboxStore'
   import { isBinaryPreviewPath } from '$lib/fileTypes'
+  import { isExplorerPathDrag } from '$lib/explorerDrag'
   import { toast } from '$lib/notify'
+  import ChevronRightIcon from '@lucide/svelte/icons/chevron-right'
+  import { cn } from '$lib/utils.js'
 
   let {
     activeFile = '/App.svelte',
+    filterQuery = '',
     onSelectFile,
     explorer = $bindable(),
   }: {
     activeFile?: string
+    filterQuery?: string
     onSelectFile?: (path: string, content: string) => void
     explorer?: { createFile: () => void; createFolder: () => void }
   } = $props()
@@ -33,6 +38,7 @@
   let containerReady = $state(false)
   let lastTreeGeneration = $state(-1)
   let bodyEl = $state<HTMLDivElement | undefined>()
+  let hiddenOpen = $state(false)
 
   $effect(() => {
     const unsubscribe = sandboxStore.subscribe((state) => {
@@ -55,12 +61,17 @@
 
   const pinnedNodes = $derived(collectNodesByPaths(tree, fileTreeState.pinnedPaths))
   const hiddenNodes = $derived(collectNodesByPaths(tree, fileTreeState.hiddenPaths))
-  const excludedPaths = $derived(new Set([...fileTreeState.pinnedPaths, ...fileTreeState.hiddenPaths]))
-  const mainTree = $derived(filterDotfiles(removePathsFromTree(tree, excludedPaths), fileTreeState.showDotfiles))
+  const mainTree = $derived(
+    filterDotfiles(projectExplorerMainTree(tree, fileTreeState.hiddenPaths), fileTreeState.showDotfiles),
+  )
+  const filtering = $derived(filterQuery.trim().length > 0)
+  const filteredPinnedNodes = $derived(filterTreeByQuery(pinnedNodes, filterQuery))
+  const filteredMainTree = $derived(filterTreeByQuery(mainTree, filterQuery))
+  const filteredHiddenNodes = $derived(filterTreeByQuery(hiddenNodes, filterQuery))
 
   const navigableNodes = $derived([
-    ...flattenVisibleTree(pinnedNodes, (path) => fileTreeState.isExpanded(path)),
-    ...flattenVisibleTree(mainTree, (path) => fileTreeState.isExpanded(path)),
+    ...flattenVisibleTree(filteredPinnedNodes, (path) => filtering || fileTreeState.isExpanded(path)),
+    ...flattenVisibleTree(filteredMainTree, (path) => filtering || fileTreeState.isExpanded(path)),
   ])
 
   async function loadTree() {
@@ -162,7 +173,7 @@
   function handleExplorerDragOver(event: DragEvent) {
     if (!event.dataTransfer) return
     event.preventDefault()
-    event.dataTransfer.dropEffect = 'copy'
+    event.dataTransfer.dropEffect = isExplorerPathDrag(event.dataTransfer) ? 'move' : 'copy'
   }
 
   async function handleExplorerDrop(event: DragEvent) {
@@ -223,44 +234,122 @@
 
 <div class="file-explorer">
   <ContextMenuHost target={{ kind: 'explorer' }} triggerClass="file-explorer__host">
-    <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-    <div
-      bind:this={bodyEl}
-      class="file-explorer__body"
-      tabindex="0"
-      role="tree"
-      aria-label="Project files"
-      onkeydown={handleKeydown}
-      ondragover={handleExplorerDragOver}
-      ondrop={handleExplorerDrop}
-      onclick={() => bodyEl?.focus()}
-    >
+    <div class="file-explorer__layout">
       {#if !containerReady}
-        <p class="text-muted-foreground px-2 py-2 text-xs">Booting project…</p>
+        <p class="file-explorer__empty text-muted-foreground px-2 py-2 text-xs">Booting project…</p>
       {:else if !tree.length}
-        <p class="text-muted-foreground px-2 py-2 text-xs">No files yet.</p>
+        <p class="file-explorer__empty text-muted-foreground px-2 py-2 text-xs">No files yet.</p>
+      {:else if !filteredPinnedNodes.length && !filteredMainTree.length && !filteredHiddenNodes.length}
+        <p class="file-explorer__empty text-muted-foreground px-2 py-2 text-xs">
+          {filtering ? 'No files match your filter.' : 'No files yet.'}
+        </p>
       {:else}
-        {#if pinnedNodes.length}
-          <section class="file-explorer__section" aria-label="Pinned files">
-            <div class="file-explorer__section-label">Pinned</div>
-            <FileTree nodes={pinnedNodes} {activeFile} onSelectFile={openFile} section="pinned" />
+        {#if filteredPinnedNodes.length}
+          <section class="file-explorer__pinned" aria-label="Pinned files">
+            <button
+              type="button"
+              class="file-explorer__section-trigger"
+              aria-expanded={fileTreeState.shortcutsPanelOpen}
+              onclick={() => fileTreeState.setShortcutsPanelOpen(!fileTreeState.shortcutsPanelOpen)}
+            >
+              <span class="file-explorer__section-chevron-slot" aria-hidden="true">
+                <ChevronRightIcon
+                  class={cn(
+                    'file-explorer__section-chevron size-3.5 transition-transform duration-200',
+                    fileTreeState.shortcutsPanelOpen && 'rotate-90',
+                  )}
+                />
+              </span>
+              <span>Pinned</span>
+              <span class="file-explorer__section-count">{filteredPinnedNodes.length}</span>
+            </button>
+            {#if fileTreeState.shortcutsPanelOpen}
+              <div class="file-explorer__pinned-panel">
+                <FileTree
+                  nodes={filteredPinnedNodes}
+                  {activeFile}
+                  onSelectFile={openFile}
+                  section="pinned"
+                  forceExpanded={filtering}
+                />
+              </div>
+            {/if}
           </section>
         {/if}
 
-        <FileTree nodes={mainTree} {activeFile} onSelectFile={openFile} section="main" />
+        <section class="file-explorer__main" aria-label="Project files">
+          <button
+            type="button"
+            class="file-explorer__section-trigger"
+            aria-expanded={fileTreeState.mainPanelOpen}
+            onclick={() => fileTreeState.setMainPanelOpen(!fileTreeState.mainPanelOpen)}
+          >
+            <span class="file-explorer__section-chevron-slot" aria-hidden="true">
+              <ChevronRightIcon
+                class={cn(
+                  'file-explorer__section-chevron size-3.5 transition-transform duration-200',
+                  fileTreeState.mainPanelOpen && 'rotate-90',
+                )}
+              />
+            </span>
+            <span>Files</span>
+            <span class="file-explorer__section-count">{filteredMainTree.length}</span>
+          </button>
+          {#if fileTreeState.mainPanelOpen}
+            <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+            <div
+              bind:this={bodyEl}
+              class="file-explorer__scroll"
+              tabindex="0"
+              role="tree"
+              aria-label="Project files"
+              onkeydown={handleKeydown}
+              ondragover={handleExplorerDragOver}
+              ondrop={handleExplorerDrop}
+              onclick={() => bodyEl?.focus()}
+            >
+              <FileTree
+                nodes={filteredMainTree}
+                {activeFile}
+                onSelectFile={openFile}
+                section="main"
+                forceExpanded={filtering}
+              />
+            </div>
+          {/if}
+        </section>
 
-        {#if hiddenNodes.length}
-          <Accordion.Root type="single" class="file-explorer__hidden">
-            <Accordion.Item value="hidden">
-              <Accordion.Trigger class="file-explorer__hidden-trigger">
-                Hidden files
-                <span class="file-explorer__hidden-count">{hiddenNodes.length}</span>
-              </Accordion.Trigger>
-              <Accordion.Content>
-                <FileTree nodes={hiddenNodes} {activeFile} onSelectFile={openFile} section="hidden" />
-              </Accordion.Content>
-            </Accordion.Item>
-          </Accordion.Root>
+        {#if filteredHiddenNodes.length}
+          <footer class="file-explorer__footer">
+            <button
+              type="button"
+              class="file-explorer__section-trigger file-explorer__hidden-trigger"
+              aria-expanded={hiddenOpen}
+              onclick={() => (hiddenOpen = !hiddenOpen)}
+            >
+              <span class="file-explorer__section-chevron-slot" aria-hidden="true">
+                <ChevronRightIcon
+                  class={cn(
+                    'file-explorer__section-chevron size-3.5 transition-transform duration-200',
+                    hiddenOpen && 'rotate-90',
+                  )}
+                />
+              </span>
+              <span>Hidden files</span>
+              <span class="file-explorer__section-count">{filteredHiddenNodes.length}</span>
+            </button>
+            {#if hiddenOpen}
+              <div class="file-explorer__hidden-panel">
+                <FileTree
+                  nodes={filteredHiddenNodes}
+                  {activeFile}
+                  onSelectFile={openFile}
+                  section="hidden"
+                  forceExpanded={filtering}
+                />
+              </div>
+            {/if}
+          </footer>
         {/if}
       {/if}
     </div>
@@ -269,11 +358,13 @@
 
 <style>
   .file-explorer {
+    --file-explorer-row-pad-x: 0.5rem;
+    --file-explorer-chevron-size: 0.875rem;
     display: flex;
     flex-direction: column;
     height: 100%;
     min-height: 0;
-    background: var(--color-background);
+    background: var(--color-chrome-surface);
     font-size: var(--explorer-font-size);
   }
 
@@ -284,52 +375,97 @@
     overflow: hidden;
   }
 
-  .file-explorer__body {
+  .file-explorer__layout {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .file-explorer__empty {
+    flex-shrink: 0;
+    padding: 0.25rem;
+  }
+
+  .file-explorer__pinned {
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .file-explorer__pinned-panel {
+    padding-bottom: 0.25rem;
+  }
+
+  .file-explorer__main {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .file-explorer__scroll {
     flex: 1 1 0;
     min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 0.25rem;
     overscroll-behavior: contain;
     outline: none;
   }
 
-  .file-explorer__section {
-    margin-bottom: 0.375rem;
-  }
-
-  .file-explorer__section-label {
-    padding: 0.125rem 0.5rem;
-    font-family: var(--font-mono);
-    font-size: 0.846em;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--color-muted-foreground);
-  }
-
-  :global(.file-explorer__hidden) {
-    margin-top: 0.375rem;
-    border-top: 1px solid var(--color-border);
-    padding-top: 0.25rem;
-  }
-
-  :global(.file-explorer__hidden-trigger) {
+  .file-explorer__section-trigger {
     display: flex;
     width: 100%;
     align-items: center;
-    justify-content: space-between;
-    padding: 0.25rem 0.5rem;
+    gap: 0.375rem;
+    padding: 0.125rem var(--file-explorer-row-pad-x);
+    border: none;
+    border-radius: 0;
+    background: transparent;
     font-family: var(--font-mono);
     font-size: 0.846em;
     font-weight: 600;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--color-muted-foreground);
+    cursor: pointer;
+    text-decoration: none;
   }
 
-  .file-explorer__hidden-count {
+  .file-explorer__section-trigger:hover {
+    background: var(--color-accent);
+    color: var(--color-accent-foreground);
+  }
+
+  .file-explorer__section-chevron-slot {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: var(--file-explorer-chevron-size);
+    height: var(--file-explorer-chevron-size);
+  }
+
+  .file-explorer__section-count {
+    margin-left: auto;
     font-size: 0.769em;
     opacity: 0.75;
+  }
+
+  .file-explorer__footer {
+    flex-shrink: 0;
+    margin-top: auto;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-chrome-surface);
+  }
+
+  .file-explorer__hidden-trigger {
+    border-radius: 0;
+  }
+
+  .file-explorer__hidden-panel {
+    max-height: min(40vh, 280px);
+    overflow-y: auto;
   }
 </style>

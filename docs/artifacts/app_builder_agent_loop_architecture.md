@@ -4,10 +4,13 @@
 **Parent:** TRL-150 · agent harness · **Companion to:** [app_builder_agent_harness_design.md](./app_builder_agent_harness_design.md) (UI/tokens)
 **Scope:** Answers the "Open for Architect" item #6 (*agent loop boundary*) and #1/#3/#4 (transport, observation, snapshots) from the design doc.
 **References studied:**
+
 - `pi-sprite/examples/webcontainer-react` — a working in-container agent (Pi RPC over stdio) with a hand-rolled turn-stream client.
 - `DEEPSEEK-HARNESS/deepseek-harness` — a mature agent-loop reference: session-event log, two event planes, turn/step lifecycle, guarded tool pipeline, capability seams.
 
 ---
+
+
 
 ## 1. Problem statement
 
@@ -20,7 +23,8 @@ The harness today has loop **primitives** but no loop. Concretely, in `src/lib/a
 - `bridge.ts` — installs the postMessage host↔guest FS proxy.
 
 Plus, outside the harness namespace, three **parallel, unlinked** stores of truth:
-1. chat messages (`chat.svelte.ts`),
+
+1.  chat messages (`chat.svelte.ts`),
 2. the tool log (`harnessStore.toolLog`),
 3. file snapshots (`snapshotStore.ts`).
 
@@ -28,11 +32,13 @@ The chat is "dumb" because nothing drives these from a model, and because they a
 
 ---
 
+
+
 ## 2. Core idea: one session-event log
 
 > **Rule (from deepseek-harness): "model-visible means logged."** Anything that reaches a model request must be reconstructable from a single append-only event log. Chat transcript, tool log, telemetry, and undo all *derive* from that log — they are not maintained independently.
 
-Replace the three parallel stores with **one `SessionEvent[]` per project**, persisted to Dexie (already in the stack via `dexieProjectStore`).
+Replace the three parallel stores with **one** `SessionEvent[]` **per project**, persisted to Dexie (already in the stack via `dexieProjectStore`).
 
 ```ts
 // src/lib/agent/session/events.ts (new)
@@ -49,31 +55,39 @@ export type SessionEvent =
 
 Derivations (all pure functions over the log):
 
-| View | Derivation |
-| ---- | ---------- |
-| Chat transcript | fold `user/message` + `assistant/message` |
-| Model history (what we resend) | `deriveMessages(log)` — assistant + user + tool results |
-| Tool log (`harnessStore.toolLog`) | filter `tool/*`, `fs/observed` |
-| Preview glow / last write | last `fs/observed.path` |
-| Undo / rollback | `fs/observed.snapshotId` chain |
-| Telemetry / cost | fold `assistant/message.usage` |
+
+| View                              | Derivation                                              |
+| --------------------------------- | ------------------------------------------------------- |
+| Chat transcript                   | fold `user/message` + `assistant/message`               |
+| Model history (what we resend)    | `deriveMessages(log)` — assistant + user + tool results |
+| Tool log (`harnessStore.toolLog`) | filter `tool/*`, `fs/observed`                          |
+| Preview glow / last write         | last `fs/observed.path`                                 |
+| Undo / rollback                   | `fs/observed.snapshotId` chain                          |
+| Telemetry / cost                  | fold `assistant/message.usage`                          |
+
 
 **Payoff:** because the log is per-project and durable, agent sessions **resume and fork** for free — exactly what a multi-project IDE wants. `session.fork(atSeq)` = branch a conversation from any point.
 
 ---
 
+
+
 ## 3. Two event planes (keep them sharply separate)
 
 deepseek-harness's central discipline: **durable facts** vs **live coordination**.
 
-| Plane | Nature | Examples | Home in app-builder |
-| ----- | ------ | -------- | ------------------- |
-| **Session events** | Durable, append-only, survives reload | `user/message`, `tool/call`, `fs/observed` | Dexie-backed `SessionEvent[]` |
-| **Agent status** | Ephemeral, live control | `running`/`idle`, streaming deltas mid-flight, HMR ms, approval-pending | `$state` in `harnessStore` |
+
+| Plane              | Nature                                | Examples                                                                | Home in app-builder           |
+| ------------------ | ------------------------------------- | ----------------------------------------------------------------------- | ----------------------------- |
+| **Session events** | Durable, append-only, survives reload | `user/message`, `tool/call`, `fs/observed`                              | Dexie-backed `SessionEvent[]` |
+| **Agent status**   | Ephemeral, live control               | `running`/`idle`, streaming deltas mid-flight, HMR ms, approval-pending | `$state` in `harnessStore`    |
+
 
 Your `HarnessEnvelope` already half-encodes this (`emit` vs `call`). Formalize it: **UI renders the transcript from the durable log; status badges read the live plane.** A streaming delta is live until the turn closes, at which point the coalesced `assistant/message` is the durable fact.
 
 ---
+
+
 
 ## 4. Turn / step lifecycle
 
@@ -94,20 +108,24 @@ turn/start
 turn/end
 ```
 
-**You can lift pi-sprite's `PiRpcClient.streamAssistantReply()` almost verbatim** — it already is this loop with different event names:
+**You can lift pi-sprite's** `PiRpcClient.streamAssistantReply()` **almost verbatim** — it already is this loop with different event names:
 
-| pi-sprite event | app-builder session event |
-| --------------- | ------------------------- |
-| `turn_start` | `turn/start` |
-| `message_update` / `text_delta` | `assistant/chunk` |
-| `message_update` / `toolcall_start` | `tool/call` |
-| `message_end`, `turn_end` | `assistant/message` |
-| `agent_settled` | `turn/end` |
-| `auto_retry_end {success:false}` | (drives `agent/request-error` seam) |
+
+| pi-sprite event                     | app-builder session event           |
+| ----------------------------------- | ----------------------------------- |
+| `turn_start`                        | `turn/start`                        |
+| `message_update` / `text_delta`     | `assistant/chunk`                   |
+| `message_update` / `toolcall_start` | `tool/call`                         |
+| `message_end`, `turn_end`           | `assistant/message`                 |
+| `agent_settled`                     | `turn/end`                          |
+| `auto_retry_end {success:false}`    | (drives `agent/request-error` seam) |
+
 
 The pi-sprite client's `send()` id-correlation + timeout, `on()` pub/sub dispatch, and settle-timeout are all reusable machinery regardless of where the loop runs (§7).
 
 ---
+
+
 
 ## 5. Tool pipeline as ordered seams
 
@@ -134,7 +152,8 @@ async function runTool(call: ToolCall, ctx: ToolCtx): Promise<ToolResult> {
 }
 ```
 
-**Why lift the allowlist out of `bridge.ts`:** today the check is inline in the write proxy. As a `pre-execute` seam it composes with:
+**Why lift the allowlist out of** `bridge.ts`**:** today the check is inline in the write proxy. As a `pre-execute` seam it composes with:
+
 - **approval** (§6),
 - rate-limits,
 - repeat-tool detection ("agent wrote App.svelte 4× in a row"),
@@ -142,6 +161,8 @@ async function runTool(call: ToolCall, ctx: ToolCtx): Promise<ToolResult> {
 …none of which should require editing the FS proxy.
 
 ---
+
+
 
 ## 6. Approval seam (highest value / least code)
 
@@ -165,13 +186,17 @@ This maps to `ctx.approval` in the harness and slots in with ~one component + on
 
 ---
 
+
+
 ## 7. The one decision: where does the loop live?
 
-| Option | Mechanism | Trade |
-| ------ | --------- | ----- |
-| **A. In-container** (pi-sprite's path) | Agent runs as RPC server inside the WebContainer; host drives via stdio client | Fastest to a real agent; native FS + shell. Couples you to Pi's protocol + container lifecycle. Keys must reach the container (pi-sprite proxies `/api/*` through Vite). |
-| **B. Host-side** (SvelteKit) | Loop runs in `src/routes/api/chat/+server.ts`; drives container via existing `HarnessEnvelope` bridge | Reuses your bridge, `@ai-sdk/svelte`, `ai-sdk-ollama`; keys stay server-side. You implement tools (write/read/exec) against the seam. |
-| **C. Hybrid** | Host orchestrates; container is a pure execution seam | Most flexible, most work. |
+
+| Option                                 | Mechanism                                                                                             | Trade                                                                                                                                                                    |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **A. In-container** (pi-sprite's path) | Agent runs as RPC server inside the WebContainer; host drives via stdio client                        | Fastest to a real agent; native FS + shell. Couples you to Pi's protocol + container lifecycle. Keys must reach the container (pi-sprite proxies `/api/`* through Vite). |
+| **B. Host-side** (SvelteKit)           | Loop runs in `src/routes/api/chat/+server.ts`; drives container via existing `HarnessEnvelope` bridge | Reuses your bridge, `@ai-sdk/svelte`, `ai-sdk-ollama`; keys stay server-side. You implement tools (write/read/exec) against the seam.                                    |
+| **C. Hybrid**                          | Host orchestrates; container is a pure execution seam                                                 | Most flexible, most work.                                                                                                                                                |
+
 
 **Recommendation: B (host-side loop + container as execution seam).**
 
@@ -195,6 +220,8 @@ interface ExecBackend {
 
 ---
 
+
+
 ## 8. Defensive rules that will bite in this exact domain
 
 Lifted from `deepseek-harness/docs/defensive-patterns.md` — each is a class of bug that shipped there:
@@ -203,24 +230,30 @@ Lifted from `deepseek-harness/docs/defensive-patterns.md` — each is a class of
 2. **Contain callback exceptions in the dispatcher.** One throwing listener in the `on()` pub/sub loop must not starve the rest — wrap dispatch in try/catch + log. (pi-sprite's `PiRpcClient.dispatch` currently does not.)
 3. **Dispose must reach quiescence.** WebContainer teardown must `kill → await done`, and close notification registries *before* killing so late completions stay silent.
 4. **Report orthogonal outcomes independently.** A tool run can time out AND exit 0. Surface `timedOut`, `exitCode`, `error` separately on `tool/result`; never nest one flag inside another's branch.
-5. **Scrub env for spawned commands** (once §7's `exec` lands): drop `*KEY*`/`*SECRET*`/`*TOKEN*` so harness credentials never leak into agent-visible output.
+5. **Scrub env for spawned commands** (once §7's `exec` lands): drop `*KEY`*/`*SECRET*`/`*TOKEN*` so harness credentials never leak into agent-visible output.
 
 ---
+
+
 
 ## 9. Mapping onto current code
 
-| New concept | Lands in | Reuses / replaces |
-| ----------- | -------- | ----------------- |
-| `SessionEvent` log | `src/lib/agent/session/` (new) | replaces parallel `chat.svelte.ts` + `toolLog` + `snapshotStore` as *sources*; they become derived views |
-| Dexie persistence | extend `projects/dexieProjectStore.ts` | new `sessionEvents` table keyed by projectId |
-| Turn/step driver | `src/lib/agent/loop/` (new) | port `PiRpcClient.streamAssistantReply` shape |
-| Model call | `src/routes/api/chat/+server.ts` | `@ai-sdk/svelte`, `ai-sdk-ollama` (already present) |
-| Tool pipeline | `src/lib/agent/tools/pipeline.ts` (new) | orders `pathAllowlist` + `snapshotStore` + `bridge` write |
-| Approval seam | `src/lib/components/agent-approval.svelte` (new) | renders from live plane |
-| Exec backend seam | `src/lib/agent/exec/backend.ts` (new) | wraps `bridge.ts` + `server/sandboxManager.ts` |
-| Live status | `harnessStore.svelte.ts` | keep as the live plane; drop `toolLog` as a *store* (derive it) |
+
+| New concept        | Lands in                                         | Reuses / replaces                                                                                        |
+| ------------------ | ------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| `SessionEvent` log | `src/lib/agent/session/` (new)                   | replaces parallel `chat.svelte.ts` + `toolLog` + `snapshotStore` as *sources*; they become derived views |
+| Dexie persistence  | extend `projects/dexieProjectStore.ts`           | new `sessionEvents` table keyed by projectId                                                             |
+| Turn/step driver   | `src/lib/agent/loop/` (new)                      | port `PiRpcClient.streamAssistantReply` shape                                                            |
+| Model call         | `src/routes/api/chat/+server.ts`                 | `@ai-sdk/svelte`, `ai-sdk-ollama` (already present)                                                      |
+| Tool pipeline      | `src/lib/agent/tools/pipeline.ts` (new)          | orders `pathAllowlist` + `snapshotStore` + `bridge` write                                                |
+| Approval seam      | `src/lib/components/agent-approval.svelte` (new) | renders from live plane                                                                                  |
+| Exec backend seam  | `src/lib/agent/exec/backend.ts` (new)            | wraps `bridge.ts` + `server/sandboxManager.ts`                                                           |
+| Live status        | `harnessStore.svelte.ts`                         | keep as the live plane; drop `toolLog` as a *store* (derive it)                                          |
+
 
 ---
+
+
 
 ## 10. Phased sequencing
 
@@ -235,9 +268,12 @@ Each phase is independently shippable and leaves the harness in a working state.
 
 ---
 
+
+
 ## Open questions for architect
 
 1. **Prompt assembly** — static system prompt v1, or a `system-prompt/assemble` waterfall (project context, open files, manifest) from day one?
 2. **Compaction** — defer, or reserve the `pre-step` + `request-error` hook points now so context-overflow handling has a home later?
 3. **Steering** — do we need mid-turn injection (`agent.inject()`) in v1, or is per-turn input enough?
 4. **Backend default for the agent** — Bun sandbox when present (faster), WC fallback — same auto-detect as preview, or pin the agent to one backend for determinism in v1?
+

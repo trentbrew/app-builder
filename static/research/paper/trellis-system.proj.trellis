@@ -1,0 +1,25 @@
+{
+  "@context": "https://filegraph.app/context.jsonld",
+  "@id": "proj:trellis-system",
+  "@type": "Project",
+  "name": "Trellis File System",
+  "description": "Implement compound extension support for .trellis variants. Every custom file type becomes a trellis graph with semantic structure.",
+  "status": "In Progress",
+  "priority": "High",
+  "startDate": "2026-01-05",
+  "dueDate": "2026-01-10",
+  "owner": "person:alice-doe",
+  "team": ["person:alice-doe", "person:bob-smith"],
+  "goals": [
+    "Support *.{type}.trellis variants that behave identically to base types",
+    "Enable entity-specific projections via *.{entity}.trellis for single entities",
+    "Maintain collections in *.data and *.data.trellis files"
+  ],
+  "milestones": [
+    {"name": "Rust extension resolution", "completed": true},
+    {"name": "Frontend normalization", "completed": true},
+    {"name": "Entity projection routing", "completed": true},
+    {"name": "Custom icons", "completed": true},
+    {"name": "End-to-end testing", "completed": false}
+  ]
+}

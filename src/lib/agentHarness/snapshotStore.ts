@@ -25,7 +25,7 @@ async function listComponentPaths(): Promise<string[]> {
 	if (!fs) return [];
 
 	try {
-		const entries = await fs.readdir('components', { withFileTypes: true });
+		const entries = await fs.readdir('/components', { withFileTypes: true });
 		const paths: string[] = [];
 		for (const entry of entries) {
 			if (!entry.isDirectory()) {

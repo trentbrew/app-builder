@@ -2,6 +2,7 @@
   import { Editor } from '@tiptap/core'
   import { browser } from '$app/environment'
   import { createMarkdownExtensions } from '$lib/tiptap/markdown-extensions.js'
+  import { enhanceMarkdownCodeBlocks, enhanceMermaidBlocks } from '$lib/markdown/blockEnhancements.js'
   import { setPreviewUrl } from '$lib/previewFrame.js'
   import { cn } from '$lib/utils.js'
   import { onMount, untrack } from 'svelte'
@@ -49,6 +50,11 @@
 
     editor = instance
 
+    queueMicrotask(() => {
+      enhanceMermaidBlocks(root)
+      enhanceMarkdownCodeBlocks(root)
+    })
+
     return () => {
       instance.destroy()
       editor = undefined
@@ -62,6 +68,20 @@
     if (next === synced) return
     synced = next
     current.commands.setContent(next, { contentType: 'markdown', emitUpdate: false })
+    queueMicrotask(() => {
+      enhanceMermaidBlocks(root)
+      enhanceMarkdownCodeBlocks(root)
+    })
+  })
+
+  $effect(() => {
+    markdown
+    const el = root
+    if (!el || !editor) return
+    queueMicrotask(() => {
+      enhanceMermaidBlocks(el)
+      enhanceMarkdownCodeBlocks(el)
+    })
   })
 </script>
 

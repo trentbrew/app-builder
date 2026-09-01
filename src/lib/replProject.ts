@@ -22,12 +22,13 @@ export const REPL_PACKAGE_JSON = {
 	}
 } as const;
 
-export function replViteConfig(port: number) {
+export function replViteConfig(port: number, base = '/') {
 	return `import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 
 export default defineConfig({
 	plugins: [svelte()],
+	base: ${JSON.stringify(base)},
 	server: {
 		port: ${port},
 		host: '127.0.0.1',
@@ -52,7 +53,7 @@ const REPL_INDEX_HTML_BASE = `<!DOCTYPE html>
   <title>Svelte Counter</title>
 </head>
 <body>
-  <script type="module" src="/main.js"></script>
+  <script type="module" src="./main.js"></script>
   <script>
     const post = (type, args) => window.parent.postMessage({ type, args }, '*');
     const wrap = (original, type) => (...args) => {
@@ -88,12 +89,13 @@ mount(App, { target: document.body });
 export interface WriteReplProjectOptions {
 	port: number;
 	appContents: string;
+	previewBase?: string;
 }
 
 export function replProjectFiles(options: WriteReplProjectOptions): Record<string, string> {
 	return {
 		'package.json': JSON.stringify(REPL_PACKAGE_JSON, null, 2),
-		'vite.config.js': replViteConfig(options.port),
+		'vite.config.js': replViteConfig(options.port, options.previewBase ?? '/'),
 		'svelte.config.js': REPL_SVELTE_CONFIG,
 		'index.html': REPL_INDEX_HTML,
 		'main.js': REPL_MAIN_JS,

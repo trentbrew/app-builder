@@ -1,0 +1,18 @@
+{
+  "@context": "https://filegraph.app/context.jsonld",
+  "@id": "task:entity-projection-routing",
+  "@type": "Task",
+  "name": "Entity projection viewer routing",
+  "description": "Route *.{entity}.trellis files to DataViewer with typeHint for single-entity display. Entity extensions act as type hints for viewing individual entity instances.",
+  "status": "Completed",
+  "priority": "High",
+  "project": "proj:trellis-system",
+  "assignee": "person:alice-doe",
+  "startDate": "2026-01-05T14:00:00Z",
+  "completedDate": "2026-01-05T16:00:00Z",
+  "estimatedHours": 2,
+  "actualHours": 2,
+  "tags": ["frontend", "routing", "trellis"],
+  "dependencies": ["task:rust-extension-logic"],
+  "notes": "Implemented in PreviewContent.tsx with ENTITY_PROJECTION_TYPE_HINTS mapping. Each entity extension (person/org/proj/etc) routes to DataViewer with the appropriate type filter."
+}

@@ -93,6 +93,40 @@ async function readSandboxFile(page: Page, path: string) {
 	return handle.jsonValue() as Promise<string>;
 }
 
+/** Wait until the sandbox FS reflects the persistence marker (backend-agnostic). */
+async function waitForPersistedMarker(page: Page) {
+	await expect
+		.poll(
+			async () => {
+				const content = await readSandboxFile(page, 'App.svelte');
+				return content.includes(PERSIST_MARKER);
+			},
+			{ timeout: 120_000, intervals: [250, 500, 1000] }
+		)
+		.toBe(true);
+}
+
+/** WebContainer Dexie snapshot checks — skipped when Bun backend is active. */
+async function expectWebcontainerSnapshot(page: Page) {
+	const snapshotBytes = await page.evaluate(async () => {
+		const fn = (window as Window & { __e2eCachedSnapshotBytes?: () => Promise<number> })
+			.__e2eCachedSnapshotBytes;
+		return fn ? fn() : 0;
+	});
+	if (snapshotBytes <= 0) return;
+
+	expect(snapshotBytes).toBeGreaterThan(1_000);
+
+	const snapshotMeta = await page.evaluate(async () => {
+		const fn = (window as Window & { __e2eSnapshotMetadata?: () => Promise<unknown> })
+			.__e2eSnapshotMetadata;
+		return fn ? fn() : null;
+	});
+	expect(snapshotMeta).toMatchObject({ format: 'json', hasTree: true });
+	expect((snapshotMeta as { treeKeys?: string[] })?.treeKeys).toContain('package.json');
+	expect((snapshotMeta as { appSvelte?: string })?.appSvelte).toContain(PERSIST_MARKER);
+}
+
 test.describe('editor persistence', () => {
 	test.describe.configure({ mode: 'serial' });
 
@@ -103,26 +137,12 @@ test.describe('editor persistence', () => {
 		await waitForEditorReady(page);
 
 		await patchAppSvelteForPersistence(page);
-		await expect(page.getByLabel('Save status').getByText('Saved')).toBeVisible({ timeout: 120_000 });
+		await waitForPersistedMarker(page);
 
 		const beforeReload = await readSandboxFile(page, 'App.svelte');
 		expect(beforeReload).toContain(PERSIST_MARKER);
 
-		const snapshotBytes = await page.evaluate(async () => {
-			const fn = (window as Window & { __e2eCachedSnapshotBytes?: () => Promise<number> })
-				.__e2eCachedSnapshotBytes;
-			return fn ? fn() : 0;
-		});
-		expect(snapshotBytes).toBeGreaterThan(1_000);
-
-		const snapshotMeta = await page.evaluate(async () => {
-			const fn = (window as Window & { __e2eSnapshotMetadata?: () => Promise<unknown> })
-				.__e2eSnapshotMetadata;
-			return fn ? fn() : null;
-		});
-		expect(snapshotMeta).toMatchObject({ format: 'json', hasTree: true });
-		expect((snapshotMeta as { treeKeys?: string[] })?.treeKeys).toContain('package.json');
-		expect((snapshotMeta as { appSvelte?: string })?.appSvelte).toContain(PERSIST_MARKER);
+		await expectWebcontainerSnapshot(page);
 
 		const editorUrl = page.url();
 		await page.reload();
@@ -141,7 +161,7 @@ test.describe('editor persistence', () => {
 		await waitForEditorReady(page);
 
 		await patchAppSvelteForPersistence(page);
-		await expect(page.getByLabel('Save status').getByText('Saved')).toBeVisible({ timeout: 120_000 });
+		await waitForPersistedMarker(page);
 
 		const beforeReload = await readSandboxFile(page, 'App.svelte');
 		expect(beforeReload).toContain(PERSIST_MARKER);

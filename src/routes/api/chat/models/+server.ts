@@ -1,10 +1,15 @@
 import { getOllamaBaseUrl } from '$lib/ai/ollama.js';
 
+/** Graceful empty catalog — avoids red network errors when Ollama is offline. */
+function unavailableResponse(error: string) {
+	return Response.json({ models: [], unavailable: true, error });
+}
+
 export async function GET() {
 	try {
 		const response = await fetch(`${getOllamaBaseUrl()}/api/tags`);
 		if (!response.ok) {
-			return Response.json({ models: [], error: 'Ollama unavailable' }, { status: 502 });
+			return unavailableResponse('Ollama unavailable');
 		}
 
 		const data = (await response.json()) as {
@@ -19,6 +24,6 @@ export async function GET() {
 		return Response.json({ models });
 	} catch (error) {
 		const message = error instanceof Error ? error.message : 'Failed to list Ollama models';
-		return Response.json({ models: [], error: message }, { status: 502 });
+		return unavailableResponse(message);
 	}
 }

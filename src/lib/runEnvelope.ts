@@ -15,12 +15,29 @@
  * `$lib/server/runLog.ts`; the client only needs `resolveVariant`.
  */
 
-export const BASELINE_VARIANT = 'baseline';
+// Variant + hash primitives are shared verbatim with pi-sprite (canonical copy
+// lives there) so both harnesses normalize labels and frame manifest lines
+// identically. Re-exported to keep this module the single import site.
+export {
+	BASELINE_VARIANT,
+	hashText,
+	parseJsonl,
+	resolveVariant,
+	sanitizeVariant,
+} from './runEnvelopeShared.ts';
 
-/** Longest variant label we accept: descriptive enough to read, short enough to tabulate. */
-const MAX_VARIANT_LENGTH = 64;
+import { parseJsonl, toJsonl, toJsonlLine } from './runEnvelopeShared.ts';
 
-export type RunOutcome = 'success' | 'error' | 'aborted' | 'empty';
+/**
+ * How a run ended.
+ *
+ * `continued` is not a failure: the model emitted a tool call instead of text,
+ * so this step handed off to the client and the turn carries on in the next
+ * run. Without it every tool-using step would score as `empty` — a multi-step
+ * turn would read as a string of failures, and any success rate computed from
+ * the manifest would be wrong in proportion to how much the agent used tools.
+ */
+export type RunOutcome = 'success' | 'continued' | 'error' | 'aborted' | 'empty';
 
 /**
  * The knobs that define an arm. Built field by field, never by spreading the
@@ -79,6 +96,15 @@ export type RunRecord = {
 	 * Absent for ordinary interactive turns — those are runs, not trials.
 	 */
 	taskId?: string;
+	/**
+	 * The turn this run belongs to.
+	 *
+	 * Tools execute client-side, so a tool-using turn is several HTTP requests
+	 * and therefore several runs. Group by `turnId` to recover the turn; group
+	 * by `runId` to inspect one model call. Absent on single-step turns from
+	 * before tools existed.
+	 */
+	turnId?: string;
 	buildId: string;
 	startedAt: number;
 	endedAt: number;
@@ -91,53 +117,14 @@ export type RunRecord = {
 	error?: string;
 };
 
-/**
- * FNV-1a, 32 bits. Not a security primitive — it identifies which prompt text an
- * arm ran, and `crypto.subtle` is async everywhere this is called.
- */
-export function hashText(text: string): string {
-	let hash = 0x811c9dc5;
-	for (let index = 0; index < text.length; index += 1) {
-		hash ^= text.charCodeAt(index);
-		hash = Math.imul(hash, 0x01000193) >>> 0;
-	}
-	return hash.toString(16).padStart(8, '0');
-}
-
-/**
- * Reduce an arbitrary label to a safe variant id.
- *
- * Applied on both sides: the client reads it from the URL, and the server
- * re-applies it because by then the value has travelled in a request body.
- */
-export function sanitizeVariant(raw: unknown): string {
-	if (typeof raw !== 'string') return BASELINE_VARIANT;
-	const cleaned = raw.replace(/[^A-Za-z0-9._-]/g, '').slice(0, MAX_VARIANT_LENGTH);
-	return cleaned || BASELINE_VARIANT;
-}
-
-/**
- * Read the experiment arm from a query string (`?variant=v-plan`).
- *
- * A URL parameter rather than a setting on purpose: it lets a Playwright driver
- * run the same corpus against two arms without a human touching the UI.
- */
-export function resolveVariant(search: string): string {
-	try {
-		return sanitizeVariant(new URLSearchParams(search).get('variant'));
-	} catch {
-		return BASELINE_VARIANT;
-	}
-}
-
 /** Serialize one run as a manifest line. */
 export function runToJsonl(run: RunRecord): string {
-	return `${JSON.stringify(run)}\n`;
+	return toJsonlLine(run);
 }
 
 /** Serialize many runs as a manifest body. */
 export function runsToManifestJsonl(runs: RunRecord[]): string {
-	return runs.map(runToJsonl).join('');
+	return toJsonl(runs);
 }
 
 /**
@@ -148,15 +135,71 @@ export function runsToManifestJsonl(runs: RunRecord[]): string {
  * two hundred runs.
  */
 export function parseManifestJsonl(body: string): RunRecord[] {
-	const runs: RunRecord[] = [];
-	for (const line of body.split('\n')) {
-		const trimmed = line.trim();
-		if (!trimmed) continue;
-		try {
-			runs.push(JSON.parse(trimmed) as RunRecord);
-		} catch {
-			// torn or hand-edited line — keep going
+	return parseJsonl<RunRecord>(body);
+}
+
+/** Token + cost totals for one chat session, folded from its runs. */
+export type SessionRunStats = {
+	sessionId: string;
+	/** Model calls — one per HTTP request. */
+	runs: number;
+	/** Distinct `turnId`s seen; a tool-using turn spans several runs. */
+	turns: number;
+	inputTokens: number;
+	outputTokens: number;
+	reasoningTokens: number;
+	totalTokens: number;
+	/** Null when every run was cost-free (local models) — never a synthetic 0. */
+	costUsd: number | null;
+	/** Runs that ended in `error`. */
+	errors: number;
+	/** Most recent `endedAt`, for ordering. */
+	lastEndedAt: number;
+};
+
+/**
+ * Fold a manifest into per-session token/cost stats.
+ *
+ * Keyed by `sessionId` so the agent inspector can join these onto the durable
+ * session log (which shares the id). Cost stays `null` unless at least one run
+ * reported a real number — a synthetic 0 would read as "measured free" rather
+ * than "not measured", the same rule the metric itself holds.
+ */
+export function aggregateRunsBySession(runs: RunRecord[]): SessionRunStats[] {
+	const byId = new Map<string, SessionRunStats & { _turnIds: Set<string> }>();
+
+	for (const run of runs) {
+		if (!run.sessionId) continue;
+		let stat = byId.get(run.sessionId);
+		if (!stat) {
+			stat = {
+				sessionId: run.sessionId,
+				runs: 0,
+				turns: 0,
+				inputTokens: 0,
+				outputTokens: 0,
+				reasoningTokens: 0,
+				totalTokens: 0,
+				costUsd: null,
+				errors: 0,
+				lastEndedAt: 0,
+				_turnIds: new Set<string>(),
+			};
+			byId.set(run.sessionId, stat);
 		}
+
+		stat.runs += 1;
+		if (run.turnId) stat._turnIds.add(run.turnId);
+		stat.inputTokens += run.metrics.inputTokens ?? 0;
+		stat.outputTokens += run.metrics.outputTokens ?? 0;
+		stat.reasoningTokens += run.metrics.reasoningTokens ?? 0;
+		stat.totalTokens += run.metrics.totalTokens ?? 0;
+		if (run.metrics.costUsd !== null) stat.costUsd = (stat.costUsd ?? 0) + run.metrics.costUsd;
+		if (run.outcome === 'error') stat.errors += 1;
+		if (run.endedAt > stat.lastEndedAt) stat.lastEndedAt = run.endedAt;
 	}
-	return runs;
+
+	return [...byId.values()]
+		.map(({ _turnIds, ...stat }) => ({ ...stat, turns: _turnIds.size }))
+		.sort((a, b) => b.lastEndedAt - a.lastEndedAt);
 }

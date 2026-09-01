@@ -112,8 +112,8 @@ function buildBottomBand(
 			splitPoints: [1 / 3, 2 / 3],
 			views: [
 				{ tabs: terminalTabs, activeTabIndex: 0 },
-				{ tabs: [PANEL_IDS.logs], activeTabIndex: 0 },
-				{ tabs: [PANEL_IDS.console], activeTabIndex: 0 }
+				{ tabs: [PANEL_IDS.logs], activeTabIndex: 0, locked: true },
+				{ tabs: [PANEL_IDS.console], activeTabIndex: 0, locked: true }
 			]
 		};
 	}
@@ -123,7 +123,7 @@ function buildBottomBand(
 		splitPoints: [0.5],
 		views: [
 			{ tabs: terminalTabs, activeTabIndex: 0 },
-			{ tabs: [PANEL_IDS.logs], activeTabIndex: 0 }
+			{ tabs: [PANEL_IDS.logs], activeTabIndex: 0, locked: true }
 		]
 	};
 }
@@ -146,9 +146,9 @@ function buildClassicLayout(
 					direction: 'horizontal',
 					splitPoints: [0.18, 0.5],
 					views: [
-						{ tabs: [PANEL_IDS.files], activeTabIndex: 0 },
+						{ tabs: [PANEL_IDS.files], activeTabIndex: 0, locked: true },
 						{ tabs: fileTabs, activeTabIndex: Math.max(0, fileTabs.length - 1) },
-						{ tabs: [PANEL_IDS.preview], activeTabIndex: 0 }
+						{ tabs: [PANEL_IDS.preview], activeTabIndex: 0, locked: true }
 					]
 				},
 				buildBottomBand(terminalSessionId, includeConsole)
@@ -182,13 +182,13 @@ function buildAgentFocusLayout(
 	const splitPoints: number[] = [];
 
 	if (includeAgent) {
-		rootViews.push({ tabs: [agentViewId(agentSessionId)], activeTabIndex: 0 });
+		rootViews.push({ tabs: [agentViewId(agentSessionId)], activeTabIndex: 0, locked: true });
 		splitPoints.push(0.22);
 	}
 
 	rootViews.push(centerWorkspace);
 	splitPoints.push(includeAgent ? 0.78 : 0.8);
-	rootViews.push({ tabs: [PANEL_IDS.files], activeTabIndex: 0 });
+	rootViews.push({ tabs: [PANEL_IDS.files], activeTabIndex: 0, locked: true });
 
 	return {
 		root: {

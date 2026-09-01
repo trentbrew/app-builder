@@ -15,7 +15,14 @@ lowlight.registerAlias({
 	htm: 'xml',
 });
 
-export const MarkdownCodeBlock = CodeBlockLowlight.configure({
+export const MarkdownCodeBlock = CodeBlockLowlight.extend({
+	parseMarkdown(token, helpers) {
+		if ((token.lang ?? '').toLowerCase() === 'mermaid') {
+			return [];
+		}
+		return this.parent?.(token, helpers) ?? [];
+	},
+}).configure({
 	lowlight,
 	defaultLanguage: 'plaintext',
 });

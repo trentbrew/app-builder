@@ -13,7 +13,10 @@ export const ollama = createOllama({
  * relies on; the chat route overrides it per experiment arm. Ollama accepts
  * `boolean | 'high' | 'medium' | 'low'` — only the boolean is exercised today.
  */
-export function createOllamaChatModel(modelId: string, options?: { thinking?: boolean }) {
+export function createOllamaChatModel(
+	modelId: string,
+	options?: { thinking?: boolean | 'low' | 'medium' | 'high' },
+) {
 	return ollama(modelId, { think: options?.thinking ?? true });
 }
 

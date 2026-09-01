@@ -1,0 +1,10 @@
+
+Running 2 tests using 1 worker
+
+(node:73522) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/2] [chromium] › e2e/editor-persistence.spec.ts:133:2 › editor persistence › App.svelte edits survive page reload
+[2/2] [chromium] › e2e/editor-persistence.spec.ts:157:2 › editor persistence › App.svelte edits survive leave and reopen
+  2 passed (48.6s)

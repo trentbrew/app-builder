@@ -2,6 +2,7 @@ import { Extension, type Editor } from '@tiptap/core';
 import Suggestion from '@tiptap/suggestion';
 import type { SuggestionKeyDownProps, SuggestionProps } from '@tiptap/suggestion';
 import { PluginKey } from '@tiptap/pm/state';
+import { positionSuggestionAbove } from '$lib/tiptap/suggestion-position';
 
 export interface AgentSlashItem {
 	title: string;
@@ -90,11 +91,7 @@ function popup() {
 			document.body.appendChild(el);
 			render();
 			const rect = props.clientRect?.();
-			if (rect) {
-				el.style.position = 'fixed';
-				el.style.left = `${rect.left}px`;
-				el.style.top = `${rect.bottom + 4}px`;
-			}
+			if (rect && el) positionSuggestionAbove(el, rect);
 		},
 		onUpdate(props: SuggestionProps<AgentSlashItem>) {
 			command = props;
@@ -102,10 +99,7 @@ function popup() {
 			selected = 0;
 			render();
 			const rect = props.clientRect?.();
-			if (rect && el) {
-				el.style.left = `${rect.left}px`;
-				el.style.top = `${rect.bottom + 4}px`;
-			}
+			if (rect && el) positionSuggestionAbove(el, rect);
 		},
 		onKeyDown(props: SuggestionKeyDownProps) {
 			if (props.event.key === 'ArrowDown') {

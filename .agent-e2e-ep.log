@@ -1,0 +1,40 @@
+
+Running 2 tests using 1 worker
+
+(node:98550) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/2] [chromium] › e2e/editor-persistence.spec.ts:99:2 › editor persistence › App.svelte edits survive page reload
+  1) [chromium] › e2e/editor-persistence.spec.ts:99:2 › editor persistence › App.svelte edits survive page reload 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByLabel('Save status').getByText('Saved')
+    Expected: visible
+    Timeout: 120000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 120000ms
+      - waiting for getByLabel('Save status').getByText('Saved')
+        - waiting for "http://localhost:9898/editor/cf96380c-d3b2-4f3f-9e26-2a617db09e7e" navigation to finish...
+        - navigated to "http://localhost:9898/editor/cf96380c-d3b2-4f3f-9e26-2a617db09e7e"
+
+
+      104 |
+      105 | 		await patchAppSvelteForPersistence(page);
+    > 106 | 		await expect(page.getByLabel('Save status').getByText('Saved')).toBeVisible({ timeout: 120_000 });
+          | 		                                                                ^
+      107 |
+      108 | 		const beforeReload = await readSandboxFile(page, 'App.svelte');
+      109 | 		expect(beforeReload).toContain(PERSIST_MARKER);
+        at /Users/trentbrew/TURTLE/Projects/Sandbox/svelte-wc/app-builder/e2e/editor-persistence.spec.ts:106:67
+
+    Error Context: test-results/editor-persistence-editor--bbcfe-e-edits-survive-page-reload-chromium/error-context.md
+
+
+[2/2] [chromium] › e2e/editor-persistence.spec.ts:137:2 › editor persistence › App.svelte edits survive leave and reopen
+  1 failed
+    [chromium] › e2e/editor-persistence.spec.ts:99:2 › editor persistence › App.svelte edits survive page reload 
+  1 did not run

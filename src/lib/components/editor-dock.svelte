@@ -39,6 +39,7 @@
     removeAgentFromLayout,
     EMPTY_PANE_VIEW_ID,
     insertFileIntoEmptyPane,
+    openFileAtPaneDrop,
     addViewToPreferredGroup,
     collectGroupViewIds,
     removeViewFromLayout,
@@ -50,11 +51,16 @@
     splitViewInLayout,
     tabGroupHasMultipleTabs,
     terminalViewId,
+    isViewInLockedGroup,
+    repairLayoutConfig,
+    toggleTabGroupLock,
     toggleMaximizedView,
   } from '$lib/editorLayout'
   import { actionRunner } from '$lib/actionRunner.svelte'
   import type { EditorLayoutPresetId } from '$lib/editorLayoutPresets'
+  import ExplorerWorkspaceDrop from '$lib/components/explorer-workspace-drop.svelte'
   import NestedDock from '$lib/components/nested-dock.svelte'
+  import type { ExplorerPaneDropTarget } from '$lib/explorerDropTarget'
   import {
     containers,
     createContainer,
@@ -76,9 +82,10 @@
   import ContextMenuHost from '$lib/components/context-menu-host.svelte'
   import type { ActionTarget, PaneKind } from '$lib/actionContext'
   import { basename } from '$lib/fileIcons'
+  import { openFileFromFs } from '$lib/fileOps'
   import { refreshPreviewPosition } from '$lib/previewFrame'
   import { disposeTerminalSession, refitAllTerminalSessions } from '$lib/terminalSession'
-  import { disposeAgentChatSession, registerPrimaryAgentSession } from '$lib/agentChatSessions'
+  import { disposeAgentChatSession, isAgentChatBusy, registerPrimaryAgentSession } from '$lib/agentChatSessions'
   import { closeAgentPanel, isAgentPanelOpen, openAgentPanel } from '$lib/agentHarness/harnessStore.svelte'
   import { editorChrome } from '$lib/editorChrome.svelte'
   import { createDockLayoutHandle, resolveActiveTabIdFromElement } from '$lib/layoutKeyboard'
@@ -91,6 +98,8 @@
   import TerminalSquareIcon from '@lucide/svelte/icons/terminal'
   import BugIcon from '@lucide/svelte/icons/bug'
   import MessageCircleIcon from '@lucide/svelte/icons/message-circle'
+  import LoaderCircleIcon from '@lucide/svelte/icons/loader-circle'
+  import PaneLockButton from '$lib/components/pane-lock-button.svelte'
 
   let {
     entryPath = '/App.svelte',
@@ -114,7 +123,9 @@
 
   const normalizedEntryPath = entryPath.startsWith('/') ? entryPath : `/${entryPath}`
   const initialTerminalId = createTerminalSessionId()
-  const baseLayout = loadSavedLayout() ?? createInitialLayout([normalizedEntryPath], initialTerminalId)
+  const baseLayout = repairLayoutConfig(
+    loadSavedLayout() ?? createInitialLayout([normalizedEntryPath], initialTerminalId)
+  )
   const restoredAgentsFromSave = collectAgentSessionIds(baseLayout)
   const initialLayout =
     !isAgentPanelOpen() && isAgentPanelVisible(baseLayout) ? setAgentPanelVisible(baseLayout, false) : baseLayout
@@ -135,7 +146,9 @@
 
   const restoredAgents = restoredAgentsFromSave.length ? restoredAgentsFromSave : collectAgentSessionIds(initialLayout)
   if (restoredAgents[0]) registerPrimaryAgentSession(restoredAgents[0])
+  let dockEl = $state<HTMLDivElement | undefined>()
   let openAgentSessions = $state<string[]>(restoredAgents)
+  let agentTabIconTick = $state(0)
 
   function terminalTitle(sessionId: string) {
     const index = openTerminals.indexOf(sessionId)
@@ -522,6 +535,7 @@
   function syncLayoutWithOpenFiles(files: string[]) {
     const layoutPaths = collectFilePaths(config)
     const desired = new Set(files)
+    const hintViewId = resolveActiveTabInLayout(config, activePaneTabId)
 
     let next = config
     for (const path of layoutPaths) {
@@ -531,7 +545,7 @@
     }
     for (const path of files) {
       if (!layoutPaths.includes(path)) {
-        next = addFileToLayout(next, path)
+        next = addFileToLayout(next, path, { hintViewId })
       }
     }
 
@@ -618,6 +632,17 @@
       openAgentSessions = ordered
     }
   }
+
+  $effect(() => {
+    const sessions = openAgentSessions
+    if (!sessions.length) return
+
+    const timer = window.setInterval(() => {
+      agentTabIconTick++
+    }, 250)
+
+    return () => window.clearInterval(timer)
+  })
 
   $effect(() => {
     const files = openFiles
@@ -765,6 +790,23 @@
     if (!fs) return
     const parent = dirname(activeFile) || '/'
     await createFolderInDirectory(fs, parent)
+  }
+
+  async function handleExplorerFileDrop(path: string, target: ExplorerPaneDropTarget) {
+    const fs = sandboxStore.getFs()
+    if (!fs) return
+
+    try {
+      const stat = await fs.stat(path)
+      if (stat.isDirectory) return
+    } catch {
+      return
+    }
+
+    config = openFileAtPaneDrop(config, path, target.anchorViewId, target.side, {
+      hintViewId: resolveActiveTabInLayout(config, activePaneTabId),
+    })
+    await openFileFromFs(fs, path, onSelectFile)
   }
 
   function createContainerSnippet(groupId: string): Snippet {
@@ -990,8 +1032,16 @@
   {/if}
 {/snippet}
 
-{#snippet agentTabIcon(_viewId: string)}
-  <MessageCircleIcon class="size-3.5 shrink-0 opacity-80" />
+{#snippet agentTabIcon(viewId: string)}
+  {@const sessionId = sessionIdFromAgentViewId(viewId)}
+  {@const _tick = agentTabIconTick}
+  {@const busy = sessionId ? isAgentChatBusy(sessionId) : false}
+  {#if busy}
+    <LoaderCircleIcon class="agent-tab-spinner size-3.5 shrink-0 animate-spin opacity-80" aria-hidden="true" />
+  {:else}
+    <span class="agent-tab-status-dot" title="Ready" aria-hidden="true"></span>
+    <MessageCircleIcon class="size-3.5 shrink-0 opacity-80" />
+  {/if}
 {/snippet}
 
 {#snippet fileTabIcon(viewId: string)}
@@ -1070,6 +1120,17 @@
   {/if}
 {/snippet}
 
+{#snippet paneLockControl(viewId: string)}
+  {#if viewId}
+    <PaneLockButton
+      locked={isViewInLockedGroup(config, viewId)}
+      onToggle={() => {
+        config = toggleTabGroupLock(config, viewId)
+      }}
+    />
+  {/if}
+{/snippet}
+
 {#snippet newTerminalControl(viewId: string)}
   {#if isTerminalViewId(viewId)}
     <button type="button" class="hl-new-terminal" aria-label="New terminal" onclick={addTerminal}>
@@ -1087,6 +1148,7 @@
 {/snippet}
 
 <div
+  bind:this={dockEl}
   class="editor-dock h-full min-h-0 overflow-hidden"
   data-dock-id="root"
   onpointerdowncapture={handleDockPointerDown}
@@ -1094,8 +1156,9 @@
   onpointerdown={trackActivePane}
   oncontextmenucapture={handleDockContextMenu}
 >
+  <ExplorerWorkspaceDrop dockEl={dockEl} onFileDrop={(path, target) => void handleExplorerFileDrop(path, target)} />
   <ContextMenuHost target={dockContextTarget} triggerClass="contents">
-    <HorizonLayout bind:config {views} tabgroupControls={[newTerminalControl, newAgentControl]} />
+    <HorizonLayout bind:config {views} tabgroupControls={[paneLockControl, newTerminalControl, newAgentControl]} />
   </ContextMenuHost>
 </div>
 
@@ -1157,5 +1220,18 @@
   :global(.editor-dock .hl-new-agent:hover) {
     opacity: 1;
     background: color-mix(in oklch, var(--color-foreground) 12%, transparent);
+  }
+
+  :global(.agent-tab-status-dot) {
+    width: 0.375rem;
+    height: 0.375rem;
+    margin-right: 0.75rem;
+    border-radius: 9999px;
+    background: oklch(0.72 0.17 145);
+    flex-shrink: 0;
+  }
+
+  :global(.agent-tab-spinner) {
+    color: var(--color-muted-foreground);
   }
 </style>

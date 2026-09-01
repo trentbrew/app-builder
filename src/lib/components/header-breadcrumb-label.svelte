@@ -5,7 +5,7 @@
   let { part }: { part: AppHeaderBreadcrumb } = $props()
 </script>
 
-<span class="inline-flex min-w-0 items-center gap-1.5 text-xs mono">
+<span class="inline-flex min-w-0 items-center gap-1.5 font-mono text-xs">
   {#if part.icon}
     <part.icon class="size-3.5 shrink-0 opacity-80" />
   {:else if part.fileIcon}

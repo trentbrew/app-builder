@@ -8,6 +8,22 @@ export function normalizeTreePath(path: string): string {
 	return path.startsWith('/') ? path : `/${path}`;
 }
 
+/** True when `path` is a pinned shortcut or nested under one in the main explorer tree. */
+export function isPinnedTreeDuplicate(
+	path: string,
+	pinnedPaths: Iterable<string>,
+	section: 'main' | 'pinned' | 'hidden' = 'main'
+): boolean {
+	if (section !== 'main') return false;
+
+	const normalized = normalizeTreePath(path);
+	for (const pinned of pinnedPaths) {
+		const root = normalizeTreePath(pinned);
+		if (normalized === root || normalized.startsWith(`${root}/`)) return true;
+	}
+	return false;
+}
+
 export function findNode(nodes: TreeNode[], path: string): TreeNode | null {
 	const target = normalizeTreePath(path);
 	for (const node of nodes) {
@@ -47,6 +63,15 @@ export function removePathsFromTree(nodes: TreeNode[], paths: Set<string>): Tree
 		);
 }
 
+/** Explorer main-tree projection: hide filtered paths only; pinned shortcuts stay in-tree. */
+export function projectExplorerMainTree(
+	nodes: TreeNode[],
+	hiddenPaths: Iterable<string>
+): TreeNode[] {
+	const hidden = new Set([...hiddenPaths].map(normalizeTreePath));
+	return removePathsFromTree(nodes, hidden);
+}
+
 export function filterDotfiles(nodes: TreeNode[], showDotfiles: boolean): TreeNode[] {
 	if (showDotfiles) return nodes;
 
@@ -84,4 +109,35 @@ export function parentFolderPath(path: string): string | null {
 	if (parts.length <= 1) return '/';
 	parts.pop();
 	return `/${parts.join('/')}`;
+}
+
+function nodeMatchesQuery(node: TreeNode, query: string): boolean {
+	const haystack = `${node.name} ${node.path}`.toLowerCase();
+	return haystack.includes(query);
+}
+
+/** Keep nodes whose name/path matches the query, plus ancestor folders of matches. */
+export function filterTreeByQuery(nodes: TreeNode[], query: string): TreeNode[] {
+	const trimmed = query.trim().toLowerCase();
+	if (!trimmed) return nodes;
+
+	function filterNode(node: TreeNode): TreeNode | null {
+		if (node.kind === 'file') {
+			return nodeMatchesQuery(node, trimmed) ? node : null;
+		}
+
+		const children = (node.children ?? [])
+			.map(filterNode)
+			.filter((child): child is TreeNode => child !== null);
+
+		if (nodeMatchesQuery(node, trimmed) || children.length > 0) {
+			return { ...node, children };
+		}
+
+		return null;
+	}
+
+	return nodes
+		.map(filterNode)
+		.filter((node): node is TreeNode => node !== null);
 }

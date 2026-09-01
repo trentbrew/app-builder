@@ -3,6 +3,7 @@
   import { onMount } from 'svelte'
   import ChatTranscript from '$lib/components/chat-transcript.svelte'
   import AgentRailScrollOnOpen from '$lib/components/agent-rail-scroll-on-open.svelte'
+  import AgentLiveEdgeFollower from '$lib/components/agent-live-edge-follower.svelte'
   import HarnessStatus from '$lib/components/harness-status.svelte'
   import PaneToolbar from '$lib/components/pane-toolbar.svelte'
   import ToolLog from '$lib/components/tool-log.svelte'
@@ -154,6 +155,7 @@
       <div class="agent-rail__body">
         <MessageScroller.Provider autoScroll defaultScrollPosition="end" scrollPreviousItemPeek={32}>
           <AgentRailScrollOnOpen open={expanded} />
+          <AgentLiveEdgeFollower busy={streaming} />
           <div class="agent-rail__chat">
             {#if messages.length === 0}
               <p class="agent-rail__hint">Ask the agent to reshape the guest UI via hot-write + HMR.</p>
@@ -205,9 +207,9 @@
     display: flex;
     flex-direction: row;
     min-height: 0;
-    border-left: 1px solid var(--border);
-    background: var(--card);
-    color: var(--card-foreground);
+    border-left: 1px solid var(--color-border);
+    background: var(--color-chrome-surface);
+    color: var(--color-foreground);
   }
 
   .agent-rail--resizing {
@@ -236,7 +238,7 @@
     flex: 1;
     min-height: 0;
     min-width: 0;
-    background: var(--color-background);
+    background: var(--color-agent-chat-surface);
   }
 
   .agent-rail--overlay {
@@ -280,7 +282,7 @@
 
   .agent-rail__composer {
     padding: 0.5rem;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--color-border);
     flex-shrink: 0;
   }
 

@@ -67,6 +67,29 @@ function createBunFs(sessionId: string): SandboxFs {
       })
       if (!res.ok) throw new Error(`Failed to create directory ${dirPath}`)
     },
+    async rename(from, to) {
+      const fromPath = from.startsWith('/') ? from : `/${from}`
+      const toPath = to.startsWith('/') ? to : `/${to}`
+      const res = await fetch(api('/files/rename'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ from: fromPath, to: toPath }),
+      })
+      if (!res.ok) throw new Error(`Failed to rename ${fromPath}`)
+    },
+    async rm(path, options) {
+      const filePath = path.startsWith('/') ? path : `/${path}`
+      const res = await fetch(api('/files/rm'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          path: filePath,
+          recursive: options?.recursive ?? false,
+          force: options?.force ?? false,
+        }),
+      })
+      if (!res.ok) throw new Error(`Failed to delete ${filePath}`)
+    },
     async readdir(path, _options) {
       const dirPath = path === '' ? '/' : path.startsWith('/') ? path : `/${path}`
       const res = await fetch(api(`/files?path=${encodeURIComponent(dirPath)}`))
@@ -78,6 +101,12 @@ function createBunFs(sessionId: string): SandboxFs {
         name: entry.name,
         isDirectory: () => entry.isDirectory,
       }))
+    },
+    async stat(path) {
+      const filePath = path === '' ? '/' : path.startsWith('/') ? path : `/${path}`
+      const res = await fetch(api(`/files/stat?path=${encodeURIComponent(filePath)}`))
+      if (!res.ok) return { exists: false, isDirectory: false }
+      return (await res.json()) as { exists: boolean; isDirectory: boolean }
     },
   }
 }

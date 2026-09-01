@@ -13,7 +13,10 @@ export interface SandboxFs {
   writeFile(path: string, content: string): Promise<void>
   writeBinary(path: string, content: Uint8Array): Promise<void>
   mkdir(path: string, options?: { recursive?: boolean }): Promise<void>
+  rename(from: string, to: string): Promise<void>
+  rm(path: string, options?: { recursive?: boolean; force?: boolean }): Promise<void>
   readdir(path: string, options: { withFileTypes: true }): Promise<SandboxDirent[]>
+  stat(path: string): Promise<{ exists: boolean; isDirectory: boolean }>
 }
 
 export interface SandboxPreviewState {
@@ -69,6 +72,21 @@ export function webContainerToFs(container: WebContainer): SandboxFs {
       options?.recursive
         ? container.fs.mkdir(path(filePath), { recursive: true })
         : container.fs.mkdir(path(filePath)),
+    rename: (from, to) => container.fs.rename(path(from), path(to)),
+    rm: (filePath, options) => container.fs.rm(path(filePath), options),
     readdir: (filePath, options) => container.fs.readdir(path(filePath), options),
+    async stat(filePath) {
+      try {
+        await container.fs.readFile(path(filePath), 'utf-8')
+        return { exists: true, isDirectory: false }
+      } catch {
+        try {
+          await container.fs.readdir(path(filePath))
+          return { exists: true, isDirectory: true }
+        } catch {
+          return { exists: false, isDirectory: false }
+        }
+      }
+    },
   }
 }

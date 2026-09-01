@@ -37,12 +37,20 @@ async function readDirectory(fs: SandboxFs, dirPath: string): Promise<TreeNode[]
 
 		if (entry.isDirectory()) {
 			const truncated = SKIP_RECURSE.has(entry.name);
+			let children: TreeNode[] = [];
+			if (!truncated) {
+				try {
+					children = await readDirectory(fs, path);
+				} catch {
+					children = [];
+				}
+			}
 			nodes.push({
 				name: entry.name,
 				path,
 				kind: 'folder',
 				truncated,
-				children: truncated ? [] : await readDirectory(fs, path)
+				children
 			});
 		} else {
 			nodes.push({ name: entry.name, path, kind: 'file' });

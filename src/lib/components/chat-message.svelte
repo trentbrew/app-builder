@@ -2,8 +2,10 @@
   import MarkdownView from '$lib/components/markdown-view.svelte'
   import * as Accordion from '$lib/components/ui/accordion/index.js'
   import * as Bubble from '$lib/components/ui/bubble/index.js'
+  import * as Marker from '$lib/components/ui/marker/index.js'
   import * as Message from '$lib/components/ui/message/index.js'
   import * as MessageScroller from '$lib/components/ui/message-scroller/index.js'
+  import { Spinner } from '$lib/components/ui/spinner/index.js'
   import TextShine from '$lib/components/text-shine.svelte'
   import {
     formatMessageTime,
@@ -20,7 +22,6 @@
   import BrainIcon from '@lucide/svelte/icons/brain'
   import CopyIcon from '@lucide/svelte/icons/copy'
   import FileIcon from '@lucide/svelte/icons/file'
-  import LoaderCircleIcon from '@lucide/svelte/icons/loader-circle'
 
   let {
     message,
@@ -89,38 +90,57 @@
 </script>
 
 <MessageScroller.Item messageId={message.id} {scrollAnchor} class="w-full">
-  <Message.Root class={cn('w-full', isUser && scrollAnchor && 'pb-0.5')}>
+  <Message.Root class={cn('w-full', isUser && scrollAnchor && 'pb-0.5', isAssistant && 'chat-message--assistant')}>
     <Message.Content class="relative w-full gap-1">
-      {#if showThinkingSection}
-        <Accordion.Root type="single" collapsible bind:value={thinkingAccordion} class="w-full">
-          <Accordion.Item value="thinking" class="border-0">
-            <Accordion.Trigger
-              class="text-muted-foreground hover:text-foreground flex w-fit max-w-full items-center justify-start gap-1 rounded-md px-0 py-0.5 text-left text-sm font-normal hover:no-underline **:data-[slot=accordion-trigger-icon]:ml-0 **:data-[slot=accordion-trigger-icon]:size-3"
-            >
-              <BrainIcon class="size-3.5 shrink-0 opacity-70" />
-              {#if thinkingActive}
-                <LoaderCircleIcon class="size-3 shrink-0 animate-spin" />
-              {/if}
-              <span>{thinkingLabel}</span>
-            </Accordion.Trigger>
-            <Accordion.Content class="pb-1 pt-0">
-              <div class="chat-thinking-panel">
-                {#if reasoning.trim()}
-                  <span class="block whitespace-pre-wrap">{reasoning}</span>
-                {:else if thinkingActive}
-                  <TextShine class="text-xs">Working through the request…</TextShine>
-                {/if}
-              </div>
-            </Accordion.Content>
-          </Accordion.Item>
-        </Accordion.Root>
+      {#if showThinkingSection && isAssistant}
+        <div class="chat-message__thinking">
+          <Accordion.Root type="single" collapsible bind:value={thinkingAccordion} class="w-full">
+            <Accordion.Item value="thinking" class="border-0">
+              <Accordion.Trigger
+                class="text-muted-foreground hover:text-foreground flex w-fit max-w-full items-center justify-start gap-1 rounded-md px-0 py-0.5 text-left text-sm font-normal hover:no-underline **:data-[slot=accordion-trigger-icon]:ml-0 **:data-[slot=accordion-trigger-icon]:size-3"
+              >
+                <Marker.Root
+                  class="gap-1.5 text-sm"
+                  role={thinkingActive ? 'status' : undefined}
+                  aria-live={thinkingActive ? 'polite' : undefined}
+                >
+                  <Marker.Icon>
+                    <BrainIcon class="size-3.5" />
+                  </Marker.Icon>
+                  {#if thinkingActive}
+                    <Marker.Icon>
+                      <Spinner class="size-3" role="none" aria-hidden="true" />
+                    </Marker.Icon>
+                  {/if}
+                  <Marker.Content class="font-sans">
+                    {#if thinkingActive}
+                      <TextShine>{thinkingLabel}</TextShine>
+                    {:else}
+                      {thinkingLabel}
+                    {/if}
+                  </Marker.Content>
+                </Marker.Root>
+              </Accordion.Trigger>
+              <Accordion.Content class="pb-0 pt-0">
+                <div class="chat-thinking-panel">
+                  {#if reasoning.trim()}
+                    <MarkdownView markdown={reasoning} compact />
+                  {:else if thinkingActive}
+                    <TextShine class="text-xs">Working through the request…</TextShine>
+                  {/if}
+                </div>
+              </Accordion.Content>
+            </Accordion.Item>
+          </Accordion.Root>
+        </div>
       {/if}
 
       <Bubble.Root class="w-full max-w-full">
         <Bubble.Content
           class={cn(
             'w-full text-sm leading-relaxed',
-            isUser && 'rounded-lg border border-border bg-muted/80 px-3.5 py-1.5 text-foreground whitespace-normal',
+            isUser &&
+              'rounded-lg border border-border bg-muted px-3.5 py-1.5 text-foreground whitespace-normal',
             isAssistant && 'rounded-none border-0 bg-transparent p-0 shadow-none',
           )}
         >
@@ -179,8 +199,16 @@
 </MessageScroller.Item>
 
 <style>
+  :global(.chat-message--assistant) {
+    margin-top: 0.75rem;
+  }
+
+  .chat-message__thinking {
+    margin-bottom: 0.125rem;
+  }
+
   .chat-thinking-panel {
-    padding: 0.125rem 0 0.375rem;
+    padding: 0.125rem 0 0.25rem;
     font-size: 0.75rem;
     line-height: 1.5;
     color: color-mix(in oklch, var(--color-muted-foreground) 92%, var(--color-background));
@@ -193,22 +221,12 @@
   }
 
   .chat-message__meta {
-    position: absolute;
-    right: 0;
-    bottom: 0;
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     gap: 0.375rem;
+    margin-top: 0.25rem;
     font-size: 0.75rem;
     line-height: 1;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.15s ease;
-  }
-
-  :global(.group\/message:hover) .chat-message__meta,
-  :global(.group\/message:focus-within) .chat-message__meta {
-    opacity: 1;
-    pointer-events: auto;
   }
 </style>

@@ -7,6 +7,7 @@
   import SettingsIcon from '@lucide/svelte/icons/settings'
   import UsersIcon from '@lucide/svelte/icons/users'
   import BotIcon from '@lucide/svelte/icons/bot'
+  import PanelsTopLeftIcon from '@lucide/svelte/icons/panels-top-left'
   import BarChart3Icon from '@lucide/svelte/icons/bar-chart-3'
   import UserCircleIcon from '@lucide/svelte/icons/user-circle'
 
@@ -22,6 +23,7 @@
     { href: '/settings', label: 'Settings', icon: SettingsIcon },
     { href: '/community', label: 'Community', icon: UsersIcon },
     { href: '/agents', label: 'Agents', icon: BotIcon },
+    { href: '/workspace', label: 'Workspace', icon: PanelsTopLeftIcon },
     { href: '/usage', label: 'Usage', icon: BarChart3Icon },
     { href: '/profile', label: 'Profile', icon: UserCircleIcon },
   ]

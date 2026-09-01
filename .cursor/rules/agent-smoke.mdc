@@ -1,0 +1,38 @@
+---
+description: Agent UI smoke gate — auto-runs on stop when UI files are edited
+globs:
+  - src/**
+alwaysApply: false
+---
+
+# Agent UI smoke
+
+This workspace has **automated UI smoke** (Bun.WebView). It runs on **every agent stop** when you edited UI files this session — **pipeline or misc tab**.
+
+## Static check (pipeline verification)
+
+Run **`pnpm check:fast`** only — do **not** inline `rm -rf .vercel/output` from `package.json`.
+
+```bash
+pnpm check:fast
+```
+
+Use full `pnpm check` (includes `.vercel/output` cleanup) only when explicitly required for CI.
+
+In `## Verification`, cite: `- pnpm check:fast: exit 0`
+
+## Before you stop
+
+1. Ensure dev server is up: `pnpm dev` (port **9898**)
+2. If you changed settings dialog or `app.css`, smoke checks **dialog centering**
+3. Do **not** claim the task is done until smoke passes
+
+## Manual run
+
+```bash
+bun run agent:smoke
+```
+
+Exit **0** = pass · **1** = UI/assertion fail · **2** = dev server down
+
+On failure, see `.agent/last-smoke-fail.png` and fix before stopping again. The stop hook will re-prompt you automatically.

@@ -1,6 +1,6 @@
 import { browser } from '$app/environment'
 import { cloneConfig, type LayoutConfig } from 'horizon-layout'
-import { EMPTY_PANE_VIEW_ID, GROUP_VIEW_PREFIX } from '$lib/editorLayout'
+import { EMPTY_PANE_VIEW_ID, GROUP_VIEW_PREFIX, repairLayoutConfig } from '$lib/editorLayout'
 import { dockContainersStorageKey, getActiveEditorScopeId } from '$lib/projects/projectScope'
 
 const LEGACY_STORAGE_KEY = 'app-builder:dock-containers:v1'
@@ -14,12 +14,12 @@ export function groupViewId(id: string): string {
   return `${GROUP_VIEW_PREFIX}${id}`
 }
 
-export function groupIdFromViewId(viewId: string): string | null {
-  return viewId.startsWith(GROUP_VIEW_PREFIX) ? viewId.slice(GROUP_VIEW_PREFIX.length) : null
+export function groupIdFromViewId(viewId: string | null | undefined): string | null {
+  return isGroupViewId(viewId) ? viewId.slice(GROUP_VIEW_PREFIX.length) : null
 }
 
-export function isGroupViewId(id: string): boolean {
-  return id.startsWith(GROUP_VIEW_PREFIX)
+export function isGroupViewId(id: string | null | undefined): id is string {
+  return typeof id === 'string' && id.startsWith(GROUP_VIEW_PREFIX)
 }
 
 export type ContainerTabState = {
@@ -30,13 +30,24 @@ export type ContainerTabState = {
   openTerminals: string[]
 }
 
+function normalizeContainerState(container: ContainerTabState): ContainerTabState {
+  return {
+    ...container,
+    config: repairLayoutConfig(container.config),
+  }
+}
+
 function loadContainers(): Record<string, ContainerTabState> {
   if (!browser) return {}
   try {
     const raw = localStorage.getItem(storageKey())
     if (!raw) return {}
     const parsed = JSON.parse(raw) as unknown
-    return parsed && typeof parsed === 'object' ? (parsed as Record<string, ContainerTabState>) : {}
+    if (!parsed || typeof parsed !== 'object') return {}
+    const record = parsed as Record<string, ContainerTabState>
+    return Object.fromEntries(
+      Object.entries(record).map(([id, container]) => [id, normalizeContainerState(container)])
+    )
   } catch {
     return {}
   }
@@ -90,7 +101,7 @@ export function ensureContainer(id: string): ContainerTabState {
 export function renameContainer(id: string, config: LayoutConfig) {
   const existing = containers[id]
   if (!existing) return
-  containers[id] = { ...existing, config }
+  containers[id] = { ...existing, config: repairLayoutConfig(config) }
   persist()
 }
 
