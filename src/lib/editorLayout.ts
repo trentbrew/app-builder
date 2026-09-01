@@ -467,7 +467,7 @@ export function openFileAtPaneDrop(
 
 	const anchorGroup =
 		findTabGroupContaining(next.root, anchorViewId) ?? findFirstEditorTabGroup(next.root);
-	if (!anchorGroup || !canAcceptFileTab(anchorGroup)) {
+	if (!anchorGroup) {
 		return addFileToLayout(next, path, options);
 	}
 
@@ -523,7 +523,20 @@ export function addFileToLayout(
 	const target =
 		findPreferredFileTabGroup(next.root, id, options.hintViewId) ??
 		findFirstEditorTabGroup(next.root);
-	if (!target) return next;
+
+	if (!target) {
+		// When no editor tab group is present (e.g. only Preview, Files, Agent panels are open),
+		// split next to preview on the left, or files on the right, or fall back to adding the view.
+		const previewGroup = findTabGroupContaining(next.root, PANEL_IDS.preview);
+		if (previewGroup) {
+			return openFileAtPaneDrop(next, path, PANEL_IDS.preview, 'left', options);
+		}
+		const filesGroup = findTabGroupContaining(next.root, PANEL_IDS.files);
+		if (filesGroup) {
+			return openFileAtPaneDrop(next, path, PANEL_IDS.files, 'right', options);
+		}
+		return addViewToPreferredGroup(next, id);
+	}
 
 	const emptyIndex = target.tabs.indexOf(EMPTY_PANE_VIEW_ID);
 	if (emptyIndex !== -1) {

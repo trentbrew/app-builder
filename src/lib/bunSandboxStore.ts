@@ -320,6 +320,21 @@ function createBunSandboxStore() {
       await fs.writeFile(filePath, content)
       bumpTreeGeneration()
     },
+    exec: async (command: string, args: string[] = [], timeoutMs = 60_000) => {
+      if (!sessionId) throw new Error('Sandbox session not initialized')
+      const res = await fetch(`/api/sandbox/${sessionId}/exec`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ command, args, timeoutMs }),
+      })
+      const data = (await res.json()) as { stdout?: string; stderr?: string; exitCode?: number; error?: string }
+      if (!res.ok) throw new Error(data.error ?? 'Exec failed')
+      return {
+        stdout: data.stdout ?? '',
+        stderr: data.stderr ?? '',
+        exitCode: data.exitCode ?? 0,
+      }
+    },
     getContainer: () => undefined,
     getFs: () => fs,
     getBackend: () => 'bun' as const,

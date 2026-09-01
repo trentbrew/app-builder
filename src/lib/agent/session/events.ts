@@ -302,8 +302,14 @@ export function selectUsageTotals(events: SessionEvent[]): Required<Usage> {
 }
 
 function summarizeArgs(args: unknown): string {
-	if (args && typeof args === 'object' && 'path' in args) {
-		return String((args as { path: unknown }).path ?? '');
+	if (args && typeof args === 'object') {
+		const a = args as Record<string, unknown>;
+		if ('path' in a && a.path) return String(a.path);
+		if ('command' in a && a.command) return String(a.command);
+		if ('query' in a && a.query) return String(a.query);
+		if ('url' in a && a.url) return String(a.url);
+		if ('dir' in a && a.dir) return String(a.dir);
+		if ('root' in a && a.root) return String(a.root);
 	}
 	return '';
 }

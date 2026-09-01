@@ -37,6 +37,12 @@ export interface SandboxPreviewState {
   container?: WebContainer
 }
 
+export interface SandboxExecResult {
+  stdout: string
+  stderr: string
+  exitCode: number
+}
+
 export interface SandboxStore {
   subscribe: (run: (state: SandboxPreviewState) => void) => () => void
   boot: (projectId?: string) => Promise<void>
@@ -50,6 +56,7 @@ export interface SandboxStore {
   releaseActiveProject?: () => Promise<void>
   switchProject?: (fromId: string | null, toId: string) => Promise<void>
   write: (path: string, content: string) => Promise<void>
+  exec?: (command: string, args?: string[], timeoutMs?: number) => Promise<SandboxExecResult>
   getContainer: () => WebContainer | undefined
   getFs: () => SandboxFs | undefined
   getBackend: () => 'bun' | 'webcontainer' | 'unknown'

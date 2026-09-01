@@ -3,6 +3,7 @@
   import AgentRailScrollOnOpen from '$lib/components/agent-rail-scroll-on-open.svelte'
   import AgentLiveEdgeFollower from '$lib/components/agent-live-edge-follower.svelte'
   import AgentComposerEditor from '$lib/components/agent-composer-editor.svelte'
+  import BorderBeam from '$lib/components/ui/border-beam.svelte'
   import AgentContextChips, { type ContextChip } from '$lib/components/agent-context-chips.svelte'
   import ChatStatusMarker from '$lib/components/chat-status-marker.svelte'
   import PaneChrome from '$lib/components/pane-chrome.svelte'
@@ -150,22 +151,31 @@
     toast.info('WIP')
   }
 
+  import { getActiveDiagnostics } from '$lib/agent/diagnostics/errorObserver.svelte'
+
   function searchMentions(query: string): MentionItem[] {
     const q = query.trim().toLowerCase()
     const paths = knownPaths.length ? knownPaths : workspaceContext.openFiles
 
-    return paths
-      .map((filePath) => ({
-        type: 'file' as const,
-        id: filePath.replace(/^\//, ''),
-        label: basename(filePath),
-        detail: filePath,
-      }))
+    const contextItems: MentionItem[] = [
+      { type: 'context', id: 'errors', label: 'errors', detail: 'Active runtime & compiler diagnostics' },
+      { type: 'context', id: 'terminal', label: 'terminal', detail: 'Recent sandbox terminal logs' },
+      { type: 'context', id: 'preview', label: 'preview', detail: 'Current preview status' },
+    ]
+
+    const fileItems: MentionItem[] = paths.map((filePath) => ({
+      type: 'file' as const,
+      id: filePath.replace(/^\//, ''),
+      label: basename(filePath),
+      detail: filePath,
+    }))
+
+    return [...contextItems, ...fileItems]
       .filter((item) => {
         if (!q) return true
-        return item.label.toLowerCase().includes(q) || item.detail.toLowerCase().includes(q)
+        return item.label.toLowerCase().includes(q) || (item.detail && item.detail.toLowerCase().includes(q))
       })
-      .slice(0, 12)
+      .slice(0, 15)
   }
 
   function addAttachments(files: File[]) {
@@ -217,8 +227,28 @@
   }
 
   async function submitMessage() {
-    const text = composerValue.trim()
+    let text = composerValue.trim()
     if ((!text && !pendingAttachments.length) || busy) return
+
+    // Expand special mentions if present
+    if (text.includes('@errors')) {
+      const diag = getActiveDiagnostics()
+      if (diag.hasErrors) {
+        const errorSummary = diag.diagnostics
+          .map((d) => `[${d.kind}] ${d.file ? `${d.file}${d.line ? `:${d.line}` : ''}: ` : ''}${d.message}`)
+          .join('\n')
+        text += `\n\n<active_errors>\n${errorSummary}\n</active_errors>`
+      }
+    }
+
+    if (text.includes('@terminal')) {
+      let recentLogs: string[] = []
+      const unsub = sandboxStore.subscribe((s) => (recentLogs = s.logs ?? []))
+      unsub()
+      if (recentLogs.length > 0) {
+        text += `\n\n<recent_terminal_logs>\n${recentLogs.slice(-25).join('\n')}\n</recent_terminal_logs>`
+      }
+    }
 
     const files = pendingAttachments.length ? filesToFileList(pendingAttachments.map((entry) => entry.file)) : undefined
 
@@ -408,6 +438,9 @@
         <InputGroup.Root
           class="agent-pane__input items-stretch rounded-lg border border-border shadow-none"
         >
+          {#if busy}
+            <BorderBeam size={80} duration={12} borderWidth={1} colorFrom="#ffffff" colorTo="#ffffff" pathRadius={8} />
+          {/if}
           {#if pendingAttachments.length}
             <div class="px-2 pt-2">
               <Attachment.Group>
@@ -676,6 +709,7 @@
   }
 
   :global(.agent-pane__input) {
+    position: relative;
     overflow: hidden;
     align-items: stretch !important;
     background: var(--color-agent-composer-surface) !important;

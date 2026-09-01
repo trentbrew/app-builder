@@ -64,6 +64,7 @@ function wrapWebContainerStore(): SandboxStore {
     releaseActiveProject: () => webcontainerStore.releaseActiveProject(),
     switchProject: (fromId, toId) => webcontainerStore.switchProject(fromId, toId),
     write: (path, content) => webcontainerStore.write(path, content),
+    exec: (command, args, timeoutMs) => webcontainerStore.exec(command, args, timeoutMs),
     getContainer: () => webcontainerStore.getContainer(),
     getFs: () => {
       const container = webcontainerStore.getContainer()
@@ -87,6 +88,7 @@ function wrapBunStore(): SandboxStore {
     releaseActiveProject: async () => {},
     switchProject: async (_fromId, _toId) => {},
     write: (path, content) => bunSandboxStore.write(path, content),
+    exec: (command, args, timeoutMs) => bunSandboxStore.exec(command, args, timeoutMs),
     getContainer: () => undefined,
     getFs: () => bunSandboxStore.getFs(),
     getBackend: () => 'bun',
@@ -144,6 +146,11 @@ export const sandboxStore: SandboxStore = {
   },
   async write(path, content) {
     return (await ensureStore()).write(path, content)
+  },
+  async exec(command, args, timeoutMs) {
+    const store = await ensureStore()
+    if (!store.exec) throw new Error('exec is not supported by this sandbox backend')
+    return store.exec(command, args, timeoutMs)
   },
   getContainer() {
     return activeStore?.getContainer()

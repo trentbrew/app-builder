@@ -338,6 +338,61 @@ export function getSessionForTerminal(id: string): SandboxSession | undefined {
   return sessions.get(id)
 }
 
+export async function execSandbox(
+  id: string,
+  command: string,
+  args: string[] = [],
+  timeoutMs = 60_000,
+): Promise<{ stdout: string; stderr: string; exitCode: number }> {
+  const session = sessions.get(id)
+  if (!session) throw new Error(`Sandbox ${id} not found`)
+
+  const shell = process.env.SHELL || '/bin/bash'
+  const fullCommand = args.length > 0 ? [command, ...args].join(' ') : command
+
+  pushLog(session, `[exec] $ ${fullCommand}`)
+
+  const proc = Bun.spawn([shell, '-c', fullCommand], {
+    cwd: session.dir,
+    env: {
+      ...process.env,
+      TERM: 'dumb',
+      FORCE_COLOR: '0',
+    },
+    stdout: 'pipe',
+    stderr: 'pipe',
+  })
+
+  let killed = false
+  const timer = setTimeout(() => {
+    killed = true
+    try {
+      proc.kill()
+    } catch {}
+  }, timeoutMs)
+
+  const [stdout, stderr, exitCode] = await Promise.all([
+    new Response(proc.stdout).text(),
+    new Response(proc.stderr).text(),
+    proc.exited,
+  ])
+
+  clearTimeout(timer)
+
+  if (killed) {
+    throw new Error(`Command timed out after ${timeoutMs / 1000}s: ${fullCommand}`)
+  }
+
+  if (stdout.trim()) {
+    pushLog(session, `[exec:stdout] ${stdout.trim().slice(0, 500)}`)
+  }
+  if (stderr.trim()) {
+    pushLog(session, `[exec:stderr] ${stderr.trim().slice(0, 500)}`)
+  }
+
+  return { stdout, stderr, exitCode }
+}
+
 async function killTerminal(session: SandboxSession, handle: TerminalHandle) {
   session.terminals.delete(handle.id)
   try {

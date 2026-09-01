@@ -8,6 +8,10 @@
   import FileIcon from '@lucide/svelte/icons/file'
   import WrenchIcon from '@lucide/svelte/icons/wrench'
   import XIcon from '@lucide/svelte/icons/x'
+  import UndoIcon from '@lucide/svelte/icons/undo-2'
+  import { rollbackSnapshot } from '$lib/agentHarness/snapshotStore'
+  import { sandboxStore } from '$lib/sandboxStore'
+  import { toast } from '$lib/notify'
 
   let { sessionId }: { sessionId?: string } = $props()
 
@@ -49,6 +53,20 @@
   function formatTime(ts: number) {
     return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
   }
+
+  async function handleRollback(snapshotId: string) {
+    try {
+      const ok = await rollbackSnapshot(snapshotId)
+      if (ok) {
+        sandboxStore.notifyFilesystemChange()
+        toast.success('Restored previous file state')
+      } else {
+        toast.error('Could not restore snapshot')
+      }
+    } catch {
+      toast.error('Rollback failed')
+    }
+  }
 </script>
 
 <section class="tool-log" aria-label="Agent tool log">
@@ -73,9 +91,22 @@
                 <XIcon class="size-3.5" />
               {/if}
             </Marker.Icon>
-            <Marker.Content class="tool-log__summary" data-denied={row.denied ? 'true' : undefined}>
-              <span class="tool-log__time">{formatTime(row.ts)}</span>
-              <span class="tool-log__text">{row.summary}</span>
+            <Marker.Content class="tool-log__summary flex items-center justify-between" data-denied={row.denied ? 'true' : undefined}>
+              <div class="flex items-baseline gap-2 overflow-hidden">
+                <span class="tool-log__time">{formatTime(row.ts)}</span>
+                <span class="tool-log__text truncate">{row.summary}</span>
+              </div>
+              {#if row.kind === 'fs' && row.snapshotId}
+                <button
+                  type="button"
+                  class="text-muted-foreground hover:text-foreground hover:bg-muted/80 ml-1 inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[0.65rem] transition-colors"
+                  title="Rollback to this snapshot"
+                  onclick={() => void handleRollback(row.snapshotId!)}
+                >
+                  <UndoIcon class="size-2.5" />
+                  <span>Revert</span>
+                </button>
+              {/if}
             </Marker.Content>
           </Marker.Root>
         </li>

@@ -1,15 +1,15 @@
 import { getOllamaBaseUrl } from '$lib/ai/ollama.js';
 
-/** Graceful empty catalog — avoids red network errors when Ollama is offline. */
-function unavailableResponse(error: string) {
-	return Response.json({ models: [], unavailable: true, error });
-}
+const FALLBACK_MODELS = ['gemma4:latest', 'qwen2.5-coder:latest', 'llama3.3:latest'];
 
 export async function GET() {
 	try {
-		const response = await fetch(`${getOllamaBaseUrl()}/api/tags`);
+		const response = await fetch(`${getOllamaBaseUrl()}/api/tags`, {
+			signal: AbortSignal.timeout(2000),
+		});
+
 		if (!response.ok) {
-			return unavailableResponse('Ollama unavailable');
+			return Response.json({ models: FALLBACK_MODELS, unavailable: true });
 		}
 
 		const data = (await response.json()) as {
@@ -21,9 +21,8 @@ export async function GET() {
 			.filter((name): name is string => Boolean(name))
 			.sort((a, b) => a.localeCompare(b));
 
-		return Response.json({ models });
-	} catch (error) {
-		const message = error instanceof Error ? error.message : 'Failed to list Ollama models';
-		return unavailableResponse(message);
+		return Response.json({ models: models.length > 0 ? models : FALLBACK_MODELS });
+	} catch {
+		return Response.json({ models: FALLBACK_MODELS, unavailable: true });
 	}
 }

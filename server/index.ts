@@ -18,6 +18,7 @@ import {
   mkdirSandbox,
   renameSandbox,
   rmSandbox,
+  execSandbox,
 } from './sandboxManager'
 import { mimeFromPath } from './mime'
 
@@ -226,6 +227,18 @@ const server = Bun.serve({
         } catch (error) {
           const message = error instanceof Error ? error.message : 'Delete failed'
           return json({ error: message }, 400)
+        }
+      }
+
+      if (rest === 'exec' && request.method === 'POST') {
+        const body = await readJson<{ command?: string; args?: string[]; timeoutMs?: number }>(request)
+        if (!body?.command) return badRequest('command is required')
+        try {
+          const result = await execSandbox(id, body.command, body.args ?? [], body.timeoutMs ?? 60_000)
+          return json(result)
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'Exec failed'
+          return json({ error: message }, 500)
         }
       }
 

@@ -5,7 +5,7 @@ import { PluginKey } from '@tiptap/pm/state';
 import { positionSuggestionAbove } from '$lib/tiptap/suggestion-position';
 
 export interface MentionItem {
-	type: 'file';
+	type: 'file' | 'context';
 	id: string;
 	label: string;
 	detail?: string;

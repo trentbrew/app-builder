@@ -16,8 +16,13 @@ import { strict as assert } from 'node:assert';
 import { test } from 'node:test';
 import { isGuestPathReadable, isGuestPathWritable, normalizeGuestPath } from './pathAllowlist.ts';
 
-test('allows the guest-writable set', () => {
+test('allows the guest-writable set including root workspace files', () => {
 	for (const path of [
+		'test.txt',
+		'README.md',
+		'index.html',
+		'main.js',
+		'package.json',
 		'App.svelte',
 		'agent.manifest.json',
 		'components/Card.svelte',
@@ -32,6 +37,7 @@ test('allows the guest-writable set', () => {
 
 test('allows reading any sandbox workspace file', () => {
 	for (const path of [
+		'test.txt',
 		'package.json',
 		'index.html',
 		'vite.config.js',
@@ -49,8 +55,8 @@ test('denies reading outside sandbox or hidden system files', () => {
 	}
 });
 
-test('denies project configuration files', () => {
-	for (const path of ['package.json', 'vite.config.js', 'svelte.config.js', 'index.html', 'main.js']) {
+test('denies protected directories', () => {
+	for (const path of ['.git/config', '.sandboxes/state.json', 'node_modules/foo/index.js', 'lib/agent-sdk/index.ts']) {
 		assert.equal(isGuestPathWritable(path), false, path);
 	}
 });
@@ -59,18 +65,16 @@ test('denies traversal that escapes the sandbox root', () => {
 	for (const path of [
 		'../../../etc/passwd',
 		'components/../../../etc/passwd',
-		'components/../../vite.config.js',
 		'/components/../../.env',
-		'components\\..\\..\\vite.config.js', // backslash separators
+		'components\\..\\..\\etc\\passwd',
 	]) {
 		assert.equal(isGuestPathWritable(path), false, path);
 	}
 });
 
-test('denies traversal that lands on a denied file inside the root', () => {
-	// Resolves to `package.json`, which the deny list rejects on its own.
-	assert.equal(normalizeGuestPath('components/../package.json'), 'package.json');
-	assert.equal(isGuestPathWritable('components/../package.json'), false);
+test('denies traversal that lands on a denied directory inside the root', () => {
+	assert.equal(normalizeGuestPath('src/../.git/config'), '.git/config');
+	assert.equal(isGuestPathWritable('src/../.git/config'), false);
 });
 
 test('normalizes redundant segments without rejecting them', () => {

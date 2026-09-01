@@ -1014,6 +1014,52 @@ function createWebContainerStore() {
 				throw error;
 			}
 		},
+		exec: async (command: string, args: string[] = [], timeoutMs = 60_000) => {
+			let snapshot: PreviewState | undefined;
+			subscribe((s) => (snapshot = s))();
+			const container = snapshot?.container;
+			if (!container) throw new Error('WebContainer is not ready');
+
+			// `container.spawn` runs the given executable directly — it does not
+			// parse a shell command line. The bash tool hands us a raw string like
+			// "npm run check", so route it through WebContainer's shell (jsh -c),
+			// matching how the Bun backend wraps its exec via `$SHELL -c`.
+			const fullCommand = args.length > 0 ? [command, ...args].join(' ') : command;
+			const proc = await container.spawn('jsh', ['-c', fullCommand]);
+			let stdout = '';
+			const stderr = '';
+
+			const reader = proc.output.getReader();
+			let reading = true;
+			const readPromise = (async () => {
+				const decoder = new TextDecoder();
+				while (reading) {
+					const { value, done } = await reader.read();
+					if (done) break;
+					const text = typeof value === 'string' ? value : decoder.decode(value);
+					stdout += text;
+				}
+			})();
+
+			let killed = false;
+			const timer = setTimeout(() => {
+				killed = true;
+				try {
+					proc.kill();
+				} catch {}
+			}, timeoutMs);
+
+			const exitCode = await proc.exit;
+			reading = false;
+			clearTimeout(timer);
+			await readPromise.catch(() => {});
+
+			if (killed) {
+				throw new Error(`Command timed out after ${timeoutMs / 1000}s: ${fullCommand}`);
+			}
+
+			return { stdout, stderr, exitCode };
+		},
 		notifyFilesystemChange: () => {
 			scheduleTreeBump();
 		},

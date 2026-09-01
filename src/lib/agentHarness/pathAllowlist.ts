@@ -30,25 +30,10 @@ export function normalizeGuestPath(path: string): string {
 }
 
 const DENY_PATTERNS = [
-	/lib\/agent-sdk\//,
-	/^package\.json$/,
-	/^vite\.config/,
-	/^svelte\.config/,
-	/^index\.html$/,
-	/^main\.js$/
-];
-
-const ALLOW_PATTERNS = [
-	/^App\.svelte$/,
-	/^agent\.manifest\.json$/,
-	/^components\//,
-	/^src\//,
-	/^app\//,
-	/^lib\//,
-	/^styles\//,
-	/^public\//,
-	/^pages\//,
-	/^routes\//
+	/^\.git\//,
+	/^\.sandboxes\//,
+	/^node_modules\//,
+	/lib\/agent-sdk\//
 ];
 
 /** Whether agent/human may write this guest sandbox path. */
@@ -56,7 +41,7 @@ export function isGuestPathWritable(path: string): boolean {
 	const p = normalizeGuestPath(path);
 	if (!p) return false;
 	if (DENY_PATTERNS.some((re) => re.test(p))) return false;
-	return ALLOW_PATTERNS.some((re) => re.test(p));
+	return true;
 }
 
 /** Whether agent/guest may read this sandbox path. */
