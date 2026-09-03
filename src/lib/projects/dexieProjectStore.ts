@@ -13,6 +13,7 @@ import {
 } from '$lib/webcontainerSnapshot';
 import { duplicateProjectThumbnail } from '$lib/projects/projectThumbnail';
 import { userTemplateStore } from '$lib/projects/userTemplateStore';
+import { ensurePersistentStorage } from '$lib/storagePersistence.svelte';
 
 function now() {
 	return Date.now();
@@ -55,6 +56,8 @@ export const dexieProjectStore: ProjectStore = {
 		await getProjectsTable().put(record);
 		if (browser) {
 			seedDefaultProjectLayout(record.id, getTemplate(record.templateId).entryFile);
+			// The user now has work worth keeping — ask for a non-evictable storage bucket.
+			void ensurePersistentStorage();
 		}
 		return record;
 	},
@@ -81,6 +84,7 @@ export const dexieProjectStore: ProjectStore = {
 
 		if (browser) {
 			seedDefaultProjectLayout(record.id, getTemplate(record.templateId).entryFile);
+			void ensurePersistentStorage();
 		}
 
 		return record;

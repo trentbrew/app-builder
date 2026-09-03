@@ -11,7 +11,13 @@
   import { clearAppHeader, setAppHeader, type AppHeaderBreadcrumb } from '$lib/appHeader.svelte'
   import { collectFilePaths, getFocusedFilePath, resolveEditorLayout } from '$lib/editorLayout'
   import { isBinaryPreviewPath } from '$lib/fileTypes'
-  import { setEditorStatusLeft, editorFileStatusItems, setStatusBarRight } from '$lib/statusBar.svelte'
+  import {
+    setEditorStatusLeft,
+    editorFileStatusItems,
+    setStatusBarRight,
+    storageStatusItem,
+  } from '$lib/statusBar.svelte'
+  import { initStoragePersistence } from '$lib/storagePersistence.svelte'
   import { settings } from '$lib/settings/store.svelte'
   import { dexieProjectStore } from '$lib/projects/dexieProjectStore'
   import { getTemplate } from '$lib/projects/templates'
@@ -56,6 +62,8 @@
   }
 
   onMount(() => {
+    void initStoragePersistence()
+
     const unsubscribe = sandboxStore.subscribe((state) => {
       loading = state.loading
       booting = state.booting
@@ -218,7 +226,13 @@
       },
     ]
 
-    setStatusBarRight([...sandboxItems, ...editorFileStatusItems(activeFile)])
+    const storageItem = storageStatusItem()
+
+    setStatusBarRight([
+      ...sandboxItems,
+      ...(storageItem ? [storageItem] : []),
+      ...editorFileStatusItems(activeFile),
+    ])
   })
 
   $effect(() => {

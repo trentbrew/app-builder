@@ -31,6 +31,8 @@ import {
 	type CachedSnapshot
 } from '$lib/webcontainerSnapshot';
 import { normalizeSandboxPath } from '$lib/sandbox/paths';
+import { toast } from '$lib/notify';
+import { isStorageUnderPressure, refreshStorageEstimate } from '$lib/storagePersistence.svelte';
 import {
 	markEditorSaveFailed,
 	markEditorSaveFinished,
@@ -107,6 +109,9 @@ function createWebContainerStore() {
 	let currentUserTemplate: UserTemplateRecord | null = null;
 	let currentTemplate: ProjectTemplate | null = null;
 	let saveGeneration = 0;
+	/** Latched so a failing 1s-debounce save loop warns once, not every second. */
+	let snapshotSaveFailed = false;
+	let storagePressureWarned = false;
 
 	function flushLogs() {
 		flushScheduled = false;
@@ -192,10 +197,37 @@ function createWebContainerStore() {
 		const gen = ++saveGeneration;
 		snapshotSaveTimer = setTimeout(() => {
 			snapshotSaveTimer = undefined;
-			void persistSandboxSnapshot(container).then(() => {
+			void persistSandboxSnapshot(container).then((ok) => {
 				if (gen !== saveGeneration) return;
+				reportSnapshotSaveResult(ok);
 			});
 		}, SNAPSHOT_SAVE_DEBOUNCE_MS);
+	}
+
+	/**
+	 * Snapshot writes are the only thing standing between the in-memory container and
+	 * data loss, so a failure has to reach the user. Saves run on a 1s debounce, so we
+	 * only surface the edge — first failure, and recovery — instead of every attempt.
+	 */
+	function reportSnapshotSaveResult(ok: boolean) {
+		if (ok) {
+			if (snapshotSaveFailed) {
+				snapshotSaveFailed = false;
+				toast.success('Project saved. Changes are being persisted again.');
+			}
+			void refreshStorageEstimate().then(() => {
+				if (!isStorageUnderPressure() || storagePressureWarned) return;
+				storagePressureWarned = true;
+				toast.warning('Browser storage is nearly full. Delete unused projects to keep saving.');
+			});
+			return;
+		}
+
+		if (snapshotSaveFailed) return;
+		snapshotSaveFailed = true;
+		toast.error('Could not save this project to browser storage. Recent changes exist only in memory.', {
+			duration: 60_000
+		});
 	}
 
 	async function persistSandboxSnapshot(container: WebContainer): Promise<boolean> {

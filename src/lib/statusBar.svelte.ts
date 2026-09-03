@@ -1,5 +1,11 @@
 import { browser } from '$app/environment';
 import { languageLabelForPath } from '$lib/languageLabel';
+import { formatBytes } from '$lib/formatBytes';
+import {
+	STORAGE_PRESSURE_RATIO,
+	storagePersistence,
+	storageUsageRatio
+} from '$lib/storagePersistence.svelte';
 import type { Component } from 'svelte';
 
 export type StatusBarItem = {
@@ -114,6 +120,28 @@ export function setEditorStatusLeft(options: {
 	}
 
 	statusBar.left = left;
+}
+
+/**
+ * Quota readout for the editor status bar. Returns null until the browser has given
+ * us an estimate, so the segment simply stays absent where the API is unavailable.
+ */
+export function storageStatusItem(): StatusBarItem | null {
+	const { supported, usage, quota, persisted } = storagePersistence;
+	if (!supported || usage === null) return null;
+
+	const used = quota === null ? formatBytes(usage) : `${formatBytes(usage)} / ${formatBytes(quota)}`;
+	const ratio = storageUsageRatio();
+	const pressured = ratio !== null && ratio >= STORAGE_PRESSURE_RATIO;
+	const durability = persisted
+		? 'Storage is persistent — only you can clear it.'
+		: 'Storage is best-effort — the browser may evict projects to reclaim space.';
+
+	return {
+		id: 'storage',
+		label: pressured ? `${used} · low` : used,
+		title: `Browser storage used by your projects. ${durability}`
+	};
 }
 
 export function editorFileStatusItems(activeFile?: string): StatusBarItem[] {
